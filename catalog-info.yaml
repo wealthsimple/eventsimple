@@ -1,0 +1,11 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: eventable
+  description: Event Driven Toolkit for Rails
+  tags:
+    - ruby
+spec:
+  type: library
+  lifecycle: production
