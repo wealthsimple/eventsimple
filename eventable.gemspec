@@ -7,14 +7,14 @@ require 'eventable/version'
 Gem::Specification.new do |spec|
   raise 'RubyGems 2+ is required to protect against public pushes' unless spec.respond_to? :metadata
 
-  spec.name          = 'eventable'
-  spec.version       = Eventable::VERSION
-  spec.authors       = ['Zulfiqar Ali']
-  spec.email         = ['zulfiqar@wealthsimple.com']
+  spec.name = 'eventable'
+  spec.version = Eventable::VERSION
+  spec.authors = ['Zulfiqar Ali']
+  spec.email = ['zulfiqar@wealthsimple.com']
 
-  spec.description   = 'Event driven architecture using Rails and Sidekiq'
-  spec.summary       = 'Event driven architecture using Rails and Sidekiq'
-  spec.homepage      = 'https://github.com/wealthsimple/eventable'
+  spec.description = 'Event driven architecture using Rails and Sidekiq'
+  spec.summary = 'Event driven architecture using Rails and Sidekiq'
+  spec.homepage = 'https://github.com/wealthsimple/eventable'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
@@ -24,11 +24,11 @@ Gem::Specification.new do |spec|
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
-  spec.bindir        = 'exe'
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.bindir = 'exe'
+  spec.executables = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 2.7.5'
+  spec.required_ruby_version = '>= 2.7.6'
 
   spec.add_runtime_dependency 'activerecord'
   spec.add_runtime_dependency 'activesupport'
@@ -37,8 +37,11 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'retriable'
   spec.add_runtime_dependency 'sidekiq'
 
-  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'bundle-audit'
+  spec.add_development_dependency 'fuubar'
+  spec.add_development_dependency 'guard-rspec'
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'rails'
-  spec.add_development_dependency 'fuubar'
+  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'ws-style'
 end
