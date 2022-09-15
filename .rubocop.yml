@@ -1,3 +1,8 @@
 inherit_gem:
   ws-style:
     - default.yml
+
+AllCops:
+  Exclude:
+    - 'spec/dummy/bin/bundle'
+  TargetRubyVersion: 2.7
