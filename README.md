@@ -149,7 +149,7 @@ add_column :users, :lock_version, :integer
 ## Using Eventable
 
 Event lifycycle:
-![Transaction Verification](/docs/eventable/event_lifecycle.png?raw=true "Transaction Verification")
+![Transaction Verification](/docs/diagrams/event_lifecycle.png?raw=true "Transaction Verification")
 
 An example event:
 
@@ -160,10 +160,10 @@ module UserComponent
       # Tells Rails to use the DataType class to serialize/deserialize the data attribute.
       # A Message class is required if this is set.
       # This is optional and if not provided will use the default JSON serializer.
-      attribute :data, DataType.new(self)
+      attribute :data, Eventable::DataType.new(self)
 
       # Defines the data structure of the event payload using dry-struct
-      class Message < BaseMessage
+      class Message < Eventable::Message
         attribute :handle, DryTypes::Strict::String
       end
 
@@ -215,7 +215,7 @@ end
   Event messages are typed using Dry::Struct. Some common options you can use are:
 
 ```ruby
-class Message < BaseMessage
+class Message < Eventable::Message
   # attribute is required and can not be nil
   attribute :canonical_id, DryTypes::Strict::String
 
@@ -250,13 +250,13 @@ In the case of either postgres or redis outages, async reactors can be expected 
 
 Async reactors should be used to write to external data sources as a sideeffect of model updates. e.g writes to kafka, sqs, redis or an external API.
 
-![Transaction Verification](/docs/eventable/eventable_verify.png?raw=true "Transaction Verification")
+![Transaction Verification](/docs/diagrams/eventable_verify.png?raw=true "Transaction Verification")
 
 Reactor examples
 
 ```ruby
 # The dispatcher class allow us to register reactors for events.
-class Dispatcher
+class Dispatcher < Eventable::EventDispatcher
   # one to one
   on UserComponent::Events::HandleUpdated,
     async:  UserComponent::Reactors::HandleUpdated::SendNotification
@@ -417,7 +417,7 @@ end
 New attributes should always be added as being either optional or required with a default value.
 
 ```ruby
-class UserComponent::Events::HandleUpdated < BaseMessage
+class UserComponent::Events::HandleUpdated < Eventable::Message
   attribute :new_attribute_1, DryTypes::Strict::String.default('default')
   attribute? :new_attribute_2, DryTypes::Strict::String.optional
 end

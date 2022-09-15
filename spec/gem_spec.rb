@@ -1,1 +1,1 @@
-# require 'ws/gem_publisher/support/rspec'
+require 'ws/gem_publisher/support/rspec'
