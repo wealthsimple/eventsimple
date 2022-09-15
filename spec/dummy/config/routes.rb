@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
-  get 'implicit_user' => 'implicit_user#index'
-  get 'custom_user' => 'custom_user#index'
+  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+
+  # Defines the root path route ("/")
+  # root "articles#index"
 end
