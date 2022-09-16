@@ -439,6 +439,14 @@ end
 ### I want to modify an event by removing a dead attribute
 Simply remove the attribute in code and any usage references. Any persisted data in old events will be ignored going forward, so a data migration is not explicitly needed.
 
+However if removing the attribute info is desired, we can follow up code removal with a data migration:
+
+```ruby
+UserEvent.where(type: 'EventTypeName').in_batches do |batch|
+  batch.update_all("data = data::jsonb - 'attribute_a' - 'attribute_b'")
+end
+```
+
 ### I want to remove an event that is not longer required
 * If an event and any properties it sets are no longer required, we can delete the Event, any code references and the model columns it updates.
 * We'll Need to delete the persisted events as well, since Rails will no longer be able to load them.
