@@ -19,6 +19,8 @@ require 'eventable/reactor_worker'
 module Eventable # rubocop:disable Metrics/ModuleLength
   extend ActiveSupport::Concern
 
+  class InvalidTransition < StandardError; end
+
   class_methods do
     # rubocop:disable Metrics
     def event_driven_by(event_klass, aggregate_id: :canonical_id)
@@ -99,8 +101,7 @@ module Eventable # rubocop:disable Metrics/ModuleLength
           return if skip_apply_check
           return if can_apply?(aggregate)
 
-          errors.add(:base, :invalid_transition, message: 'Invalid Transition')
-          aggregate.errors.add(:base, :invalid_transition, message: 'Invalid Transition')
+          raise Eventable::InvalidTransition
         end
 
         def extend_validation
