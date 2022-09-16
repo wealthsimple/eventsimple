@@ -80,8 +80,16 @@ module Eventable # rubocop:disable Metrics/ModuleLength
         self.store_full_sti_class = false
 
         attribute :metadata, MetadataType.new
-        attribute :skip_dispatcher, default: false
-        attribute :skip_apply_check, default: false
+        attr_writer :skip_dispatcher
+        attr_writer :skip_apply_check
+
+        def skip_dispatcher
+          @skip_dispatcher || false
+        end
+
+        def skip_apply_check
+          @skip_apply_check || false
+        end
 
         def with_database_role(&block)
           ApplicationRecord.connected_to(role: :writing, &block)
