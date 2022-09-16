@@ -15,5 +15,9 @@ module Eventable
         type
       end
     end
+
+    def inspect
+      as_json
+    end
   end
 end
