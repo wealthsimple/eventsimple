@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    eventable (0.0.5)
+    eventable (0.0.6)
       activerecord
       activesupport
       dry-struct
@@ -111,7 +111,7 @@ GEM
     digest (3.1.0)
     docile (1.4.0)
     dogstatsd-ruby (5.5.0)
-    dry-container (0.10.1)
+    dry-container (0.11.0)
       concurrent-ruby (~> 1.0)
     dry-core (0.8.1)
       concurrent-ruby (~> 1.0)
