@@ -107,10 +107,12 @@ Eventable events are implemented using [Single Table Inheritance](https://api.ru
 ### ActiveRecord Classes
 ```ruby
 class User < ApplicationRecord
+  extend Eventable::Entity
   event_driven_by UserEvent, aggregate_id: :canonical_id
 end
 
 class UserEvent < ApplicationRecord
+  extend Eventable::Event
   # The events_namespace indicates the namespace under which the events are stored in code.
   # This is optional and if provided eventable will only store the root class name of the event in the database.
   # E.g the type columns for UserComponent::Events::HandleUpdated will be persisted as HandleUpdated.
