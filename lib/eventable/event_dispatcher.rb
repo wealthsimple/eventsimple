@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Credit: https://github.com/kickstarter/event-sourcing-rails-todo-app-demo
+
 # Dispatcher implementation.
 module Eventable
   class EventDispatcher
