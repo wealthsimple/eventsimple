@@ -17,11 +17,13 @@ module Eventable
       case value
       when String
         decoded = ActiveSupport::JSON.decode(value)
-        return decoded if decoded.empty?
+        return event_klass::Message.new(decoded) if event_klass.const_defined?(:Message)
 
-        event_klass::Message.new(decoded)
+        decoded
       when Hash
-        event_klass::Message.new(value)
+        return event_klass::Message.new(value) if event_klass.const_defined?(:Message)
+
+        value
       when event_klass::Message
         value
       end
@@ -38,9 +40,9 @@ module Eventable
 
     def deserialize(value)
       decoded = ActiveSupport::JSON.decode(value)
-      return decoded if decoded.empty?
+      return event_klass::Message.new(decoded) if event_klass.const_defined?(:Message)
 
-      event_klass::Message.new(decoded)
+      decoded
     end
   end
 end
