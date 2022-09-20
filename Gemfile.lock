@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    eventable (0.0.7)
+    eventable (0.1.0)
       activerecord
       activesupport
       dry-struct
