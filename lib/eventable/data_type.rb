@@ -21,7 +21,9 @@ module Eventable
 
         decoded
       when Hash
-        event_klass::Message.new(value)
+        return event_klass::Message.new(value) if Object.const_defined?(event_klass::Message)
+
+        value
       when event_klass::Message
         value
       end
