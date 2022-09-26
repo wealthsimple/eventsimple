@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    eventable (0.1.2)
+    eventable (0.2.0)
       dry-struct
       dry-types
       pg
