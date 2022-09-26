@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'eventable/version'
+
 require 'active_model'
 require 'active_support'
 require 'dry-types'
