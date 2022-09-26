@@ -102,26 +102,27 @@ Concurrent attempts to update the same entity will automatically be attempted in
 
 ## Setup
 
-Eventable events are implemented using [Single Table Inheritance](https://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html).
+Run generator to generate migrations and add `Eventable` to an existing model.
 
-### ActiveRecord Classes
 ```ruby
+bundle exec rails generate eventable:event User
+```
+
+This should result in the following changes:
+
+```ruby
+# ActiveRecord Classes
 class User < ApplicationRecord
   extend Eventable::Entity
-  event_driven_by UserEvent, aggregate_id: :canonical_id
+  event_driven_by UserEvent
 end
 
 class UserEvent < ApplicationRecord
   extend Eventable::Event
-  # The events_namespace indicates the namespace under which the events are stored in code.
-  # This is optional and if provided eventable will only store the root class name of the event in the database.
-  # E.g the type columns for UserComponent::Events::HandleUpdated will be persisted as HandleUpdated.
-  drives_events_for User, aggregate_id: :canonical_id, events_namespace: 'UserComponent::Events'
+  drives_events_for User, events_namespace: 'UserComponent::Events'
 end
-```
 
-### Data migration
-```ruby
+# Data migration
 create_table :user_events do |t|
   t.string :aggregate_id, null: false, index: true
   t.string :idempotency_key, null: true
@@ -133,12 +134,10 @@ create_table :user_events do |t|
 
   t.index :idempotency_key, unique: true
 end
-```
-Add lock_version to the model to enforce [optimistic locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html) and protect against concurrent updates. Eventable will automatically implement retry logic on concurrency failures.
 
-```ruby
 add_column :users, :lock_version, :integer
 ```
+Adding lock_version to the model enforces [optimistic locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html) and protects against concurrent updates to the model. Eventable will automatically implement retry logic on concurrency failures.
 
 | Column  | Description |
 | ------------- | ------------- |
@@ -370,19 +369,16 @@ https://github.com/wealthsimple/cash-service/blob/6c7dffa90d75e0f6bf06ba145babd1
 
 ### Setup an ordered outbox
 
-Generate table required by eventable to store cursor positions for event consumers.
-```ruby
-  create_table :eventable_outbox_cursors do |t|
-    t.string :event_klass, null: false
-    t.integer :group_number, null: false
-    t.bigint :cursor, null: false
+Generate migration to setup the outbox cursor table. This table is used to track the last event that was processed by an outbox consumer.
 
-    t.index [:event_klass, :group_number], unique: true
-  end
+```ruby
+  bundle exec rails g eventable:outbox:install
 ```
 
 Create a consummer and processor class for the outbox.
 Note: The presence of the consumer class triggers all writes to the respective events table to be written under an advisory lock.
+
+Only a single outbox consumer per events table. **DO NOT** create multiple consumers for the same events table.
 
 ```ruby
 require 'eventable/outbox/consumer'

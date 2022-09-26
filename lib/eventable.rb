@@ -21,3 +21,6 @@ require 'eventable/invalid_transition'
 
 require 'eventable/entity'
 require 'eventable/event'
+
+require 'eventable/generators/install_generator'
+require 'eventable/generators/outbox/install_generator'
