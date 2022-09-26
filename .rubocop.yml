@@ -4,5 +4,9 @@ inherit_gem:
 
 AllCops:
   Exclude:
-    - 'spec/dummy/bin/bundle'
+    - "spec/dummy/bin/**/*"
+    - "spec/dummy/db/migrate/**/*"
+    - "spec/dummy/db/schema.rb"
+    - "spec/dummy/log/**/*"
+    - "spec/dummy/tmp/**/*"
   TargetRubyVersion: 2.7
