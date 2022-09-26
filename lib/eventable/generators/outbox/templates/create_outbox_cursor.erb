@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+class CreateEventableOutboxCursor < ActiveRecord::Migration<%= migration_version %>
+  def change
+    create_table :eventable_outbox_cursors do |t|
+      t.string :event, null: false
+      t.integer :group_number, null: false
+      t.bigint :cursor, null: false
+
+      t.index [:event_klass, :group_number], unique: true
+    end
+  end
+end
