@@ -15,3 +15,11 @@ RSpec.shared_examples 'an event which asynchronously dispatches' do |dispatcher_
     expect(reactors.async).to include(dispatcher_klass)
   end
 end
+
+RSpec.shared_examples 'an event in invalid state' do
+  it 'raises an InvalidTransition error' do
+    expect { event.save }.to raise_error(Eventable::InvalidTransition).and not_change(
+      event.class, :count
+    )
+  end
+end

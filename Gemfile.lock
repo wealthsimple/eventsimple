@@ -1,11 +1,11 @@
 PATH
   remote: .
   specs:
-    eventable (0.1.1)
-      activerecord
-      activesupport
+    eventable (0.1.2)
       dry-struct
       dry-types
+      pg
+      rails
       retriable
       sidekiq
 
@@ -110,7 +110,6 @@ GEM
     diff-lcs (1.5.0)
     digest (3.1.0)
     docile (1.4.0)
-    dogstatsd-ruby (5.5.0)
     dry-container (0.11.0)
       concurrent-ruby (~> 1.0)
     dry-core (0.8.1)
@@ -321,14 +320,10 @@ PLATFORMS
 
 DEPENDENCIES
   bundle-audit
-  dogstatsd-ruby
   eventable!
   fuubar
   guard-rspec
-  pg
   pry
-  rails
-  rspec
   rspec-rails
   sidekiq-pro!
   ws-gem_publisher!
