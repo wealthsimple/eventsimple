@@ -11,6 +11,9 @@ module Eventable
       class_attribute :_aggregate_id
       self._aggregate_id = aggregate_id
 
+      class_attribute :_outbox_mode
+      class_attribute :_outbox_concurrency
+
       self.inheritance_column = :type
       self.store_full_sti_class = false
 
@@ -120,11 +123,23 @@ module Eventable
       # We can only catch and retry writes when they the outermost event encapsulating the whole
       # transaction.
       def create(*args, &block)
-        with_retries(args) { super }
+        with_locks do
+          with_retries(args) { super }
+        end
       end
 
       def create!(*args, &block)
-        with_retries(args) { super }
+        with_locks do
+          with_retries(args) { super }
+        end
+      end
+
+      def with_locks(&block)
+        if _outbox_mode
+          base_class.with_advisory_lock(base_class.name, { transaction: true }, &block)
+        else
+          yield
+        end
       end
 
       def with_retries(args, &block) # rubocop:disable Metrics/AbcSize

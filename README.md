@@ -7,7 +7,7 @@ At a high level Eventable implements a simple deterministic event driven system 
 * [**Auditable**](#audit-trails) history of how a model has been updated.
 * **Eventual consistency** guarantees with async behaviour using Sidekiq.
 * **Established contract** on how models may be updated using Dry Struct.
-* **Time Travel** - Events are persisted and can be replayed to recreate model states at any point in time.
+* **Outbox** - Events can be consumed in order using the build in consumer implementation.
 
 ## Why
 ### Eventual Consitency guarantees
@@ -349,6 +349,77 @@ Useful if the model that is being event driven has some properties that are mana
   class Contact
     # last_payment_at on contact is updated from within the payment flow anytime a payment is made.
     self.ignored_for_projection = %i[last_payment_at]
+  end
+```
+
+## Configuring an outbox consumer
+
+For many use cases, async reactors are sufficient to handle publishing to message brokers like kafka/sqs.
+However since reactors use Sidekiq, order is not guaranteed.
+
+Eventable provides an outbox implementation with order and eventual consistency guarantees.
+
+**Caveat**: The current implementation leverages a single advisory lock to guarantee write order, which reduces write throughput on the events table to ~300 events per second.
+
+A more performant implementation leveraging multiple advisory locks is in the works.
+
+For more information on why an advisory lock is required:
+https://github.com/pawelpacana/account-basics
+
+https://github.com/wealthsimple/cash-service/blob/6c7dffa90d75e0f6bf06ba145babd1ec71968912/app/eventide/README.md.
+
+### Setup an ordered outbox
+
+Generate table required by eventable to store cursor positions for event consumers.
+```ruby
+  create_table :eventable_outbox_cursors do |t|
+    t.string :event_klass, null: false
+    t.integer :group_number, null: false
+    t.bigint :cursor, null: false
+
+    t.index [:event_klass, :group_number], unique: true
+  end
+```
+
+Create a consummer and processor class for the outbox.
+Note: The presence of the consumer class triggers all writes to the respective events table to be written under an advisory lock.
+
+```ruby
+require 'eventable/outbox/consumer'
+
+module UserComponent
+  class Consumer
+    extend Eventable::Outbox::Consumer
+
+    consumes_event UserEvent
+    processor EventProcessor
+  end
+end
+```
+
+```ruby
+module UserComponent
+  class EventProcessor
+    def initialize(event)
+      @event = event
+    end
+
+    def call
+      puts "PROCESSING EVENT: #{event.id}"
+    end
+  end
+end
+```
+
+### Usage
+Create a rake task to run the consumer
+
+```ruby
+  namespace :consumers do
+    desc 'Starts the user event outbox consumer'
+    task :user_events do
+      UserComponent::Consumer.start
+    end
   end
 ```
 
