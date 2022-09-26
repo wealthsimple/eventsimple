@@ -5,11 +5,8 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in eventable.gemspec
 gemspec
 
-# For our dummy test project
-group :development, :test do
-  gem 'dogstatsd-ruby'
-  gem 'pg'
-  gem 'rspec-rails'
+source 'https://gems.contribsys.com/' do
+  gem 'sidekiq-pro'
 end
 
 source 'https://gems.contribsys.com/' do
