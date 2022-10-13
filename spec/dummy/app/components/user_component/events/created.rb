@@ -15,10 +15,6 @@ module UserComponent
 
       def apply(user)
         user.canonical_id = data.canonical_id
-
-        user.created_at = created_at
-        user.updated_at = created_at
-
         user
       end
     end
