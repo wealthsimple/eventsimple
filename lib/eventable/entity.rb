@@ -11,6 +11,9 @@ module Eventable
 
       class_attribute :ignored_for_projection, default: []
 
+      # disable automatic timestamp updates
+      self.record_timestamps = false
+
       include InstanceMethods
     end
 
