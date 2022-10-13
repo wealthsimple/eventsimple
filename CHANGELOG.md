@@ -6,8 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.4.0 - 2022-10-13
 ### Updated
-- Add auto-applying timestamps to entities 
+- Add auto-applying timestamps to entities
 - Disable rails auto updating of created_at and updated_at columns
+- apply functions no longer require the entity to be returned
 
 ## 0.3.0 - 2022-09-26
 ### Updated
