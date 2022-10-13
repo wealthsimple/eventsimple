@@ -65,6 +65,13 @@ module Eventable
         true
       end
 
+      def apply_timestamps(aggregate)
+        aggregate.created_at ||= created_at
+        aggregate.updated_at = created_at
+
+        aggregate
+      end
+
       def _valid?
         return if skip_apply_check
         return if can_apply?(aggregate)
@@ -81,6 +88,9 @@ module Eventable
       def apply_and_persist
         # Apply!
         self.aggregate = apply(aggregate)
+
+        # Apply timestamps
+        self.aggregate = apply_timestamps(aggregate)
 
         # Persist!
         aggregate.save!
