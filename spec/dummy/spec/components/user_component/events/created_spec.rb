@@ -27,7 +27,13 @@ RSpec.describe UserComponent::Events::Created do
     end
 
     context 'when user is already created' do
-      let(:user) { User.create(canonical_id: SecureRandom.uuid) }
+      let(:user) {
+        User.create(
+          canonical_id: SecureRandom.uuid,
+          created_at: Time.current,
+          updated_at: Time.current,
+        )
+      }
 
       it_behaves_like 'an event in invalid state'
     end
