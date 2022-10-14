@@ -184,10 +184,6 @@ module UserComponent
       def apply(user)
         user.handle = data.handle
 
-        # As created_at/updated_at are automatically updated by Rails
-        # We set a separate timestamp that stores the correct updated timestamp.
-        user.entity_updated_at = created_at
-
         user
       end
     end
@@ -304,7 +300,6 @@ module UserComponent
 
       def apply(user)
         user.handle = data.handle
-        user.entity_updated_at = created_at
 
         # Updating the projection to start tracking the number of times a handle has been updated.
         user.handle_update_count += 1
@@ -342,7 +337,7 @@ user.projection_matches_events? => false
 Skip properties on a model that are not managed by the event driven system. This will prevent a reset of the value in case of a reprojection.
 Useful if the model that is being event driven has some properties that are managed through other mechanics.
 
-`id`, `created_at`, `updated_at` and `lock_version` columns are always ignored by default.
+`id` and `lock_version` columns are always ignored by default.
 
 ```ruby
   class Contact
@@ -537,7 +532,6 @@ module UserComponent
 
       def apply(user)
         user.handle = data.handle
-        user.entity_updated_at = created_at
 
         # We're changing the the projection to start tracking the number of times a handle has been updated.
         user.handle_update_count += 1
