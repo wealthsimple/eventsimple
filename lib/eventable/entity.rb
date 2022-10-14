@@ -25,13 +25,13 @@ module Eventable
       end
 
       def reproject(at: nil)
-        default_ignore_props = %w[id created_at updated_at lock_version]
+        default_ignore_props = %w[id lock_version]
 
         event_history = at ? events.where('created_at <= ?', at).load : events.load
         ignore_props = default_ignore_props.concat(ignored_for_projection).map(&:to_s)
         assign_attributes(self.class.column_defaults.except(*ignore_props))
 
-        event_history.each { |event| event.apply(self) }
+        event_history.each { |event| event.apply(self) && event.apply_timestamps(self) }
 
         self
       end
