@@ -71,7 +71,7 @@ module Eventable
         return if skip_apply_check
         return if can_apply?(aggregate)
 
-        raise Eventable::InvalidTransition
+        raise Eventable::InvalidTransition, self.class
       end
 
       def extend_validation
@@ -142,23 +142,28 @@ module Eventable
         end
       end
 
-      def with_retries(args, &block) # rubocop:disable Metrics/AbcSize
+      def with_retries(args, &block)
         entity = args[0][_model_klass.model_name.element.to_sym]
 
         # Only implement retries when the event is not already inside a transaction.
-        if entity && !ActiveRecord::Base.connection.transaction_open?
+        if entity && !existing_transaction_in_progress?
           Retriable.retriable(
             on: ActiveRecord::StaleObjectError,
             intervals: [0, 0],
-            on_retry: proc {
-              Rails.logger.info("Retrying event #{name} #{_model_klass.model_name.element} #{entity&.canonical_id}")
-              entity.reload
-            },
+            on_retry: proc { entity.reload },
             &block
           )
         else
           yield
         end
+      rescue ActiveRecord::StaleObjectError => e
+        raise e unless existing_transaction_in_progress?
+
+        raise e, "#{e.message} No retries are attempted when already inside a transaction."
+      end
+
+      def existing_transaction_in_progress?
+        ActiveRecord::Base.connection.transaction_open?
       end
     end
   end
