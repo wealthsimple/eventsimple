@@ -10,7 +10,6 @@ module Eventable
         existing ? existing.cursor : 0
       end
 
-      # rubocop:disable Rails/SkipsModelValidations
       def self.set(event_klass, group_number, cursor)
         upsert(
           {
@@ -21,7 +20,6 @@ module Eventable
           unique_by: [:event_klass, :group_number],
         )
       end
-      # rubocop:enable Rails/SkipsModelValidations
     end
   end
 end
