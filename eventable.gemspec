@@ -23,11 +23,10 @@ Gem::Specification.new do |spec|
   end
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'rails'
-  # spec.add_runtime_dependency 'activesupport'
   spec.add_runtime_dependency 'dry-struct'
   spec.add_runtime_dependency 'dry-types'
   spec.add_runtime_dependency 'pg'
+  spec.add_runtime_dependency 'rails'
   spec.add_runtime_dependency 'retriable'
   spec.add_runtime_dependency 'sidekiq'
 
@@ -35,7 +34,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'fuubar'
   spec.add_development_dependency 'guard-rspec'
   spec.add_development_dependency 'pry'
-  # spec.add_development_dependency 'rails'
   spec.add_development_dependency 'rspec-rails'
   spec.add_development_dependency 'ws-style'
 end
