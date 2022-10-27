@@ -5,6 +5,8 @@ require 'ws/gem_publisher/support/spec_helper'
 require 'eventable'
 require 'eventable/support/spec_helpers'
 
+require 'retriable'
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
