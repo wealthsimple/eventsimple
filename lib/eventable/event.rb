@@ -14,10 +14,8 @@ module Eventable
       class_attribute :_outbox_mode
       class_attribute :_outbox_concurrency
 
-      class_attribute :_rescue_invalid_transition
-      self._rescue_invalid_transition = false
-
-      class_attribute :_rescue_invalid_transition_block
+      class_attribute :_on_invalid_transition
+      self._on_invalid_transition = ->(error) { raise error }
 
       self.inheritance_column = :type
       self.store_full_sti_class = false
@@ -76,11 +74,11 @@ module Eventable
         return if skip_apply_check
         return if can_apply?(aggregate)
 
-        error = Eventable::InvalidTransition.new(self.class)
+        _on_invalid_transition.call(
+          Eventable::InvalidTransition.new(self.class),
+        )
 
-        raise error unless self._rescue_invalid_transition
-
-        self._rescue_invalid_transition_block.call(error) if self._rescue_invalid_transition_block.present?
+        throw :abort
       end
 
       def extend_validation
@@ -118,8 +116,7 @@ module Eventable
       end
 
       def rescue_invalid_transition(&block)
-        self._rescue_invalid_transition = true
-        self._rescue_invalid_transition_block = block
+        self._on_invalid_transition = block || ->(error) {}
       end
 
       # We don't store the full namespaced class name in the events table.

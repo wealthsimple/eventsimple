@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe UserComponent::Events::Created do
+RSpec.describe UserComponent::Events::RescuedInvalidTransitionWithReraise do
   describe '#create' do
     subject(:create_event) { event.save }
 
@@ -13,7 +13,7 @@ RSpec.describe UserComponent::Events::Created do
         data: {
           canonical_id: canonical_id,
         },
-      )
+        )
     end
 
     it_behaves_like 'an event which synchronously dispatches',
@@ -41,3 +41,4 @@ RSpec.describe UserComponent::Events::Created do
     end
   end
 end
+
