@@ -575,3 +575,34 @@ User.find_each do |user|
   user.save!
 end
 ```
+
+
+### I want to ignore InvalidTransition errors
+
+The InvalidTransition error is raised when the `can_apply?` method of an Event returns `false`. This is an important error to raise for monitoring for invalid state transitions being made.
+
+There are some cases when monitoring for this error isn't helpful and the logging errors it generates are overly aggressive. An example scenario for not wanting to raise the error is when the `can_apply?` method is primarily defending against redundant events from being written, perhaps from a message stream like SQS.
+
+You can use the class method `rescue_invalid_transition` to rescue these errors.
+
+```ruby
+module FooComponent
+  module Events
+    class BarToTrue < FooEvent
+      rescue_invalid_transition do |error|
+        logger.info("Receive invalid transition error", error)
+      end
+
+      def can_apply?(foo)
+        !foo.bar  
+      end
+      
+      def apply(foo)
+        foo.bar = true
+
+        foo
+      end
+    end
+  end
+end
+```
