@@ -14,6 +14,9 @@ module Eventable
       class_attribute :_outbox_mode
       class_attribute :_outbox_concurrency
 
+      class_attribute :_on_invalid_transition
+      self._on_invalid_transition = ->(error) { raise error }
+
       self.inheritance_column = :type
       self.store_full_sti_class = false
 
@@ -33,7 +36,7 @@ module Eventable
 
       around_save :with_database_role
       before_validation :extend_validation
-      validate :_valid?
+      after_validation :perform_transition_checks
       before_create :apply_and_persist
       after_create :dispatch
 
@@ -67,11 +70,15 @@ module Eventable
         aggregate.updated_at = created_at
       end
 
-      def _valid?
+      def perform_transition_checks
         return if skip_apply_check
         return if can_apply?(aggregate)
 
-        raise Eventable::InvalidTransition, self.class
+        _on_invalid_transition.call(
+          Eventable::InvalidTransition.new(self.class),
+        )
+
+        raise ActiveRecord::Rollback
       end
 
       def extend_validation
@@ -106,6 +113,10 @@ module Eventable
     module ClassMethods
       def validate_with(form_klass)
         @validate_with = form_klass
+      end
+
+      def rescue_invalid_transition(&block)
+        self._on_invalid_transition = block || ->(error) {}
       end
 
       # We don't store the full namespaced class name in the events table.

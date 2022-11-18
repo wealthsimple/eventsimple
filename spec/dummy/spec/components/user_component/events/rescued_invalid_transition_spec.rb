@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe UserComponent::Events::Created do
+RSpec.describe UserComponent::Events::RescuedInvalidTransition do
   describe '#create' do
     subject(:create_event) { event.save }
 
@@ -37,7 +37,7 @@ RSpec.describe UserComponent::Events::Created do
         )
       }
 
-      it_behaves_like 'an event in invalid state'
+      it_behaves_like 'an event in invalid state that is rescued'
     end
   end
 end

@@ -23,3 +23,25 @@ RSpec.shared_examples 'an event in invalid state' do
     )
   end
 end
+
+RSpec.shared_examples 'an event in invalid state that is rescued' do
+  context 'when save' do
+    it 'does not InvalidTransition error on save' do
+      expect { event.save }.not_to raise_error(Eventable::InvalidTransition)
+    end
+
+    it 'does not write event on save' do
+      expect { event.save }.not_to change(event.class, :count)
+    end
+  end
+
+  context 'when save!' do
+    it 'does not InvalidTransition error on save!' do
+      expect { event.save! }.not_to raise_error(Eventable::InvalidTransition)
+    end
+
+    it 'does not write event on save!' do
+      expect { event.save! }.not_to change(event.class, :count)
+    end
+  end
+end
