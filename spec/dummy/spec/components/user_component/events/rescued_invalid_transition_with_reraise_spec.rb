@@ -13,7 +13,7 @@ RSpec.describe UserComponent::Events::RescuedInvalidTransitionWithReraise do
         data: {
           canonical_id: canonical_id,
         },
-        )
+      )
     end
 
     it_behaves_like 'an event which synchronously dispatches',
@@ -41,4 +41,3 @@ RSpec.describe UserComponent::Events::RescuedInvalidTransitionWithReraise do
     end
   end
 end
-

@@ -19,7 +19,6 @@ RSpec.describe UserComponent::Events::RescuedInvalidTransition do
     it_behaves_like 'an event which synchronously dispatches',
       UserComponent::Reactors::Created::SyncReactor
 
-
     it 'updates the user properties' do
       create_event
 
@@ -42,5 +41,3 @@ RSpec.describe UserComponent::Events::RescuedInvalidTransition do
     end
   end
 end
-
-
