@@ -36,7 +36,7 @@ module Eventable
 
       around_save :with_database_role
       before_validation :extend_validation
-      validate :_valid?
+      after_validation :perform_transition_checks
       before_create :apply_and_persist
       after_create :dispatch
 
@@ -70,7 +70,7 @@ module Eventable
         aggregate.updated_at = created_at
       end
 
-      def _valid?
+      def perform_transition_checks
         return if skip_apply_check
         return if can_apply?(aggregate)
 
@@ -78,7 +78,7 @@ module Eventable
           Eventable::InvalidTransition.new(self.class),
         )
 
-        throw :abort
+        raise ActiveRecord::Rollback
       end
 
       def extend_validation
