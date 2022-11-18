@@ -583,12 +583,13 @@ The InvalidTransition error is raised when the `can_apply?` method of an Event r
 
 There are some cases when monitoring for this error isn't helpful and the logging errors it generates are overly aggressive. An example scenario for not wanting to raise the error is when the `can_apply?` method is primarily defending against redundant events from being written, perhaps from a message stream like SQS.
 
-You can use the class method `rescue_invalid_transition` to rescue these errors.
+You can use the class method `rescue_invalid_transition` to rescue these errors. The event will not be written as if the rescue wasn't there, it just gives greater control of the error. 
 
 ```ruby
 module FooComponent
   module Events
     class BarToTrue < FooEvent
+      # the block is optional
       rescue_invalid_transition do |error|
         logger.info("Receive invalid transition error", error)
       end
