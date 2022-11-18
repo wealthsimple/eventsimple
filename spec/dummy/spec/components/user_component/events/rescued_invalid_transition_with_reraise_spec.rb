@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe UserComponent::Events::Created do
+RSpec.describe UserComponent::Events::RescuedInvalidTransitionWithReraise do
   describe '#create' do
     subject(:create_event) { event.save }
 
