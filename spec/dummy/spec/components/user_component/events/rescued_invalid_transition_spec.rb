@@ -29,7 +29,7 @@ RSpec.describe UserComponent::Events::RescuedInvalidTransition do
       expect(user.updated_at).to eq(event.created_at)
     end
 
-    context 'when user is already created' do
+    context 'when can_apply? check fails' do
       let(:user) {
         User.create(
           canonical_id: canonical_id,
