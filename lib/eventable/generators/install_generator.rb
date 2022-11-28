@@ -19,14 +19,14 @@ module Eventable
 
       def copy_migrations
         migration_template "create_events.erb",
-          "db/migrate/create_#{model_name.downcase}_events.rb",
+          "db/migrate/create_#{model_name.underscore}_events.rb",
           migration_version: migration_version
 
         template "event.erb",
-          "app/models/#{model_name.downcase}_event.rb"
+          "app/models/#{model_name.underscore}_event.rb"
 
         line = "class #{model_name.camelize} < ApplicationRecord"
-        gsub_file "app/models/#{model_name.downcase}.rb", /(#{Regexp.escape(line)})/mi do |match|
+        gsub_file "app/models/#{model_name.underscore}.rb", /(#{Regexp.escape(line)})/mi do |match|
           "#{match}\n  extend Eventable::Entity\n  event_driven_by #{model_name.camelize}Event\n"
         end
       end
