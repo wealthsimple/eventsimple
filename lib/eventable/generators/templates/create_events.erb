@@ -2,7 +2,7 @@
 
 class Create<%= model_name.camelize %>Events < ActiveRecord::Migration[7.0]
   def change
-    create_table :<%= model_name.downcase %>_events do |t|
+    create_table :<%= model_name.underscore %>_events do |t|
       t.string :aggregate_id, null: false, index: true
       t.string :idempotency_key, null: true
       t.string :type, null: false
@@ -15,6 +15,6 @@ class Create<%= model_name.camelize %>Events < ActiveRecord::Migration[7.0]
     end
 
     # Enables optimistic locking on the evented table
-    add_column :<%= model_name.pluralize %>, :lock_version, :integer
+    add_column :<%= model_name.underscore.pluralize %>, :lock_version, :integer
   end
 end
