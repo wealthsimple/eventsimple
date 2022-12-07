@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class <%= model_name.camelize %>Event < ApplicationRecord
+  extend Eventable::Event
   drives_events_for <%= model_name.camelize %>,
     events_namespace: '<%= model_name.camelize %>Component::Events'
     # aggregate_id: :canonical_id
