@@ -34,11 +34,14 @@ module Eventable
 
         until stop_consumer
           _event_klass.unscoped.in_batches(start: cursor + 1, load: true).each do |batch|
-            batch.each { |event| _processor_klass.new(event).call }
+            batch.each do |event|
+              _processor_klass.new(event).call
+
+              break if stop_consumer
+            end
+
             cursor = batch.last.id
             Outbox::Cursor.set(_event_klass, 0, cursor)
-
-            break if stop_consumer
           end
 
           sleep(1)
