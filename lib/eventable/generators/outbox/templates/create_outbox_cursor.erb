@@ -3,7 +3,7 @@
 class CreateEventableOutboxCursor < ActiveRecord::Migration<%= migration_version %>
   def change
     create_table :eventable_outbox_cursors do |t|
-      t.string :event, null: false
+      t.string :event_klass, null: false
       t.integer :group_number, null: false
       t.bigint :cursor, null: false
 
