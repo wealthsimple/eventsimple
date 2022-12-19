@@ -7,7 +7,6 @@ require 'active_support'
 require 'dry-types'
 require 'dry-struct'
 require 'sidekiq'
-require 'sidekiq-pro'
 
 require 'dry_types'
 
