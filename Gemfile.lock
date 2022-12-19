@@ -10,12 +10,6 @@ PATH
       sidekiq
 
 GEM
-  remote: https://gems.contribsys.com/
-  specs:
-    sidekiq-pro (7.0.4)
-      sidekiq (>= 7.0.0, < 8)
-
-GEM
   remote: https://nexus.iad.w10external.com/repository/gems/
   specs:
     ws-gem_publisher (4.0.6)
@@ -325,7 +319,6 @@ DEPENDENCIES
   guard-rspec
   pry
   rspec-rails
-  sidekiq-pro!
   ws-gem_publisher!
   ws-style
 
