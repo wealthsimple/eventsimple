@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.5.7 - 2023-01-03
+### Updated
+- Fixed local development setup script
+- Fixed bug where timestamps may not be updated on reprojection
 ## 0.5.6 - 2022-11-28
 ### Updated
 - Only implement retry logic for new records
