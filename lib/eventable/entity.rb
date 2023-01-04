@@ -31,7 +31,10 @@ module Eventable
         ignore_props = default_ignore_props.concat(ignored_for_projection).map(&:to_s)
         assign_attributes(self.class.column_defaults.except(*ignore_props))
 
-        event_history.each { |event| event.apply(self) && event.apply_timestamps(self) }
+        event_history.each do |event|
+          event.apply(self)
+          event.apply_timestamps(self)
+        end
 
         self
       end
