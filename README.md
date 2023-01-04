@@ -10,7 +10,7 @@ At a high level Eventable implements a simple deterministic event driven system 
 * **Outbox** - Events can be consumed in order using the build in consumer implementation.
 
 ## Why
-### Eventual Consitency guarantees
+### Eventual Consistency guarantees
 
 Our typical Sidekiq patterns are non deterministic and lose consistency everytime there is a redis outage.
 
@@ -608,3 +608,19 @@ module FooComponent
   end
 end
 ```
+
+## Contributing
+
+To develop locally clone this repository and run:
+
+```
+> ./bin/setup
+```
+
+This should setup your local environment to run tests.
+
+```
+> bundle exec rspec
+```
+
+To run the tests
