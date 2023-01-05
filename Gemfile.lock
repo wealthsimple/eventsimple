@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    eventable (0.5.7)
+    eventable (0.5.8)
       dry-struct
       dry-types
       pg
@@ -170,7 +170,7 @@ GEM
     mini_portile2 (2.8.0)
     minitest (5.16.3)
     nenv (0.3.0)
-    net-imap (0.3.2)
+    net-imap (0.3.4)
       date
       net-protocol
     net-pop (0.1.2)
@@ -195,6 +195,8 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (5.0.1)
+    puma (6.0.0)
+      nio4r (~> 2.0)
     racc (1.6.1)
     rack (2.2.4)
     rack-test (2.0.2)
@@ -318,6 +320,7 @@ DEPENDENCIES
   fuubar
   guard-rspec
   pry
+  puma
   rspec-rails
   ws-gem_publisher!
   ws-style
