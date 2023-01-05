@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'eventable/version'
+require "eventable/version"
+require "eventable/engine"
 
 require 'active_model'
 require 'active_support'

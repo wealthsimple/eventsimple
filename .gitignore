@@ -3,13 +3,11 @@
 /_yardoc/
 /coverage/
 /doc/
+/log/*.log
 /pkg/
 /spec/reports/
-/vendor/
 /tmp/
 .idea
-
-/config
 
 # rspec failure tracking
 .rspec_status
