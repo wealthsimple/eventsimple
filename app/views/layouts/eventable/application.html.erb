@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
   <title>Eventable</title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
@@ -17,10 +20,219 @@
   <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js",
     crossorigin: "anonymous"
   %>
+  <style>
+    // Structure
+    body {
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+    }
+
+    html {
+      height: -webkit-fill-available;
+    }
+
+    #page {
+      display: flex;
+      flex-wrap: nowrap;
+      height: 100vh;
+      height: -webkit-fill-available;
+      max-height: 100vh;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    nav {
+      width: 20%;
+    }
+
+    main {
+      flex-shrink: 0;
+      height: 100vh;
+      width: 80%;
+      overflow-y: auto;
+    }
+
+    // Sidebar Nav
+
+    .bi {
+      vertical-align: -.125em;
+      pointer-events: none;
+      fill: currentColor;
+    }
+
+    .dropdown-toggle { outline: 0; }
+
+    .nav-flush .nav-link {
+      border-radius: 0;
+    }
+
+    .btn-toggle {
+      display: inline-flex;
+      align-items: center;
+      padding: .25rem .5rem;
+      font-weight: 600;
+      color: rgba(0, 0, 0, .65);
+      background-color: transparent;
+      border: 0;
+    }
+    .btn-toggle:hover,
+    .btn-toggle:focus {
+      color: rgba(0, 0, 0, .85);
+      background-color: #d2f4ea;
+    }
+
+    .btn-toggle::before {
+      width: 1.25em;
+      line-height: 0;
+      content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+      transition: transform .35s ease;
+      transform-origin: .5em 50%;
+    }
+
+    .btn-toggle[aria-expanded="true"] {
+      color: rgba(0, 0, 0, .85);
+    }
+    .btn-toggle[aria-expanded="true"]::before {
+      transform: rotate(90deg);
+    }
+
+    .btn-toggle-nav a {
+      display: inline-flex;
+      padding: .1875rem .5rem;
+      margin-top: .125rem;
+      margin-left: 1.25rem;
+      text-decoration: none;
+    }
+    .btn-toggle-nav a:hover,
+    .btn-toggle-nav a:focus {
+      background-color: #d2f4ea;
+    }
+
+    .scrollarea {
+      overflow-y: auto;
+    }
+
+    .fw-semibold { font-weight: 600; }
+    .lh-tight { line-height: 1.25; }
+
+    // Styles
+
+    code {
+      color: deeppink;
+    }
+
+    code.delta {
+      color: seagreen;
+    }
+  </style>
 </head>
 <body>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="speedometer2" viewBox="0 0 16 16">
+      <path d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4zM3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 9.31a.91.91 0 1 0 1.302 1.258l3.434-4.297a.389.389 0 0 0-.029-.518z"/>
+      <path fill-rule="evenodd" d="M0 10a8 8 0 1 1 15.547 2.661c-.442 1.253-1.845 1.602-2.932 1.25C11.309 13.488 9.475 13 8 13c-1.474 0-3.31.488-4.615.911-1.087.352-2.49.003-2.932-1.25A7.988 7.988 0 0 1 0 10zm8-7a7 7 0 0 0-6.603 9.329c.203.575.923.876 1.68.63C4.397 12.533 6.358 12 8 12s3.604.532 4.923.96c.757.245 1.477-.056 1.68-.631A7 7 0 0 0 8 3z"/>
+    </symbol>
+    <symbol id="table" viewBox="0 0 16 16">
+      <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 2h-4v3h4V4zm0 4h-4v3h4V8zm0 4h-4v3h3a1 1 0 0 0 1-1v-2zm-5 3v-3H6v3h4zm-5 0v-3H1v2a1 1 0 0 0 1 1h3zm-4-4h4V8H1v3zm0-4h4V4H1v3zm5-3v3h4V4H6zm4 4H6v3h4V8z"/>
+    </symbol>
+    <symbol id="check-circle-fill" viewBox="0 0 16 16">
+      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+    </symbol>
+    <symbol id="info-fill" viewBox="0 0 16 16">
+      <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+    </symbol>
+    <symbol id="exclamation-triangle-fill" viewBox="0 0 16 16">
+      <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+    </symbol>
+  </svg>
+  <div id="page">
 
-<%= yield %>
+    <!-- Sidebar Nav Start -->
+    <nav class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark">
+        <a href="/eventable" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+          <svg class="bi me-2" width="40" height="32"><use xlink:href="#speedometer2"/></svg>
+          <span class="fs-4">Eventable</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+          <% @event_classes.each do |klass| %>
+            <% is_active = klass === @model_name ? 'active text-white' : 'text-white' %>
+            <li class="nav-item text-white">
+              <a href="/eventable/models/<%= klass %>" class="nav-link <%= is_active %>">
+                <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+                <%= klass %>
+              </a>
+            </li>
+          <% end %>
+        </ul>
+    </nav>
+    <!-- Sidebar Nav End -->
 
+    <!-- Main Container Start -->
+    <main class="pt-4 px-2">
+
+      <!-- Header Search Start -->
+      <header class="container mb-4">
+        <form id="form-search" novalidate>
+        <div class="row">
+          <div class="col col-sm-3">
+            <select id="form-search-model-name" class="form-select" aria-label="Model select" required>
+              <option value="">Choose event source model</option>
+              <% @event_classes.each do |klass| %>
+                <% is_active = klass === @model_name ? 'selected' : '' %>
+                <option value="<%= klass %>" <%= is_active %>><%= klass %></option>
+              <% end %>
+            </select>
+          </div>
+          <div class="col col-sm-7">
+            <input id="form-search-canonical-id" type="search" id="form1" class="form-control" placeholder="Canonical identifier" value="<%= @canonical_id %>" aria-label="Entity canonical identifier" required/>
+          </div>
+          <div class="col col-sm-2">
+            <button id="form-search-submit" type="submit" class="btn btn-primary">Search</button>
+          </div>
+        </div>
+      </header>
+      <!-- Header Search End -->
+
+      <!-- Content Start -->
+      <article class="container">
+        <% if @error_message.present? %>
+          <div class="alert alert-warning d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+            <div>
+              <%= @error_message %>
+            </div>
+          </div>
+        <% else %>
+            <%= yield %>
+        <% end %>
+      </article>
+      <!-- Content End -->
+
+    </main>
+    <!-- Main Container End -->
+
+  </div>
+  <script>
+    (() => {
+      'use strict'
+
+      $('#form-search').submit((event) => {
+        const form = event.target;
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+          $(form).addClass('was-validated');
+          return;
+        }
+        event.preventDefault();
+        const modelName = $('#form-search-model-name').val();
+        const canonicalId = $('#form-search-canonical-id').val();
+        const url = `/eventable/models/${modelName}/entities/${canonicalId}`;
+        window.location = url;
+      });
+
+    })();
+  </script>
 </body>
 </html>

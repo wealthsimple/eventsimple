@@ -1,0 +1,113 @@
+<% if @entity.present? %>
+  <div class="row align-items-start">
+    <!-- Pane: Entity Details Start -->
+    <div class="col g-4 col-sm-8">
+      <h2><%= @model_name%>: <%= @canonical_id %></h2>
+      <hr/>
+
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="nav-tab-entity" data-bs-toggle="tab" data-bs-target="#tab-entity" type="button" role="tab" aria-controls="entity" aria-selected="true">Entity</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="nav-tab-event" data-bs-toggle="tab" data-bs-target="#tab-event" type="button" role="tab" aria-controls="event" aria-selected="false">Event</button>
+        </li>
+      </ul>
+      
+      <div class="tab-content pt-4 px-3">
+        <!-- Tab: Entity Start -->
+        <div id="tab-entity" class="tab-pane fade show active" role="tabpanel" aria-labelledby="nav-tab-entity">
+          <p>
+            This <em>Latest</em> is the current projection of the entity <code><%= @model_name %></code> for the canonical identifier <code><%= @canonical_id %></code>.
+            <% if @is_historical %>
+              The <em>Historical</em> shows where the value differs from the current projection as at <code><%= @selected_event.created_at %></code> as mutated by the <code><%= @selected_event.type %></code> event.
+            <% end %>
+          </p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Property</th>
+                <th scope="col">Latest</th>
+                <% if @is_historical %>
+                  <th scope="col">Historical</th>
+                <% end %>
+              </tr>
+            </thead>
+            <tbody>
+              <% @entity.attributes.each do |attr_name, attr_value| %>
+                <% latest_value = @entity_delta[attr_name.to_s].present? ? @entity_delta[attr_name.to_s][0] : attr_value %>
+                <% historical_value = @entity_delta[attr_name.to_s].present? ? @entity_delta[attr_name.to_s][1] : '' %>
+                <tr>
+                  <th scope="row"><%= attr_name %></th>
+                  <td><code><%= latest_value %></code></td>
+                  <% if @is_historical %>
+                    <td><code class="delta"><%= historical_value %></code></th>
+                  <% end %>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+        <!-- Tab: Entity End -->
+
+        <!-- Tab: Event Start -->
+        <div id="tab-event" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-tab-event">
+          <p>
+            The properties of the <code><%= @selected_event.type %></code> event.
+          </p>
+          <table class="table">
+            <tbody>
+              <tr>
+                <th scope="row">Identifier</th>
+                <td><code><%= @selected_event.id %></code></td>
+              </tr>
+              <tr>
+                <th scope="row">Timestamp</th>
+                <td><code><%= @selected_event.created_at %></code></td>
+              </tr>
+              <tr>
+                <th scope="row">Data</th>
+                <td>
+                    <% if @selected_event.data.present? %>
+                      <% @selected_event.data.attributes.each do |attr_name, attr_value| %>
+                        <code><%= attr_name %>: <%= attr_value %></code><br/>
+                      <% end %>
+                    <% end %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Metadata</th>
+                <td>
+                    <% @selected_event.metadata.attributes.each do |attr_name, attr_value| %>
+                      <code><%= attr_name %>: <%= attr_value %></code><br/>
+                    <% end %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Tab: Event End -->
+      </div>
+    </div>
+    <!-- Pane: Entity Details End -->
+
+    <!-- Pane: Time Travel Start -->
+    <div class="col g-4 col-sm-4">
+      <h3>Time Travel</h3>
+      <ul class="list-group">
+        <% @entity_event_history.each do | event, index | %>
+          <% is_active_list_item = event.id == @selected_event.id ? 'active' : '' %>
+          <% is_active_link = event.id == @selected_event.id ? 'text-white' : 'link-dark' %>
+          <% event_timestamp = event.id == @latest_event.id ? 'Latest' : event.created_at %>
+          <li class="list-group-item <%= is_active_list_item %>">
+            <a href="/eventable/models/<%= @model_name %>/entities/<%= @canonical_id %>?e=<%= event.id %>" class="text-decoration-none <%= is_active_link %>">
+              <div><%= event_timestamp %></div>
+              <code><%= event.type %> event</code> 
+            </a>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <!-- Pane: Time Travel End -->
+  </div>
+<% end %>
