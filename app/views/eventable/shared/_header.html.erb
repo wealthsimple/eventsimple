@@ -1,0 +1,26 @@
+<!-- Header Search Start -->
+<header class="container mb-4">
+  <div class="row">
+    <div class="col col-sm-3">
+      <select id="form-search-model-name" class="form-select" aria-label="Model select" onchange="Turbo.visit(this.value)" required>
+        <option value="">Choose event source model</option>
+        <% @event_classes.each do |klass| %>
+          <% is_active = klass === @model_name ? 'selected' : '' %>
+          <option value="<%= model_url(klass) %>" <%= is_active %>><%= klass %></option>
+        <% end %>
+      </select>
+    </div>
+
+    <% if @model_name %>
+      <div class="col col-sm-7">
+        <%= form_for :search, url: search_model_path(@model_name) do |f| %>
+          <%= f.search_field :entity_id, class: 'form-control', placeholder: 'Canonical identifier', value: @canonical_id, required: true, aria: { label: 'Entity canonical identifier' }  %>
+        </div>
+        <div class="col col-sm-2">
+          <%= f.submit 'Search', class: 'btn btn-primary' %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</header>
+<!-- Header Search End -->

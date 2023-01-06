@@ -4,7 +4,7 @@ module UserComponent
   module Events
     class Deleted < UserEvent
       def can_apply?(user)
-        user.persisted?
+        user.persisted? && user.deleted_at.nil?
       end
 
       def apply(user)
