@@ -1,0 +1,5 @@
+<% Eventable::EventModelResolver.resolve_event_class(@model_name).last(20).each do |event| %>
+ <%= event.type %> </br>
+ <%= event.aggregate_id %> </br>
+ <%= event.created_at %> </br>
+<% end %>

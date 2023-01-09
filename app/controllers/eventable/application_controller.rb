@@ -5,8 +5,7 @@ module Eventable
     private
 
     def load_event_classes
-      # How can we do this better? Preferably without requiring an eager load.
-      Dir[Rails.root.join('app', 'models', '*.rb')].sort.each { |f| require f }
+      Rails.application.eager_load!
 
       @event_classes = ApplicationRecord.descendants.filter { |d|
         d.ancestors.include? Eventable::Entity::InstanceMethods

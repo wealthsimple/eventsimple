@@ -13,7 +13,7 @@
           <button class="nav-link" id="nav-tab-event" data-bs-toggle="tab" data-bs-target="#tab-event" type="button" role="tab" aria-controls="event" aria-selected="false">Event</button>
         </li>
       </ul>
-      
+
       <div class="tab-content pt-4 px-3">
         <!-- Tab: Entity Start -->
         <div id="tab-entity" class="tab-pane fade show active" role="tabpanel" aria-labelledby="nav-tab-entity">
@@ -35,8 +35,8 @@
             </thead>
             <tbody>
               <% @entity.attributes.each do |attr_name, attr_value| %>
-                <% latest_value = @entity_delta[attr_name.to_s].present? ? @entity_delta[attr_name.to_s][0] : attr_value %>
-                <% historical_value = @entity_delta[attr_name.to_s].present? ? @entity_delta[attr_name.to_s][1] : '' %>
+                <% latest_value = attr_value.nil? '[nil]' : attr_value %>
+                <% historical_value = @entity_delta.has_key?(attr_name.to_s) ? @entity_delta[attr_name.to_s][1] : latest_value %>
                 <tr>
                   <th scope="row"><%= attr_name %></th>
                   <td><code><%= latest_value %></code></td>
@@ -102,7 +102,7 @@
           <li class="list-group-item <%= is_active_list_item %>">
             <a href="/eventable/models/<%= @model_name %>/entities/<%= @canonical_id %>?e=<%= event.id %>" class="text-decoration-none <%= is_active_link %>">
               <div><%= event_timestamp %></div>
-              <code><%= event.type %> event</code> 
+              <code><%= event.type %> event</code>
             </a>
           </li>
         <% end %>
