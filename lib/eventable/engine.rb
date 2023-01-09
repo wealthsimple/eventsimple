@@ -1,4 +1,4 @@
-require 'rails/all'
+require 'rails'
 
 module Eventable
   class Engine < ::Rails::Engine
