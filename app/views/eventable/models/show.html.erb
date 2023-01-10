@@ -1,5 +1,19 @@
-<% Eventable::EventModelResolver.resolve_event_class(@model_name).last(20).each do |event| %>
- <%= event.type %> </br>
- <%= event.aggregate_id %> </br>
- <%= event.created_at %> </br>
-<% end %>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col" width="15%">Time</th>
+      <th scope="col" width="30%">Identifier</th>
+      <th scope="col" width="65%">Event</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @latest_entities.each do |event| %>
+        <tr>
+            <td scope="row"><%= "#{time_ago_in_words(event.created_at)} ago" %></td>
+            <td><a href="/eventable/models/<%= @model_name %>/entities/<%= event.aggregate_id %>"><%= event.aggregate_id %></a></td>
+            <td><%= event.type %></td>
+        </tr>
+    <% end %>
+  </tbody>
+</table>

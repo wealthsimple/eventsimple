@@ -18,30 +18,29 @@
         <!-- Tab: Entity Start -->
         <div id="tab-entity" class="tab-pane fade show active" role="tabpanel" aria-labelledby="nav-tab-entity">
           <p>
-            This <em>Latest</em> is the current projection of the entity <code><%= @model_name %></code> for the canonical identifier <code><%= @canonical_id %></code>.
+            This <em>Current</em> is the latest projection of the entity <code><%= @model_name %></code> for the canonical identifier <code><%= @canonical_id %></code>.
             <% if @is_historical %>
-              The <em>Historical</em> shows where the value differs from the current projection as at <code><%= @selected_event.created_at %></code> as mutated by the <code><%= @selected_event.type %></code> event.
+              The <em>Selected</em> shows where the value differs from the latest projection as at <code><%= @selected_event.created_at %></code> as mutated by the <code><%= @selected_event.type %></code> event.
             <% end %>
           </p>
-          <table class="table">
+          <table class="table table-striped">
             <thead>
               <tr>
-                <th scope="col">Property</th>
-                <th scope="col">Latest</th>
-                <% if @is_historical %>
-                  <th scope="col">Historical</th>
-                <% end %>
+                <th scope="col" width="15%"></th>
+                <th scope="col" width="25%">Current</th>
+                <th scope="col" width="25%"><%= @is_historical ? 'Selected' : '' %></th>
               </tr>
             </thead>
             <tbody>
-              <% @entity.attributes.each do |attr_name, attr_value| %>
-                <% latest_value = attr_value.nil? '[nil]' : attr_value %>
-                <% historical_value = @entity_delta.has_key?(attr_name.to_s) ? @entity_delta[attr_name.to_s][1] : latest_value %>
-                <tr>
-                  <th scope="row"><%= attr_name %></th>
-                  <td><code><%= latest_value %></code></td>
+              <% @entity_properties.each do |property| %>
+                <% class_is_changed =  %>
+                <tr class="<%= property[:is_changed] ? 'table-info' : '' %>">
+                  <th scope="row"><%= property[:label] %></th>
+                  <td><code class="entity-property"><%= property[:current_value].nil? ? '[nil]' : property[:current_value] %></code></td>
                   <% if @is_historical %>
-                    <td><code class="delta"><%= historical_value %></code></th>
+                    <td><code class="entity-property"><%= property[:historical_value].nil? ? '[nil]' : property[:historical_value] %></code></th>
+                  <% else %>
+                    <td></td>
                   <% end %>
                 </tr>
               <% end %>
@@ -59,30 +58,33 @@
             <tbody>
               <tr>
                 <th scope="row">Identifier</th>
-                <td><code><%= @selected_event.id %></code></td>
+                <td><code class="entity-property"><%= @selected_event.id %></code></td>
               </tr>
               <tr>
                 <th scope="row">Timestamp</th>
-                <td><code><%= @selected_event.created_at %></code></td>
+                <td><code class="entity-property"><%= @selected_event.created_at %></code></td>
               </tr>
               <tr>
-                <th scope="row">Data</th>
-                <td>
-                    <% if @selected_event.data.present? %>
-                      <% @selected_event.data.attributes.each do |attr_name, attr_value| %>
-                        <code><%= attr_name %>: <%= attr_value %></code><br/>
-                      <% end %>
-                    <% end %>
-                </td>
+                <th scope="row" colspan="2">Data</th>
+              </tr>
+              <% if @selected_event.data.present? %>
+                <% @selected_event.data.attributes.each do |attr_name, attr_value| %>
+                <tr>
+                  <td>&nbsp;&nbsp;&nbsp;&nbsp;<%= attr_name %></td>
+                  <td><code class="entity-property"><%= attr_value %></code></td>
+                </tr>
+                <% end %>
+              <% end %>
               </tr>
               <tr>
-                <th scope="row">Metadata</th>
-                <td>
-                    <% @selected_event.metadata.attributes.each do |attr_name, attr_value| %>
-                      <code><%= attr_name %>: <%= attr_value %></code><br/>
-                    <% end %>
-                </td>
+                <th scope="row" colspan="2">Metadata</th>
               </tr>
+              <% @selected_event.metadata.attributes.each do |attr_name, attr_value| %>
+                <tr>
+                  <td>&nbsp;&nbsp;&nbsp;&nbsp;<%= attr_name %></td>
+                  <td><code class="entity-property">: <%= attr_value %></code></td>
+                </tr>
+              <% end %>
             </tbody>
           </table>
         </div>
@@ -96,13 +98,16 @@
       <h3>Time Travel</h3>
       <ul class="list-group">
         <% @entity_event_history.each do | event, index | %>
-          <% is_active_list_item = event.id == @selected_event.id ? 'active' : '' %>
-          <% is_active_link = event.id == @selected_event.id ? 'text-white' : 'link-dark' %>
-          <% event_timestamp = event.id == @latest_event.id ? 'Latest' : event.created_at %>
+          <% is_active_list_item = event.id == @selected_event.id ? 'list-group-item-primary' : '' %>
+          <% is_active_link = event.id == @selected_event.id ? 'link-dark' : 'link-dark' %>
+          <% event_timestamp = event.id == @latest_event.id ? 'Current' : "#{time_ago_in_words(event.created_at)} ago"  %>
+          <% is_current = event.id == @latest_event.id ? 'list-group-item-primary' : 'list-group-item-dark'  %>
           <li class="list-group-item <%= is_active_list_item %>">
             <a href="/eventable/models/<%= @model_name %>/entities/<%= @canonical_id %>?e=<%= event.id %>" class="text-decoration-none <%= is_active_link %>">
-              <div><%= event_timestamp %></div>
-              <code><%= event.type %> event</code>
+              <div class="d-flex w-100 justify-content-between">
+                <%= event.type %> event
+                <small><%= event_timestamp %></small>
+              </div>
             </a>
           </li>
         <% end %>
