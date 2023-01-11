@@ -11,7 +11,7 @@ module Eventable
       model_class.reflect_on_all_associations(:has_many).find { |r|
         r.name == :events
       }.class_name.constantize
-    rescue StandardError => e
+    rescue StandardError
       raise "Event source model event could not be resolved for '#{model_name}'."
     end
 
@@ -27,6 +27,7 @@ module Eventable
       model_event_class.last(20).reverse
     end
 
+    # rubocop:disable Metrics/AbcSize
     def get_entity_properties!(model_name:, canonical_id:, at: nil)
       entity = get_entity!(model_name: model_name, canonical_id: canonical_id)
 
@@ -53,8 +54,11 @@ module Eventable
       end
       result
     rescue StandardError
+      # rubocop:disable Layout/LineLength
       raise "Event source entity could not be found for the model '#{model_name}' and canonical identifier '#{canonical_id}'."
+      # rubocop:enable Layout/LineLength
     end
+    # rubocop:enable Metrics/AbcSize
 
     def get_entity_history!(model_name:, canonical_id:)
       entity = get_entity!(model_name: model_name, canonical_id: canonical_id)
