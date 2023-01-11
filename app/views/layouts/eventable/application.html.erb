@@ -159,6 +159,18 @@
     </main>
     <!-- Main Container End -->
 
+    <script>
+      $( document ).ready(() => {
+        $('.action-entity-query').click((event) => {
+          const link = $(event.currentTarget);
+          const { param, value } = link.data();
+          const query = new URLSearchParams(window.location.search)
+          query.set(param, value);
+          link.attr("href",window.location.pathname + '?' + query.toString());
+        });
+      });
+    </script>
+
   </div>
 </body>
 </html>

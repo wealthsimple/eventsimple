@@ -2,21 +2,21 @@
   <div class="row align-items-start">
     <!-- Pane: Entity Details Start -->
     <div class="col g-4 col-sm-8">
-      <h2><%= @model_name%>: <%= @canonical_id %></h2>
+      <h2><%= @model_name%>: <%= @canonical_id  %></h2>
       <hr/>
 
       <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="nav-tab-entity" data-bs-toggle="tab" data-bs-target="#tab-entity" type="button" role="tab" aria-controls="entity" aria-selected="true">Entity</button>
+          <a  href="#" class="nav-link action-entity-query <%= @tab_id == 'entity' ? 'active' : '' %>" id="nav-tab-entity" data-param="t" data-value="entity">Entity</a>
         </li>
         <li class="nav-item" role="presentation">
-          <button class="nav-link" id="nav-tab-event" data-bs-toggle="tab" data-bs-target="#tab-event" type="button" role="tab" aria-controls="event" aria-selected="false">Event</button>
+          <a href="#" class="nav-link action-entity-query <%= @tab_id == 'event' ? 'active' : '' %>" id="nav-tab-event" data-param="t" data-value="event">Event</a>
         </li>
       </ul>
 
       <div class="tab-content pt-4 px-3">
         <!-- Tab: Entity Start -->
-        <div id="tab-entity" class="tab-pane fade show active" role="tabpanel" aria-labelledby="nav-tab-entity">
+        <div id="tab-entity" class="tab-pane <%= @tab_id == 'entity' ? 'active' : '' %>" role="tabpanel" aria-labelledby="nav-tab-entity">
           <p>
             This <em>Current</em> is the latest projection of the entity <code><%= @model_name %></code> for the canonical identifier <code><%= @canonical_id %></code>.
             <% if @is_historical %>
@@ -50,7 +50,7 @@
         <!-- Tab: Entity End -->
 
         <!-- Tab: Event Start -->
-        <div id="tab-event" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-tab-event">
+        <div id="tab-event" class="tab-pane <%= @tab_id == 'event' ? 'active' : '' %>" role="tabpanel" aria-labelledby="nav-tab-event">
           <p>
             The properties of the <code><%= @selected_event.type %></code> event.
           </p>
@@ -103,12 +103,12 @@
           <% event_timestamp = event.id == @latest_event.id ? 'Current' : "#{time_ago_in_words(event.created_at)} ago"  %>
           <% is_current = event.id == @latest_event.id ? 'list-group-item-primary' : 'list-group-item-dark'  %>
           <li class="list-group-item <%= is_active_list_item %>">
-            <%= link_to model_entity_path(@model_name, @canonical_id, e: event.id), class: "text-decoration-none #{is_active_link}" do %>
+            <a href="#" class="text-decoration-none action-entity-query <%=is_active_link %>" data-param="e" data-value="<%= event.id %>">
               <div class="d-flex w-100 justify-content-between">
                 <%= event.type %> event
                 <small><%= event_timestamp %></small>
               </div>
-            <% end %>
+            </a>
           </li>
         <% end %>
       </ul>
