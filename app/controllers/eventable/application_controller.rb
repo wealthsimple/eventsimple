@@ -1,5 +1,7 @@
 module Eventable
   class ApplicationController < ActionController::Base
+    helper ApplicationHelper
+
     before_action :load_event_classes
 
     private

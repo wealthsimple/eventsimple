@@ -1,5 +1,5 @@
 module Eventable
-  module EventModelResolver
+  module ApplicationHelper
     def resolve_model_class!(model_name)
       model_name.constantize
     rescue StandardError
@@ -33,8 +33,8 @@ module Eventable
       changes = {}
       result = []
       if at.present?
-        @entity.reproject(at: at)
-        changes = @entity.changes
+        entity.reproject(at: at)
+        changes = entity.changes
       end
 
       entity.attributes.each do |attr_name, attr_value|
@@ -50,7 +50,7 @@ module Eventable
           historical_value: historical_value,
           is_changed: current_value != historical_value,
         })
-      end      
+      end
       result
     rescue StandardError
       raise "Event source entity could not be found for the model '#{model_name}' and canonical identifier '#{canonical_id}'."

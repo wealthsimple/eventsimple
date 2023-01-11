@@ -1,7 +1,5 @@
 module Eventable
   class HomeController < ApplicationController
-    def index
-      nil?
-    end
+    def index; end
   end
 end

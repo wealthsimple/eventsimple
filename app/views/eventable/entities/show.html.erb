@@ -103,12 +103,12 @@
           <% event_timestamp = event.id == @latest_event.id ? 'Current' : "#{time_ago_in_words(event.created_at)} ago"  %>
           <% is_current = event.id == @latest_event.id ? 'list-group-item-primary' : 'list-group-item-dark'  %>
           <li class="list-group-item <%= is_active_list_item %>">
-            <a href="/eventable/models/<%= @model_name %>/entities/<%= @canonical_id %>?e=<%= event.id %>" class="text-decoration-none <%= is_active_link %>">
+            <%= link_to model_entity_path(@model_name, @canonical_id, e: event.id), class: "text-decoration-none #{is_active_link}" do %>
               <div class="d-flex w-100 justify-content-between">
                 <%= event.type %> event
                 <small><%= event_timestamp %></small>
               </div>
-            </a>
+            <% end %>
           </li>
         <% end %>
       </ul>
