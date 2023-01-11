@@ -5,8 +5,7 @@ module Eventable
       @canonical_id = params[:id]
       @event_id = params[:e] || -1
       @tab_id = params[:t] == 'event' ? 'event' : 'entity'
-      puts params[:t]
-      
+
       # Event History
       @entity_event_history = helpers.get_entity_history!(
         model_name: @model_name,
