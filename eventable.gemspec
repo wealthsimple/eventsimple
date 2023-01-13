@@ -34,6 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'fuubar'
   spec.add_development_dependency 'guard-rspec'
   spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'puma'
   spec.add_development_dependency 'rspec-rails'
   spec.add_development_dependency 'ws-style'
 end
