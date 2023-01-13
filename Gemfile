@@ -12,3 +12,7 @@ end
 
 # Start debugger with binding.b [https://github.com/ruby/debug]
 # gem "debug", ">= 1.0.0"
+
+gem "rack-oauth2", "~> 2.2"
+
+gem "jwt", "~> 2.6"
