@@ -6,6 +6,8 @@ class CreateUsers < ActiveRecord::Migration[7.0]
       t.integer :lock_version
       t.datetime :deleted_at
       t.timestamps
+
+      t.index :canonical_id, unique: true
     end
   end
 end
