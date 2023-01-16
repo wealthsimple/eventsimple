@@ -12,6 +12,8 @@ RSpec.describe UserComponent::Events::Created do
         user: user,
         data: {
           canonical_id: canonical_id,
+          username: 'test-user',
+          email: 'test@example.com',
         },
       )
     end
@@ -23,6 +25,8 @@ RSpec.describe UserComponent::Events::Created do
       create_event
 
       expect(user.canonical_id).to eq(event.data.canonical_id)
+      expect(user.username).to eq(event.data.username)
+      expect(user.email).to eq(event.data.email)
 
       expect(user.created_at).to eq(event.created_at)
       expect(user.updated_at).to eq(event.created_at)
@@ -32,6 +36,8 @@ RSpec.describe UserComponent::Events::Created do
       let(:user) {
         User.create(
           canonical_id: canonical_id,
+          username: 'test-user',
+          email: 'test@example.com',
           created_at: Time.current,
           updated_at: Time.current,
         )

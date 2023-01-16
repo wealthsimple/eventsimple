@@ -3,9 +3,11 @@ RSpec.describe Eventable::DataType do
 
   let(:event_klass) { UserComponent::Events::Created }
 
+  let(:event_data_raw) { { canonical_id: 'user-123', username: 'test', email: 'test@example.com' } }
+
   describe '#cast_value' do
     context 'with value as string' do
-      let(:value) { { canonical_id: 'user-123' }.to_json }
+      let(:value) { event_data_raw.to_json }
 
       it 'returns the typed Message' do
         message = subject.cast_value(value)
@@ -15,7 +17,7 @@ RSpec.describe Eventable::DataType do
     end
 
     context 'with value as hash' do
-      let(:value) { { canonical_id: 'user-123' } }
+      let(:value) { event_data_raw }
 
       it 'returns the typed Message' do
         message = subject.cast_value(value)
@@ -25,7 +27,7 @@ RSpec.describe Eventable::DataType do
     end
 
     context 'with value as instance of Message' do
-      let(:value) { UserComponent::Events::Created::Message.new({ canonical_id: 'user-123' }) }
+      let(:value) { UserComponent::Events::Created::Message.new(event_data_raw) }
 
       it 'returns the typed Message' do
         message = subject.cast_value(value)
@@ -35,18 +37,18 @@ RSpec.describe Eventable::DataType do
 
     context 'when no Message exists for event' do
       let(:event_klass) { UserComponent::Events::Deleted }
-      let(:value) { { canonical_id: 'user-123' }.to_json }
+      let(:value) { event_data_raw.to_json }
 
       it 'returns the decoded Hash' do
         message = subject.cast_value(value)
-        expect(message).to eq({ canonical_id: 'user-123' }.as_json)
+        expect(message).to eq(event_data_raw.as_json)
       end
     end
   end
 
   describe '#serialize' do
     context 'with value as a Hash' do
-      let(:json) { { canonical_id: 'user-123' } }
+      let(:json) { event_data_raw }
       let(:value) { json }
 
       it 'returns the typed Message' do
@@ -57,7 +59,7 @@ RSpec.describe Eventable::DataType do
     end
 
     context 'with value as instance of Message' do
-      let(:json) { { canonical_id: 'user-123' } }
+      let(:json) { event_data_raw }
       let(:value) { UserComponent::Events::Created::Message.new(json) }
 
       it 'returns the typed Message' do
@@ -68,7 +70,7 @@ RSpec.describe Eventable::DataType do
     end
 
     context 'with value as a String' do
-      let(:value) { { canonical_id: 'user-123' }.to_json }
+      let(:value) { event_data_raw.to_json }
 
       it 'returns the typed Message' do
         serialized = subject.serialize(value)
@@ -78,7 +80,7 @@ RSpec.describe Eventable::DataType do
   end
 
   describe '#deserialize' do
-    let(:value) { { canonical_id: 'user-123' }.to_json }
+    let(:value) { event_data_raw.to_json }
 
     it 'returns the typed Message' do
       message = subject.deserialize(value)
