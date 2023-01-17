@@ -8,8 +8,4 @@ Eventable::Engine.routes.draw do
 
     resources :entities, only: :show
   end
-
-  get '/auth', to: 'auth#redirect'
-  get '/auth/callback', to: 'auth#callback'
-
 end

@@ -19,7 +19,8 @@ module Eventable
       model_class = resolve_model_class!(model_name)
       model_class.find_by!(canonical_id: canonical_id)
     rescue StandardError
-      raise "Event source entity could not be found for the model '#{model_name}' and canonical identifier '#{canonical_id}'."
+      raise "Event source entity could not be found for the model " \
+            "'#{model_name}' and canonical identifier '#{canonical_id}'."
     end
 
     def get_lastest_entities!(model_name:)
@@ -54,9 +55,8 @@ module Eventable
       end
       result
     rescue StandardError
-      # rubocop:disable Layout/LineLength
-      raise "Event source entity could not be found for the model '#{model_name}' and canonical identifier '#{canonical_id}'."
-      # rubocop:enable Layout/LineLength
+      raise "Event source entity could not be found for the model " \
+            "'#{model_name}' and canonical identifier '#{canonical_id}'."
     end
     # rubocop:enable Metrics/AbcSize
 

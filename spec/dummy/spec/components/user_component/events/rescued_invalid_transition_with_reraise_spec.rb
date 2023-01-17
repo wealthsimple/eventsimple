@@ -23,7 +23,6 @@ RSpec.describe UserComponent::Events::RescuedInvalidTransitionWithReraise do
       create_event
 
       expect(user.canonical_id).to eq(event.data.canonical_id)
-
       expect(user.created_at).to eq(event.created_at)
       expect(user.updated_at).to eq(event.created_at)
     end
@@ -32,6 +31,8 @@ RSpec.describe UserComponent::Events::RescuedInvalidTransitionWithReraise do
       let(:user) {
         User.create(
           canonical_id: canonical_id,
+          username: 'test-user',
+          email: 'test@example.com',
           created_at: Time.current,
           updated_at: Time.current,
         )
