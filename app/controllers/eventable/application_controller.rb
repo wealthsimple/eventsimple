@@ -12,9 +12,6 @@ module Eventable
       @event_classes = ApplicationRecord.descendants.filter { |d|
         d.ancestors.include? Eventable::Entity::InstanceMethods
       }.map(&:name)
-
-      @model_name = nil
-      @canonical_id = nil
     end
   end
 end
