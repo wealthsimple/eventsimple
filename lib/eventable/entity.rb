@@ -14,7 +14,9 @@ module Eventable
       # disable automatic timestamp updates
       self.record_timestamps = false
 
+
       include InstanceMethods
+      extend ClassMethods
     end
 
     module InstanceMethods
@@ -37,6 +39,14 @@ module Eventable
         end
 
         self
+      end
+    end
+
+    module ClassMethods
+      def event_class
+        self.reflect_on_all_associations(:has_many).find { |association|
+          association.name == :events
+        }.klass
       end
     end
   end

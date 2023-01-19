@@ -3,7 +3,8 @@ module Eventable
     def show
       @model_name = params[:name]
 
-      @latest_entities = helpers.get_lastest_entities!(model_name: @model_name)
+      model_event_class =  helpers.resolve_model_class!(@model_name).event_class
+      @latest_entities = model_event_class.last(20).reverse
     end
 
     def search
