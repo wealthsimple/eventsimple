@@ -5,7 +5,7 @@
   <% end %>
   <hr>
   <ul class="nav nav-pills flex-column mb-auto">
-    <% @event_classes.each do |klass| %>
+    <% event_class_names.each do |klass| %>
       <% is_active = klass === @model_name ? 'active text-white' : 'text-white' %>
       <li class="nav-item text-white">
         <%= link_to model_path(klass), class: "nav-link #{is_active}" do %>

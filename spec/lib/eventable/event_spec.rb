@@ -6,11 +6,11 @@ RSpec.describe Eventable::Event do
     before do
       UserComponent::Events::Created.create(
         user: user,
-        data: { 
+        data: {
           canonical_id: user_canonical_id,
           username: 'test',
           email: 'test@example.com',
-         },
+        },
       )
     end
 

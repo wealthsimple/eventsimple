@@ -99,11 +99,10 @@
     <div class="col g-4 col-sm-4">
       <h3>Time Travel</h3>
       <ul class="list-group">
-        <% @entity_event_history.each do | event, index | %>
+        <% @entity_event_history.each_with_index do | event, index | %>
           <% is_active_list_item = event.id == @selected_event.id ? 'list-group-item-primary' : '' %>
           <% is_active_link = event.id == @selected_event.id ? 'link-dark' : 'link-dark' %>
-          <% event_timestamp = event.id == @latest_event.id ? 'Current' : "#{time_ago_in_words(event.created_at)} ago"  %>
-          <% is_current = event.id == @latest_event.id ? 'list-group-item-primary' : 'list-group-item-dark'  %>
+          <% event_timestamp = index.zero? ? 'Current' : "#{time_ago_in_words(event.created_at)} ago"  %>
           <li class="list-group-item <%= is_active_list_item %>">
             <a href="#" class="text-decoration-none action-entity-query <%=is_active_link %>" data-param="e" data-value="<%= event.id %>">
               <div class="d-flex w-100 justify-content-between">

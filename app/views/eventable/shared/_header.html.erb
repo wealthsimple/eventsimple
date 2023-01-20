@@ -4,7 +4,7 @@
     <div class="col col-sm-3">
       <select id="form-search-model-name" class="form-select" aria-label="Model select" onchange="Turbo.visit(this.value)" required>
         <option value="">Choose event source model</option>
-        <% @event_classes.each do |klass| %>
+        <% event_class_names.each do |klass| %>
           <% is_active = klass === @model_name ? 'selected' : '' %>
           <option value="<%= model_url(klass) %>" <%= is_active %>><%= klass %></option>
         <% end %>
