@@ -17,15 +17,15 @@
       <!-- Tab: Entity Start -->
       <div id="tab-entity" class="tab-pane <%= @tab_id == 'entity' ? 'active' : '' %>" role="tabpanel" aria-labelledby="nav-tab-entity">
         <p>
-          Shows the changes made between the previous and current state for the selected event.
+          Shows the changes made before and after the currently selected event was applied.
         </p>
         <div class="table-responsive">
           <table class="table table-striped">
             <thead>
               <tr>
                 <th scope="col" width="15%"></th>
-                <th scope="col" width="25%">Previous</th>
-                <th scope="col" width="25%">Selected</th>
+                <th scope="col" width="25%">Before</th>
+                <th scope="col" width="25%">After</th>
               </tr>
             </thead>
             <tbody>
