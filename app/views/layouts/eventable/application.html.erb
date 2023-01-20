@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
   <title>Eventable</title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
@@ -24,10 +27,47 @@
   <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/@hotwired/turbo@7.2.4/dist/turbo.es2017-umd.js",
     crossorigin: "anonymous"
   %>
+
+  <%= render partial: 'eventable/shared/style' %>
 </head>
 <body>
+  <div id="page">
+    <%= render partial: 'eventable/shared/sidebar' %>
 
-<%= yield %>
+    <!-- Main Container Start -->
+    <main class="pt-4 px-2">
+      <%= render partial: 'eventable/shared/header' %>
 
+      <!-- Content Start -->
+      <article class="container">
+        <% if @error_message.present? %>
+          <div class="alert alert-warning d-flex" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div>
+              <%= @error_message %>
+            </div>
+          </div>
+        <% else %>
+          <%= yield %>
+        <% end %>
+      </article>
+      <!-- Content End -->
+
+    </main>
+    <!-- Main Container End -->
+
+    <script>
+      $( document ).ready(() => {
+        $('.action-entity-query').click((event) => {
+          const link = $(event.currentTarget);
+          const { param, value } = link.data();
+          const query = new URLSearchParams(window.location.search)
+          query.set(param, value);
+          link.attr("href",window.location.pathname + '?' + query.toString());
+        });
+      });
+    </script>
+
+  </div>
 </body>
 </html>

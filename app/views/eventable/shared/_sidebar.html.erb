@@ -1,0 +1,19 @@
+<!-- Sidebar Nav Start -->
+<nav class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark">
+  <%= link_to root_path, class: 'd-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none' do %>
+    <span class="fs-4">Eventable</span>
+  <% end %>
+  <hr>
+  <ul class="nav nav-pills flex-column mb-auto">
+    <% event_class_names.each do |klass| %>
+      <% is_active = klass === @model_name ? 'active text-white' : 'text-white' %>
+      <li class="nav-item text-white">
+        <%= link_to model_path(klass), class: "nav-link #{is_active}" do %>
+          <i class="bi bi-table"></i>
+          <%= klass %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</nav>
+<!-- Sidebar Nav End -->
