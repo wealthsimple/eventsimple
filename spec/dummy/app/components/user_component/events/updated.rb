@@ -2,22 +2,18 @@
 
 module UserComponent
   module Events
-    class Created < UserEvent
+    class Updated < UserEvent
       attribute :data, Eventable::DataType.new(self)
 
       class Message < Eventable::Message
-        attribute :canonical_id, DryTypes::Strict::String
-        attribute :username, DryTypes::Strict::String
         attribute :email, DryTypes::Strict::String.optional
       end
 
       def can_apply?(user)
-        user.new_record?
+        user.deleted_at.nil?
       end
 
       def apply(user)
-        user.canonical_id = data.canonical_id
-        user.username = data.username
         user.email = data.email
         user
       end

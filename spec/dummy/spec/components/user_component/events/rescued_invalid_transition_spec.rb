@@ -12,6 +12,8 @@ RSpec.describe UserComponent::Events::RescuedInvalidTransition do
         user: user,
         data: {
           canonical_id: canonical_id,
+          username: 'test-user',
+          email: 'test@example.com',
         },
       )
     end
@@ -32,6 +34,8 @@ RSpec.describe UserComponent::Events::RescuedInvalidTransition do
       let(:user) {
         User.create(
           canonical_id: canonical_id,
+          username: 'test-user',
+          email: 'test@example.com',
           created_at: Time.current,
           updated_at: Time.current,
         )
