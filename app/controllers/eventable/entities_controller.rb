@@ -39,7 +39,7 @@ module Eventable
 
     def current_attributes
       @current_attributes ||= @entity.reproject(at: @selected_event.created_at).attributes.except(
-        *Entity::DEFAULT_IGNORE_PROPS,
+        'lock_version'
       )
     end
 
@@ -47,7 +47,7 @@ module Eventable
       @previous_attributes ||=
         if @previous_event
           @entity.reproject(at: @previous_event.created_at).attributes.except(
-            *Entity::DEFAULT_IGNORE_PROPS,
+            'lock_version'
           )
         else
           @model_class.column_defaults
