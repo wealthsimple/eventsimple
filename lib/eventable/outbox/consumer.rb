@@ -44,6 +44,8 @@ module Eventable
             Outbox::Cursor.set(_event_klass, 0, cursor)
           end
 
+          break if stop_consumer
+
           sleep(1)
         end
       end
