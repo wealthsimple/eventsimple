@@ -1,0 +1,109 @@
+<div class="row align-items-start">
+  <!-- Pane: Entity Details Start -->
+  <div class="col g-4 col-sm-8">
+    <h2><%= @model_name%>: <%= @canonical_id %></h2>
+    <hr/>
+
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <a href="#" class="nav-link action-entity-query <%= @tab_id == 'entity' ? 'active' : '' %>" id="nav-tab-entity" data-param="t" data-value="entity">Entity</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a href="#" class="nav-link action-entity-query <%= @tab_id == 'event' ? 'active' : '' %>" id="nav-tab-event" data-param="t" data-value="event">Event</a>
+      </li>
+    </ul>
+
+    <div class="tab-content pt-4 px-3">
+      <!-- Tab: Entity Start -->
+      <div id="tab-entity" class="tab-pane <%= @tab_id == 'entity' ? 'active' : '' %>" role="tabpanel" aria-labelledby="nav-tab-entity">
+        <p>
+          Shows the changes made before and after the currently selected event was applied.
+        </p>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col" width="15%"></th>
+                <th scope="col" width="25%">Before</th>
+                <th scope="col" width="25%">After</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @entity_changes.each do |property| %>
+                <tr class="<%= property[:is_changed] ? 'table-info' : '' %>">
+                  <th scope="row"><%= property[:label] %></th>
+                  <td><code class="entity-property"><%= property[:historical_value].nil? ? '-' : property[:historical_value] %></code></th>
+                  <td><code class="entity-property"><%= property[:current_value].nil? ? '-' : property[:current_value] %></code></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Tab: Entity End -->
+
+      <!-- Tab: Event Start -->
+      <div id="tab-event" class="tab-pane <%= @tab_id == 'event' ? 'active' : '' %>" role="tabpanel" aria-labelledby="nav-tab-event">
+        <p>
+          The properties of the <code><%= @selected_event.type %></code> event.
+        </p>
+          <table class="table">
+            <tbody>
+              <tr>
+                <th scope="row">Identifier</th>
+                <td><code class="entity-property"><%= @selected_event.id %></code></td>
+              </tr>
+              <tr>
+                <th scope="row">Timestamp</th>
+                <td><code class="entity-property"><%= @selected_event.created_at %></code></td>
+              </tr>
+              <tr>
+                <th scope="row" colspan="2">Data</th>
+              </tr>
+              <% if @selected_event.data.present? %>
+                <% @selected_event.data.attributes.each do |attr_name, attr_value| %>
+                <tr>
+                  <td>&nbsp;&nbsp;&nbsp;&nbsp;<%= attr_name %></td>
+                  <td><code class="entity-property"><%= attr_value %></code></td>
+                </tr>
+                <% end %>
+              <% end %>
+              </tr>
+              <tr>
+                <th scope="row" colspan="2">Metadata</th>
+              </tr>
+              <% @selected_event.metadata.attributes.each do |attr_name, attr_value| %>
+                <tr>
+                  <td>&nbsp;&nbsp;&nbsp;&nbsp;<%= attr_name %></td>
+                  <td><code class="entity-property">: <%= attr_value %></code></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+      </div>
+      <!-- Tab: Event End -->
+    </div>
+  </div>
+  <!-- Pane: Entity Details End -->
+
+  <!-- Pane: Time Travel Start -->
+  <div class="col g-4 col-sm-4">
+    <h3>Time Travel</h3>
+    <ul class="list-group">
+      <% @entity_event_history.each_with_index do | event, index | %>
+        <% is_active_list_item = event == @selected_event ? 'list-group-item-primary' : '' %>
+        <% is_active_link = event == @selected_event ? 'link-dark' : 'link-dark' %>
+        <% event_timestamp = index.zero? ? 'Current' : "#{time_ago_in_words(event.created_at)} ago"  %>
+        <li class="list-group-item <%= is_active_list_item %>">
+          <a href="#" class="text-decoration-none action-entity-query <%= is_active_link %>" data-param="e" data-value="<%= event.id %>">
+            <div class="d-flex w-100 justify-content-between">
+              <%= event.type %>
+              <small><%= event_timestamp %></small>
+            </div>
+          </a>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+  <!-- Pane: Time Travel End -->
+</div>
