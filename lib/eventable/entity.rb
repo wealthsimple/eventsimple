@@ -1,5 +1,7 @@
 module Eventable
   module Entity
+    DEFAULT_IGNORE_PROPS = %w[id lock_version].freeze
+
     def event_driven_by(event_klass, aggregate_id: :canonical_id)
       has_many :events, class_name: event_klass.name.to_s,
         foreign_key: :aggregate_id,
@@ -26,10 +28,8 @@ module Eventable
       end
 
       def reproject(at: nil)
-        default_ignore_props = %w[id lock_version]
-
         event_history = at ? events.where('created_at <= ?', at).load : events.load
-        ignore_props = default_ignore_props.concat(ignored_for_projection).map(&:to_s)
+        ignore_props = (DEFAULT_IGNORE_PROPS + ignored_for_projection).map(&:to_s)
         assign_attributes(self.class.column_defaults.except(*ignore_props))
 
         event_history.each do |event|
