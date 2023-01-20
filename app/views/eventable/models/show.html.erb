@@ -1,0 +1,19 @@
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col" width="15%">Time</th>
+      <th scope="col" width="30%">Identifier</th>
+      <th scope="col" width="65%">Event</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @latest_entities.each do |event| %>
+      <tr>
+        <td scope="row"><%= "#{time_ago_in_words(event.created_at)} ago" %></td>
+        <td><%= link_to event.aggregate_id, model_entity_path(@model_name, event.aggregate_id) %></td>
+        <td><%= event.type %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
