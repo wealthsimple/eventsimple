@@ -8,7 +8,8 @@ module Eventable
       @event_id = params[:e] || -1
       @tab_id = params[:t] == 'event' ? 'event' : 'entity'
 
-      @entity = @model_class.find_by!(canonical_id: @canonical_id)
+      primary_key = @model_class.event_class._aggregate_id
+      @entity = @model_class.find_by!(primary_key => @canonical_id)
       @entity_event_history = @entity.events.reverse
 
       @selected_event = @entity_event_history.find { |e|
