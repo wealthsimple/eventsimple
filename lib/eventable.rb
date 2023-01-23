@@ -7,6 +7,7 @@ require 'active_model'
 require 'active_support'
 require 'dry-types'
 require 'dry-struct'
+require 'retriable'
 require 'sidekiq'
 
 require 'dry_types'
