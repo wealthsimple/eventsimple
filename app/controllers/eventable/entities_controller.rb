@@ -4,12 +4,12 @@ module Eventable
     def show
       @model_name = params[:model_name]
       @model_class = event_classes.find { |d| d.name == @model_name }
-      @canonical_id = params[:id]
+      @aggregate_id = params[:id]
       @event_id = params[:e] || -1
       @tab_id = params[:t] == 'event' ? 'event' : 'entity'
 
       primary_key = @model_class.event_class._aggregate_id
-      @entity = @model_class.find_by!(primary_key => @canonical_id)
+      @entity = @model_class.find_by!(primary_key => @aggregate_id)
       @entity_event_history = @entity.events.reverse
 
       @selected_event = @entity_event_history.find { |e|

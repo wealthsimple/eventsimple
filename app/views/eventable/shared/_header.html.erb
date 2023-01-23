@@ -14,7 +14,7 @@
     <% if @model_name %>
       <div class="col col-sm-7">
         <%= form_for :search, url: search_model_path(@model_name) do |f| %>
-          <%= f.search_field :entity_id, class: 'form-control', placeholder: 'Canonical identifier', value: @canonical_id, required: true, aria: { label: 'Entity canonical identifier' }  %>
+          <%= f.search_field :entity_id, class: 'form-control', placeholder: 'Unique identifier', value: @aggregate_id, required: true, aria: { label: 'Entity unique identifier' }  %>
         </div>
         <div class="col col-sm-2">
           <%= f.submit 'Search', class: 'btn btn-primary' %>

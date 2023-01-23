@@ -1,7 +1,7 @@
 <div class="row align-items-start">
   <!-- Pane: Entity Details Start -->
   <div class="col g-4 col-sm-8">
-    <h2><%= @model_name%>: <%= @canonical_id %></h2>
+    <h2><%= @model_name%>: <%= @aggregate_id %></h2>
     <hr/>
 
     <ul class="nav nav-tabs" role="tablist">
@@ -97,7 +97,7 @@
         <li class="list-group-item <%= is_active_list_item %>">
           <a href="#" class="text-decoration-none action-entity-query <%= is_active_link %>" data-param="e" data-value="<%= event.id %>">
             <div class="d-flex w-100 justify-content-between">
-              <%= event.type %>
+              <span title="<%= event.type %>"><%= event.type.split('::').last %></span>
               <small><%= event_timestamp %></small>
             </div>
           </a>
