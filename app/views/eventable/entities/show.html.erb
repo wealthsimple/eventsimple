@@ -97,7 +97,7 @@
         <li class="list-group-item <%= is_active_list_item %>">
           <a href="#" class="text-decoration-none action-entity-query <%= is_active_link %>" data-param="e" data-value="<%= event.id %>">
             <div class="d-flex w-100 justify-content-between">
-              <span title="<%= event.type %>"><%= event.type.split('::').last %></span>
+              <span title="<%= event.type %>" style="width: 75%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;"><%= event.type.split('::').last %></span>
               <small><%= event_timestamp %></small>
             </div>
           </a>
