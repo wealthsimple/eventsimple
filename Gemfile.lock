@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    eventable (0.6.1)
+    eventable (0.6.2)
       dry-struct
       dry-types
       pg
@@ -132,7 +132,7 @@ GEM
     git (1.13.1)
       addressable (~> 2.8)
       rchardet (~> 1.8)
-    globalid (1.0.1)
+    globalid (1.1.0)
       activesupport (>= 5.0)
     guard (2.18.0)
       formatador (>= 0.2.4)
