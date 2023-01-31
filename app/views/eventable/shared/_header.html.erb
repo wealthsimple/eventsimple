@@ -6,15 +6,15 @@
         <option value="">Choose event source model</option>
         <% event_class_names.each do |klass| %>
           <% is_active = klass === @model_name ? 'selected' : '' %>
-          <option value="<%= model_url(klass) %>" <%= is_active %>><%= klass %></option>
+          <option value="<%= model_path(klass) %>" <%= is_active %>><%= klass %></option>
         <% end %>
       </select>
     </div>
 
     <% if @model_name %>
       <div class="col col-sm-7">
-        <%= form_for :search, url: search_model_path(@model_name) do |f| %>
-          <%= f.search_field :entity_id, class: 'form-control', placeholder: 'Canonical identifier', value: @canonical_id, required: true, aria: { label: 'Entity canonical identifier' }  %>
+        <%= form_with url: model_entity_path(@model_name, ''), id: 'model-search' do |f| %>
+          <%= f.search_field :event_id, class: 'form-control', placeholder: 'Canonical identifier', value: @canonical_id, required: true, aria: { label: 'Entity canonical identifier' }  %>
         </div>
         <div class="col col-sm-2">
           <%= f.submit 'Search', class: 'btn btn-primary' %>
