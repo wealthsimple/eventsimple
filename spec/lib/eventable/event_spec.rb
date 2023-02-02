@@ -43,5 +43,15 @@ RSpec.describe Eventable::Event do
         end
       end
     end
+
+    context 'when an event class no longer exists' do
+      it 'uses a no-op deleted class' do
+        UserEvent.insert({ type: 'NonExistentEvent', aggregate_id: user_canonical_id })
+
+        event = UserEvent.last
+        expect(event).to be_a(UserEvent::Deleted__NonExistentEvent)
+        expect(event.created_at).not_to eq(user.reproject.updated_at)
+      end
+    end
   end
 end

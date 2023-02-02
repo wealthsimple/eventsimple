@@ -22,6 +22,7 @@ module Eventable
       @entity_changes = changes
     rescue StandardError => e
       @error_message = e.message
+      render html: '', layout: true
     end
     # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 

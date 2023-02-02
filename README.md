@@ -513,13 +513,15 @@ end
 ```
 
 ### I want to remove an event that is not longer required
-* If an event and any properties it sets are no longer required, we can delete the Event, any code references and the model columns it updates.
-* We'll Need to delete the persisted events as well, since Rails will no longer be able to load them.
-
+* If an event and any properties it sets are no longer required, we can delete any code references to the event and columns it updates.
 ```ruby
-  # Remove all code references and then run the following migration:
+  class User < ApplicationRecord
+    self.ignored_columns = [:handle]
+  end
+```
 
-  remove_column :users, :handle
+* Eventable will automatically ignore the old persisted, so a data migration is not explicitly needed, however if removing the historical info is desired, we can follow up code removal with a data migration:
+```
   UserEvent.where(type: 'HandleUpdated').delete_all
 ```
 

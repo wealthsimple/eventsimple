@@ -129,6 +129,18 @@ module Eventable
         end
       end
 
+      # Use a no-op deleted class for events that no longer exist in the codebase
+      def sti_class_for(type_name)
+        super
+      rescue ActiveRecord::SubclassNotFound
+        klass_name = "Deleted__#{type_name.demodulize}"
+        return const_get(klass_name) if const_defined?(klass_name)
+
+        klass = Class.new(self) { def apply_timestamps(_aggregate); end }
+
+        const_set(klass_name, klass)
+      end
+
       # We want to automatically retry writes on concurrency failures. However events with sync
       # reactors may have multiple nested events that are writen within the same transaction.
       # We can only catch and retry writes when they the outermost event encapsulating the whole

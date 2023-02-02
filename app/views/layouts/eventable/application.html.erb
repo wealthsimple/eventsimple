@@ -24,9 +24,6 @@
   <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js",
     crossorigin: "anonymous"
   %>
-  <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/@hotwired/turbo@7.2.4/dist/turbo.es2017-umd.js",
-    crossorigin: "anonymous"
-  %>
 
   <%= render partial: 'eventable/shared/style' %>
 </head>
@@ -64,6 +61,12 @@
           const query = new URLSearchParams(window.location.search)
           query.set(param, value);
           link.attr("href",window.location.pathname + '?' + query.toString());
+        });
+
+        $('#model-search').on('submit', (event) => {
+          event.preventDefault();
+          const form = $(event.currentTarget);
+          window.location = form.attr('action') + form.children('#event_id').val();
         });
       });
     </script>
