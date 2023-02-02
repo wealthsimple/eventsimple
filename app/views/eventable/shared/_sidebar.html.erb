@@ -7,8 +7,8 @@
   <ul class="nav nav-pills flex-column mb-auto">
     <% event_class_names.each do |klass| %>
       <% is_active = klass === @model_name ? 'active text-white' : 'text-white' %>
-      <li class="nav-item text-white">
-        <%= link_to model_path(klass), class: "nav-link #{is_active}" do %>
+      <li class="nav-item text-white overflow-hidden" style="width: 100%;">
+        <%= link_to model_path(klass), class: "nav-link #{is_active}", style: "overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" do %>
           <i class="bi bi-table"></i>
           <%= klass %>
         <% end %>
