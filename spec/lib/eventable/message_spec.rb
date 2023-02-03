@@ -1,32 +1,33 @@
 RSpec.describe Eventable::Message do
-  subject { MockMessage }
-
-  class MockMessage < Eventable::Message
-    attribute :name, DryTypes::Strict::String.default('leo')
+  before do
+    mock_message = Class.new(described_class) do
+      attribute :name, DryTypes::Strict::String.default('leo')
+    end
+    stub_const('MockMessage', mock_message)
   end
 
   it 'inherits from Dry::Struct' do
-    expect(described_class).to be < Dry::Struct
+    expect(MockMessage).to be < Dry::Struct
   end
 
   it 'sets default for missing key' do
-    result = subject.new
+    result = MockMessage.new
     expect(result.name).to eq('leo')
   end
 
   it 'sets default for key set to nil' do
-    result = subject.new(name: nil)
+    result = MockMessage.new(name: nil)
     expect(result.name).to eq('leo')
   end
 
   it 'overrides default when key is set' do
-    result = subject.new(name: 'leonard')
+    result = MockMessage.new(name: 'leonard')
     expect(result.name).to eq('leonard')
   end
 
   describe '#inspect' do
     it 'returns self as json' do
-      result = subject.new.inspect
+      result = MockMessage.new.inspect
       expect(result['name']).to eq('leo')
     end
   end
