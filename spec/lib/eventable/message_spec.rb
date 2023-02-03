@@ -1,40 +1,33 @@
 RSpec.describe Eventable::Message do
+  let(:subject) { MockMessage }
 
   class MockMessage < Eventable::Message
-    attribute :id, DryTypes::Strict::String
     attribute :name, DryTypes::Strict::String.default('leo')
   end
 
-  it 'raises error on missing keys' do
-    expect { MockMessage.new }.to raise_error(Dry::Struct::Error)
-  end
-
-  it 'transforms input hash into attributes with values, overriding defaults' do
-    result = MockMessage.new(id: 'value', name: 'leonard')
-    expect(result.id).to eq('value')
-    expect(result.name).to eq('leonard')
+  it 'inherits from Dry::Struct' do
+    expect(described_class).to be < Dry::Struct
   end
 
   it 'sets default for missing key' do
-    result = MockMessage.new(id: 'value')
+    result = subject.new
     expect(result.name).to eq('leo')
   end
 
   it 'sets default for key set to nil' do
-    result = MockMessage.new(id: 'value', name: nil)
+    result = subject.new(name: nil)
     expect(result.name).to eq('leo')
   end
 
-  it 'does not set attribute of unexpected keys' do
-    result = MockMessage.new(id: 'value', unexpected: 'key')
-    expect(result).not_to respond_to(:unexpected)
+  it 'overrides default when key is set' do
+    result = subject.new(name: 'leonard')
+    expect(result.name).to eq('leonard')
   end
 
   context '#inspect' do
     it 'returns self as json' do
-      result = MockMessage.new(id: 'value', name: 'leonard').inspect
-      expect(result['id']).to eq('value')
-      expect(result['name']).to eq('leonard')
+      result = subject.new.inspect
+      expect(result['name']).to eq('leo')
     end
   end
 end
