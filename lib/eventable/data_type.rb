@@ -16,7 +16,7 @@ module Eventable
     def cast_value(value)
       case value
       when String
-        decoded = ActiveSupport::JSON.decode("{:key=>\"value\"}")
+        decoded = ActiveSupport::JSON.decode(value)
         return event_klass::Message.new(decoded) if event_klass.const_defined?(:Message)
 
         decoded
