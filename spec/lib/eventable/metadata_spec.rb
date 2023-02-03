@@ -18,7 +18,6 @@ RSpec.describe Eventable::Metadata do
   end
 
   it 'raises error on unexpected keys' do
-    expect { described_class.new(unexpected: 'key') }.to raise_error
+    expect { described_class.new(unexpected: 'key') }.to raise_error(Dry::Struct::Error)
   end
 end
-

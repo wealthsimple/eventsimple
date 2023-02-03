@@ -1,5 +1,5 @@
 RSpec.describe Eventable::Message do
-  let(:subject) { MockMessage }
+  subject { MockMessage }
 
   class MockMessage < Eventable::Message
     attribute :name, DryTypes::Strict::String.default('leo')
@@ -24,12 +24,10 @@ RSpec.describe Eventable::Message do
     expect(result.name).to eq('leonard')
   end
 
-  context '#inspect' do
+  describe '#inspect' do
     it 'returns self as json' do
       result = subject.new.inspect
       expect(result['name']).to eq('leo')
     end
   end
 end
-
-
