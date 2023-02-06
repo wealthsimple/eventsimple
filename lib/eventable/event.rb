@@ -34,7 +34,6 @@ module Eventable
 
       default_scope { order('created_at ASC') }
 
-      around_save :with_database_role
       before_validation :extend_validation
       after_validation :perform_transition_checks
       before_create :apply_and_persist
@@ -52,10 +51,6 @@ module Eventable
 
       def skip_apply_check
         @skip_apply_check || false
-      end
-
-      def with_database_role(&block)
-        ApplicationRecord.connected_to(role: :writing, &block)
       end
 
       # Apply the event to the aggregate passed in. The default behaviour is a no-op
