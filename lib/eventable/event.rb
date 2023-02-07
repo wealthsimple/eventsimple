@@ -163,11 +163,13 @@ module Eventable
       def with_retries(args, &block) # rubocop:disable Metrics/AbcSize
         entity = args[0][_model_klass.model_name.element.to_sym]
 
+        retry_intervals = Array.new(Eventable.configuration.max_concurrency_retries) { 0 }
+
         # Only implement retries when the event is not already inside a transaction.
         if entity&.persisted? && !existing_transaction_in_progress?
           Retriable.retriable(
             on: ActiveRecord::StaleObjectError,
-            intervals: [0, 0],
+            intervals: retry_intervals,
             on_retry: proc { entity.reload },
             &block
           )
