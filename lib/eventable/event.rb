@@ -1,7 +1,7 @@
 module Eventable
   module Event
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    def drives_events_for(aggregate_klass, events_namespace: nil, aggregate_id: :canonical_id)
+    def drives_events_for(aggregate_klass, aggregate_id:, events_namespace: nil)
       class_attribute :_events_namespace
       self._events_namespace = events_namespace
 
