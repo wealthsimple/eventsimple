@@ -6,21 +6,15 @@ Eventable implements a simple deterministic event driven system using ActiveReco
 
 Use Eventable to:
 
-* Added Event Sourcing to your ActiveRecord models.
+* Add Event Sourcing to your ActiveRecord models.
 * Implement Pub/Sub.
-* Implement a transactional outbox pattern.
+* Implement a transactional outbox.
 * Store audit logs of changes to your ActiveRecord objects.
-* Enforce eventual consistency guarantees with async behaviour using Sidekiq.
 
-## Why use Eventable?
-### Eventual Consitency guarantees
+Eventable uses standard Rails features like [Single Table Inheritance](https://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html) and [Optimistic Locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html) to implement a simple event driven system.
+Async worflows are handled using [Sidekiq](https://github.com/sidekiq/sidekiq).
 
-Common workflows with Rails + Sidekiq/Activejob are non transactional.
-
-Eventable implements [eventual consistency guarantees](#async-reactors) around async flows triggered after an entity change. Async flows (via Sidekiq) are guaranteed to be enqueued as part of a db transaction, and only execute if the transaction completes.
-
-### Audit trails
-Easily pull up events to review the history of changes to your ActiveRecord models.
+Typical events in Eventable are ActiveRecord models using STI and look like this:
 
 ```ruby
  <UserComponent::Events::Created
@@ -28,7 +22,8 @@ Easily pull up events to review the history of changes to your ActiveRecord mode
   aggregate_id: 'user-123',
   type: "Created",
   data: {
-    "name"=>"John doe",
+    name: "John doe",
+    email: "johndoe@example.com",
   },
   created_at: 2022-01-01T00:00:00.000000,
   updated_at: 2022-01-01T00:00:00.000000,
@@ -43,11 +38,6 @@ Easily pull up events to review the history of changes to your ActiveRecord mode
  >
  ```
 
-### Concurrency protection
-Concurrency protection is baked in by default using [Rails Optimistic Locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html).
-
-Eventable will automatically ensure concurrent updates to the same entity happen sequentially.
-
 ## Setup
 
 Add the following line to your Gemfile:
@@ -57,7 +47,13 @@ gem 'eventable'
 ```
 Then run `bundle install`
 
-Generate migration and add `Eventable` to an existing ActiveRecord model.
+The eventable UI allows you to view and navigate event history. Add the following line to your routes.rb to use it:
+
+```
+mount Eventable::Engine => '/eventable'
+```
+
+Generate a migration and add `Eventable` to an existing ActiveRecord model.
 
 ```ruby
 bundle exec rails generate eventable:event User
@@ -74,9 +70,7 @@ end
 
 class UserEvent < ApplicationRecord
   extend Eventable::Event
-  drives_events_for User,
-    events_namespace: 'UserComponent::Events'
-    aggregate_id: :id
+  drives_events_for User, events_namespace: 'UserComponent::Events', aggregate_id: :id
 end
 # Change aggregate_id to the column that represents the unique primary key for your model.
 
@@ -99,7 +93,9 @@ add_column :users, :lock_version, :integer
 
 Adding lock_version to the model enables [optimistic locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html) and protects against concurrent updates to stale versions of the model. Eventable will automatically retry on concurrency failures.
 
-### Table definition
+`events_namespace` is an optional argument pointing to the directory where your events classes are defined. If you do not specify this argument, Eventable will store the full namespace of the event classes in the STI type column.
+
+### Event Table definition
 
 | Column  | Description |
 | ------------- | ------------- |
@@ -122,10 +118,10 @@ module UserComponent
 
       class Message < Eventable::Message
         attribute :canonical_id, DryTypes::Strict::String
-        attribute :username, DryTypes::Strict::String
+        attribute :email, DryTypes::Strict::String
       end
 
-      # Optional: Context specific validations that can be extended onto the entity on event creation.
+      # Optional: Context specific validations that can be extended onto the model on event creation.
       validates_with UserForm
 
       # Optional: Implement state machine checks to determine if the event is allowed to be written.
@@ -137,7 +133,7 @@ module UserComponent
       # Optional: Update the state of your model based on data in the event payload.
       def apply(user)
         user.canonical_id = data.canonical_id
-        user.username = data.username
+        user.email = data.email
 
         user
       end
@@ -153,7 +149,7 @@ user = User.new
 
 UserComponent::Events::Created.create(
   user: user,
-  data: { canonical_id: 'user-123', username: 'johndoe' },
+  data: { canonical_id: 'user-123', email: 'johndoe@example.com' },
   metadata: { actor_id: 'user-123' } # optional metadata
 )
 
@@ -315,7 +311,7 @@ module UserComponent
       # ...
 
       def apply(user)
-        user.username = data.username
+        user.email = data.email
 
         # Changes the projection to start tracking a sign up timestamp.
         user.signed_up_at = self.created_at
@@ -324,7 +320,7 @@ module UserComponent
   end
 end
 
-user = User.find_by(canonical: 'user-123')
+user = User.find_by(canonical_id: 'user-123')
 user.reproject
 user.changes # => { sign_up_at: [nil, "2022-01-01 00:00:00 UTC"] }
 user.save!
@@ -332,7 +328,7 @@ user.save!
 
 Or reproject the model to inspect what it looked like at a particular point in time.
 ```ruby
-user = User.find_by(canonical: 'user-123')
+user = User.find_by(canonical_id: 'user-123')
 user.reproject(at: 1.day.ago)
 user.changes
 ```
@@ -342,8 +338,8 @@ user.changes
 Verify that a reprojection of the model matches it's current state.
 
 ```ruby
-user = User.find_by(canonical: 'user-123')
-user.update(handle: 'something_else')
+user = User.find_by(canonical_id: 'user-123')
+user.update(name: 'something_else')
 user.projection_matches_events? => false
 ```
 
@@ -364,61 +360,62 @@ Useful if the model that is being event driven has some properties that are mana
 
 ### I want to add validations to my model.
 
-You _can_ add conditional validations to the model as usual. For example to verify a username format on user creation:
+You _can_ add conditional validations to the model as usual. For example to verify an email:
 
 ```ruby
 class User
-  USERNAME_REGEX = /\A[a-zA-Z0-9_]+\z/
+  EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
-  validates :username, presence: true, format: {
-    with: USERNAME_REGEX
-  }, if: :username_changed?
+  validates :email, presence: true, format: {
+    with: EMAIL_REGEX
+  }, if: :email_changed?
 
-  validate :allowed_usernames, if: :username_changed?
+  validate :allowed_emails, if: :email_changed?
 
-  def allowed_usernames
-    return if UsernameBlacklist.allowed?(username)
+  def allowed_emails
+    return if EmailBlacklist.allowed?(email)
 
-    errors.add(:username, :invalid, value: username)
+    errors.add(:email, :invalid, value: email)
   end
 end
 ```
 
-However, conditional validations tend to become more complex over time. A better way would be to validate at the point _when_ a handle is being updated.
+However, conditional validations tend to become more complex over time. An alternative approach be to validate at the point _when_ a handle is being updated.
 
-Consider extending the model with a mixin, to apply the validation only when the username is actually being set.
+Consider extending the model with a mixin, to apply the validation only when the email is actually being set.
 
 ```ruby
-module CreateUserForm
+module UpdateEmailForm
   def self.extended(base)
     base.class_eval do
-      validates :username, presence: true, format: {
-        with: USERNAME_REGEX
-      }, if: :username_changed?
+      EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
-      validate :allowed_usernames, if: :username_changed?
-    end
+      validates :email, presence: true, format: {
+        with: EMAIL_REGEX
+      }
 
-    def allowed_usernames
-      return if UsernameBlacklist.allowed?(username)
+      validate :allowed_emails, if: :email_changed?
 
-      errors.add(:username, :invalid, value: username)
-    end
+      def allowed_emails
+        return if EmailBlacklist.allowed?(email)
+
+        errors.add(:email, :invalid, value: email)
+      end
   end
 end
 
-user = User.new.extend(CreateUserForm)
+user = User.find_by(canonical_id: 'user-123')
 
-UserComponent::Events::Created.create(user: user, data: { handle: 'handle' })
+UserComponent::Events::EmailUpdated.create(user: user, data: { email: 'email' })
 ```
 
-Eventable allows setting mixins in the event class itself, so that they are applied  automatically at the point of creating the event. The following example will extend the user with CreateUserForm on user create.:
+You can configure mixins in the event class itself, so that they are applied automatically at the point of event creating. The following example will extend the user with UpdateEmailForm on user create:
 
 ```ruby
 class UserComponent::Events::Created < UserEvent
   ...
 
-  validates_with UpdateHandleForm
+  validates_with UpdateEmailForm
 
   ...
 end
@@ -503,4 +500,4 @@ end
 ```
 
 ### Credits
-Special credits to https://kickstarter.engineering/event-sourcing-made-simple-4a2625113224 for much the inspiration for this gem.
+Special credits to https://kickstarter.engineering/event-sourcing-made-simple-4a2625113224 for much of the inspiration for this gem.

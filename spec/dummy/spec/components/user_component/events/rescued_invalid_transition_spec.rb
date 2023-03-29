@@ -12,8 +12,6 @@ RSpec.describe UserComponent::Events::RescuedInvalidTransition do
         user: user,
         data: {
           canonical_id: canonical_id,
-          username: 'test-user',
-          email: 'test@example.com',
         },
       )
     end
