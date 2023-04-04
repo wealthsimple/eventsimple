@@ -2,7 +2,7 @@ module Eventable
   module Entity
     DEFAULT_IGNORE_PROPS = %w[id lock_version].freeze
 
-    def event_driven_by(event_klass, aggregate_id: :canonical_id)
+    def event_driven_by(event_klass, aggregate_id:)
       has_many :events, class_name: event_klass.name.to_s,
         foreign_key: :aggregate_id,
         primary_key: aggregate_id,

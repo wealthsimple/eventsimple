@@ -1,12 +1,12 @@
 module Eventable
   module Event
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    def drives_events_for(model_klass, events_namespace: nil, aggregate_id: :canonical_id)
+    def drives_events_for(aggregate_klass, aggregate_id:, events_namespace: nil)
       class_attribute :_events_namespace
       self._events_namespace = events_namespace
 
-      class_attribute :_model_klass
-      self._model_klass = model_klass
+      class_attribute :_aggregate_klass
+      self._aggregate_klass = aggregate_klass
 
       class_attribute :_aggregate_id
       self._aggregate_id = aggregate_id
@@ -24,17 +24,16 @@ module Eventable
       attr_writer :skip_dispatcher
       attr_writer :skip_apply_check
 
-      belongs_to _model_klass.model_name.element.to_sym,
+      belongs_to _aggregate_klass.model_name.element.to_sym,
         foreign_key: :aggregate_id,
         primary_key: _aggregate_id,
-        class_name: _model_klass.name.to_s,
+        class_name: _aggregate_klass.name.to_s,
         inverse_of: :events,
         autosave: false,
         validate: false
 
       default_scope { order('created_at ASC') }
 
-      around_save :with_database_role
       before_validation :extend_validation
       after_validation :perform_transition_checks
       before_create :apply_and_persist
@@ -52,10 +51,6 @@ module Eventable
 
       def skip_apply_check
         @skip_apply_check || false
-      end
-
-      def with_database_role(&block)
-        ApplicationRecord.connected_to(role: :writing, &block)
       end
 
       # Apply the event to the aggregate passed in. The default behaviour is a no-op
@@ -102,11 +97,11 @@ module Eventable
       end
 
       def aggregate
-        public_send(_model_klass.model_name.element.to_s)
+        public_send(_aggregate_klass.model_name.element)
       end
 
       def aggregate=(aggregate)
-        public_send("#{_model_klass.model_name.element}=", aggregate)
+        public_send("#{_aggregate_klass.model_name.element}=", aggregate)
       end
     end
 
@@ -166,13 +161,15 @@ module Eventable
       end
 
       def with_retries(args, &block) # rubocop:disable Metrics/AbcSize
-        entity = args[0][_model_klass.model_name.element.to_sym]
+        entity = args[0][_aggregate_klass.model_name.element.to_sym]
+
+        retry_intervals = Array.new(Eventable.configuration.max_concurrency_retries) { 0 }
 
         # Only implement retries when the event is not already inside a transaction.
         if entity&.persisted? && !existing_transaction_in_progress?
           Retriable.retriable(
             on: ActiveRecord::StaleObjectError,
-            intervals: [0, 0],
+            intervals: retry_intervals,
             on_retry: proc { entity.reload },
             &block
           )
