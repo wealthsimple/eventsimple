@@ -12,7 +12,7 @@ Use Eventable to:
 * Store audit logs of changes to your ActiveRecord objects.
 
 Eventable uses standard Rails features like [Single Table Inheritance](https://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html) and [Optimistic Locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html) to implement a simple event driven system.
-Async worflows are handled using [Sidekiq](https://github.com/sidekiq/sidekiq).
+Async workflows are handled using [Sidekiq](https://github.com/sidekiq/sidekiq).
 
 Typical events in Eventable are ActiveRecord models using STI and look like this:
 
