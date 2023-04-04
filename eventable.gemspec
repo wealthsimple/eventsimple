@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'dry-struct'
   spec.add_runtime_dependency 'dry-types'
   spec.add_runtime_dependency 'pg'
-  spec.add_runtime_dependency 'rails'
+  spec.add_runtime_dependency 'rails', '~> 7.x'
   spec.add_runtime_dependency 'retriable'
   spec.add_runtime_dependency 'sidekiq'
 

@@ -5,7 +5,7 @@ module Eventable
     transform_keys(&:to_sym)
 
     # dry types will apply default values only on missing keys
-    # modify the behaviour so defaults are used on nil values as well
+    # modify the behaviour so the default is used even when the key is present but nil
     transform_types do |type|
       if type.default?
         type.constructor do |value|
