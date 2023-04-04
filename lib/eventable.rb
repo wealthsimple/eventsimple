@@ -12,6 +12,7 @@ require 'sidekiq'
 
 require 'dry_types'
 
+require 'eventable/configuration'
 require 'eventable/message'
 require 'eventable/data_type'
 require 'eventable/metadata_type'
@@ -25,3 +26,15 @@ require 'eventable/event'
 
 require 'eventable/generators/install_generator'
 require 'eventable/generators/outbox/install_generator'
+
+module Eventable
+  class << self
+    def configuration
+      @configuration ||= Configuration.new
+    end
+
+    def configure
+      yield(configuration)
+    end
+  end
+end

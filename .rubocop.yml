@@ -13,3 +13,6 @@ AllCops:
 
 Rails/SkipsModelValidations:
   Enabled: false
+
+Vendor/StrictDryStruct:
+  Enabled: false

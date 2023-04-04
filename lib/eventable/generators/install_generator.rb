@@ -27,7 +27,10 @@ module Eventable
 
         line = "class #{model_name.camelize} < ApplicationRecord"
         gsub_file "app/models/#{model_name.underscore}.rb", /(#{Regexp.escape(line)})/mi do |match|
-          "#{match}\n  extend Eventable::Entity\n  event_driven_by #{model_name.camelize}Event\n"
+          <<~RUBY
+            #{match}\n  extend Eventable::Entity
+              event_driven_by #{model_name.camelize}Event, aggregate_id: :id
+          RUBY
         end
       end
 
