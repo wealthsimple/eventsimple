@@ -2,7 +2,7 @@
 
 module Eventable
   class Configuration
-    attr_reader :max_concurrency_retries, :namespace
+    attr_reader :max_concurrency_retries
 
     attr_accessor :namespace
 
