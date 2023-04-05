@@ -2,10 +2,13 @@
 
 module Eventable
   class Configuration
-    attr_reader :max_concurrency_retries
+    attr_reader :max_concurrency_retries, :namespace
+
+    attr_accessor :namespace
 
     def initialize
       @max_concurrency_retries = 2
+      @namespace = nil
     end
 
     def max_concurrency_retries=(value)

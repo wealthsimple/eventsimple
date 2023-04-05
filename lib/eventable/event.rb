@@ -93,7 +93,13 @@ module Eventable
       end
 
       def dispatch
-        Dispatcher.dispatch(self) unless skip_dispatcher
+        dispatcher_klass.dispatch(self) unless skip_dispatcher
+      end
+
+      def dispatcher_klass
+        Dispatcher
+      rescue NameError
+        "#{Eventable.configuration.namespace}::Dispatcher".constantize
       end
 
       def aggregate
