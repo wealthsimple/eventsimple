@@ -7,6 +7,7 @@ module Eventable
     def initialize
       @max_concurrency_retries = 2
       @dispatchers = []
+      @event_classes = nil
     end
 
     def max_concurrency_retries=(value)
@@ -21,6 +22,16 @@ module Eventable
       raise ArgumentError, 'dispatchers must be an array' unless value.is_a?(Array)
 
       @dispatchers = value
+    end
+
+    def event_classes
+      return nil if @event_classes.nil?
+
+      @event_classes.map(&:constantize)
+    end
+
+    def event_classes=(value)
+      @event_classes = [value].flatten
     end
   end
 end
