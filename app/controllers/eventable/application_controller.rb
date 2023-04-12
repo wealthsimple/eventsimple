@@ -7,14 +7,9 @@ module Eventable
     end
 
     def event_classes
-      configured_classes = Eventable.configuration.event_classes
-      return configured_classes if configured_classes.present?
-
       Rails.application.eager_load!
 
-      @event_classes ||= ApplicationRecord.descendants.filter { |d|
-        d.ancestors.include? Eventable::Entity::InstanceMethods
-      }
+      Eventable.configuration.ui_visible_models
     end
   end
 end

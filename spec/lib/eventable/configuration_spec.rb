@@ -18,33 +18,17 @@ RSpec.describe Eventable::Configuration do
     end
   end
 
-  describe '#dispatcher_class' do
-    it 'defaults to Dispatcher' do
-      expect(config.dispatcher_class).to eq(Dispatcher)
-    end
-
-    it 'can be set to a different value' do
-      config.dispatcher_class = 'Eventable::EventDispatcher'
-
-      expect(config.dispatcher_class).to eq(Eventable::EventDispatcher)
-    end
-  end
-
-  describe '#event_classes' do
-    it 'defaults to nil' do
-      expect(config.event_classes).to be_nil
+  describe '#dispatchers' do
+    it 'defaults to an empty array' do
+      expect(config.dispatchers).to eq([])
     end
 
     it 'can be set to an array of strings' do
-      config.event_classes = ['UserComponent::Events::Created', 'UserComponent::Events::Updated']
-
-      expect(config.event_classes).to eq([UserComponent::Events::Created,
-                                          UserComponent::Events::Updated])
+      config.dispatchers = ['UserComponent::Dispatcher']
     end
 
-    it 'can be set to a string and returns an array' do
-      config.event_classes = 'UserComponent::Events::Created'
-      expect(config.event_classes).to eq([UserComponent::Events::Created])
+    it 'raises an error when set to a non-array' do
+      expect { config.dispatchers = 'Eventable::EventDispatcher' }.to raise_error(ArgumentError)
     end
   end
 end
