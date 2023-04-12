@@ -11,7 +11,11 @@ module Eventable
     end
 
     config.after_initialize do
-      Eventable.configuration.dispatchers.map(&:constantize)
+      dispatchers = Eventable.configuration.dispatchers.map(&:constantize)
+
+      unless dispatchers.all? { |dispatcher| dispatcher.superclass == Eventable::Dispatcher }
+        raise ArgumentError, 'dispatchers must inherit from Eventable::Dispatcher'
+      end
     end
   end
 end
