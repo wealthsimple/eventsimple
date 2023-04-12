@@ -93,7 +93,7 @@ module Eventable
       end
 
       def dispatch
-        Dispatcher.dispatch(self) unless skip_dispatcher
+        EventDispatcher.dispatch(self) unless skip_dispatcher
       end
 
       def aggregate

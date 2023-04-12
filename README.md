@@ -196,11 +196,18 @@ Async reactors are executed via Sidekiq. Eventable implements checks to enforce 
 
 Use Async reactors to kick off async workflows or writes to external data sources as a side effect of model updates.
 
-Reactor examples:
+Reactor example:
 
 ```ruby
+# Register your dispatch class in an initializer.
+Eventable.configure do |config|
+  config.dispatchers = %w[
+    UserComponent::Dispatcher
+  ]
+end
+
 # Register reactors in the dispatcher class.
-class Dispatcher < Eventable::EventDispatcher
+class UserComponent::Dispatcher < Eventable::EventDispatcher
   # one to one
   on UserComponent::Events::Created,
     async:  UserComponent::Reactors::Created::SendNotification

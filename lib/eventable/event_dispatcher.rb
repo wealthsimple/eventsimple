@@ -5,20 +5,6 @@
 # Dispatcher implementation.
 module Eventable
   class EventDispatcher
-    # Register Reactors to Events.
-    # * Reactors registered with `sync` will be synced synchronously
-    # * Reactors registered with `async` will be synced asynchronously via a Sidekiq Job
-    #
-    # Example:
-    #
-    #   on BaseEvent, sync: LogEvent, async: TrackEvent
-    #   on PledgeCancelled, PaymentFailed, async: [NotifyAdmin, CreateTask]
-    #   on [PledgeCancelled, PaymentFailed], async: [NotifyAdmin, CreateTask]
-    #
-    def self.on(*events, sync: [], async: [])
-      rules.register(events: events.flatten, sync: Array(sync), async: Array(async))
-    end
-
     # Dispatches events to matching Reactors once.
     # Called by all events after they are created.
     def self.dispatch(event)
