@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.7.1 - 2023-04-11
+  Breaking Change:
+    - Eventable no longer requires a Dispatcher class to be defined.
+      Instead, dispatchers must now be registered in the event configuration.
+      Each dispatcher must inherit from Eventable::Dispatcher
+
 ## 0.7.0 - 2023-03-29
   - Remove custom database role configuration as it is not needed
   - Allow concurrency retry count to be configurable
