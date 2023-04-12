@@ -9,5 +9,9 @@ module Eventable
       g.helper false
       g.view_specs false
     end
+
+    config.after_initialize do
+      Eventable.configuration.dispatchers.map(&:constantize)
+    end
   end
 end
