@@ -2,10 +2,11 @@
 
 module Eventable
   class Configuration
-    attr_reader :max_concurrency_retries
+    attr_reader :max_concurrency_retries, :dispatchers
 
     def initialize
       @max_concurrency_retries = 2
+      @dispatchers = []
     end
 
     def max_concurrency_retries=(value)
@@ -14,6 +15,12 @@ module Eventable
       end
 
       @max_concurrency_retries = value
+    end
+
+    def dispatchers=(value)
+      raise ArgumentError, 'dispatchers must be an array' unless value.is_a?(Array)
+
+      @dispatchers = value
     end
   end
 end
