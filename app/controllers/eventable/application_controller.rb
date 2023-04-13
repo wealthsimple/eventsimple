@@ -9,9 +9,7 @@ module Eventable
     def event_classes
       Rails.application.eager_load!
 
-      @event_classes ||= ApplicationRecord.descendants.filter { |d|
-        d.ancestors.include? Eventable::Entity::InstanceMethods
-      }
+      Eventable.configuration.ui_visible_models
     end
   end
 end

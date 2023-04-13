@@ -16,6 +16,8 @@ module Eventable
       # disable automatic timestamp updates
       self.record_timestamps = false
 
+      Eventable.configuration.ui_visible_models |= [self]
+
       include InstanceMethods
       extend ClassMethods
     end
