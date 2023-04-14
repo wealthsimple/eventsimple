@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.7.3 - 2023-04-14
+  - Adding some missing tests
+
 ## 0.7.2 - 2023-04-06
   - Remove use of ApplicationRecord.descendants to determine the list of models
     to display in the UI. This conflicts with components using packwerk.
