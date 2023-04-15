@@ -5,10 +5,7 @@ module Eventable
     include Sidekiq::Worker
 
     def perform(event_global_id, reactor_class)
-      event = Retriable.retriable(
-        on: ActiveRecord::RecordNotFound,
-        tries: 7, base_interval: 1.0, multiplier: 1.0, rand_factor: 0.0
-      ) do
+      event = Retriable.with_context(:reactor) do
         ApplicationRecord.uncached { GlobalID::Locator.locate event_global_id }
       end
     rescue ActiveRecord::RecordNotFound

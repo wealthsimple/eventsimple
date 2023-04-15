@@ -1,5 +1,8 @@
 module Eventable
   module Event
+    require 'globalid'
+    include GlobalID::Identification
+
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def drives_events_for(aggregate_klass, aggregate_id:, events_namespace: nil)
       class_attribute :_events_namespace
@@ -163,16 +166,9 @@ module Eventable
       def with_retries(args, &block) # rubocop:disable Metrics/AbcSize
         entity = args[0][_aggregate_klass.model_name.element.to_sym]
 
-        retry_intervals = Array.new(Eventable.configuration.max_concurrency_retries) { 0 }
-
         # Only implement retries when the event is not already inside a transaction.
         if entity&.persisted? && !existing_transaction_in_progress?
-          Retriable.retriable(
-            on: ActiveRecord::StaleObjectError,
-            intervals: retry_intervals,
-            on_retry: proc { entity.reload },
-            &block
-          )
+          Retriable.with_context(:optimistic_locking, on_retry: proc { entity.reload }, &block)
         else
           yield
         end
