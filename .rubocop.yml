@@ -9,7 +9,7 @@ AllCops:
     - "spec/dummy/db/schema.rb"
     - "spec/dummy/log/**/*"
     - "spec/dummy/tmp/**/*"
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.2
 
 Rails/SkipsModelValidations:
   Enabled: false
