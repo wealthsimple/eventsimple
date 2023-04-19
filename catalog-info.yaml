@@ -2,7 +2,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: eventable
+  name: eventsimple
   description: Event Driven Toolkit for Rails
   tags:
     - ruby

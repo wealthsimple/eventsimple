@@ -5,9 +5,9 @@ module UserComponent
     class RescuedInvalidTransition < UserEvent
       rescue_invalid_transition
 
-      attribute :data, Eventable::DataType.new(self)
+      attribute :data, Eventsimple::DataType.new(self)
 
-      class Message < Eventable::Message
+      class Message < Eventsimple::Message
         attribute :canonical_id, DryTypes::Strict::String
       end
 
