@@ -12,6 +12,10 @@ group :development, :test do
   gem 'rspec-rails'
 end
 
+source 'https://gems.contribsys.com/' do
+  gem 'sidekiq-pro'
+end
+
 source 'https://nexus.iad.w10external.com/repository/gems' do
   gem 'ws-gem_publisher'
 end
