@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.8.0 - 2023-04-18
+  - Rename gem to Eventsimple
+
 ## 0.7.3 - 2023-04-14
   - Adding some missing tests
 
@@ -15,14 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.7.1 - 2023-04-11
   Breaking Change:
-    - Eventable no longer requires a Dispatcher class to be defined.
+    - Eventsimple no longer requires a Dispatcher class to be defined.
       Instead, dispatchers must now be registered in the event configuration.
-      Each dispatcher must inherit from Eventable::Dispatcher
+      Each dispatcher must inherit from Eventsimple::Dispatcher
 
 ## 0.7.0 - 2023-03-29
   - Remove custom database role configuration as it is not needed
   - Allow concurrency retry count to be configurable
-  - Require Rails >= 7.0.0. Eventable is not compatible with older versions.
+  - Require Rails >= 7.0.0. Eventsimple is not compatible with older versions.
 
   Breaking Change:
     - aggregate_id is now a required property on event configuration
@@ -40,13 +43,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Add placeholder class for events deleted in code
 
 ## 0.6.1 - 2023-01-20
-  Fix bug where eventable UI would not be able to find the correct entity
+  Fix bug where eventsimple UI would not be able to find the correct entity
 
 ## 0.6.0 - 2023-01-16
-  Add "Eventable: The UI"
+  Add "Eventsimple: The UI"
 
 ## 0.5.8 - 2023-01-5
-  Setup eventable web view
+  Setup eventsimple web view
 
 ## 0.5.7 - 2023-01-03
 ### Updated
@@ -65,7 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 0.5.4 - 2022-11-28
 ### Updated
 - Updated install_generator.rb and templates/create_events.erb to use underscore, instead of downcase.
-- Updated isntall_generator/template/event.erb to extend Eventable::Event
+- Updated isntall_generator/template/event.erb to extend Eventsimple::Event
 
 ## 0.5.3 - 2022-11-18
 ### Updated
@@ -91,7 +94,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.2.0 - 2022-09-21
 ### Updated
-- Add Eventable::Outbox::Consumer to implement an outbox
+- Add Eventsimple::Outbox::Consumer to implement an outbox
 
 ## 0.1.2 - 2022-09-25
 ### Updated
@@ -103,15 +106,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.1.0 - 2022-09-21
 ### Updated
-- Return an instance of `event_klass::Message` from `Eventable::DataType#cast_value`
-and `Eventable::DataType#deserialize` whenever the type is defined instead of checking
+- Return an instance of `event_klass::Message` from `Eventsimple::DataType#cast_value`
+and `Eventsimple::DataType#deserialize` whenever the type is defined instead of checking
 whether input is empty. Otherwise return the hash
 
 ## 0.0.6 - 2022-09-16
 ### Added
 - Separate modules for entity and event models.
-  - Previous usage: `include Eventable`
-  - New usage: `extend Eventable::Entity` or `extend Eventable::Event`
+  - Previous usage: `include Eventsimple`
+  - New usage: `extend Eventsimple::Entity` or `extend Eventsimple::Event`
 
 ## 0.0.5 - 2022-09-16
 ### Added

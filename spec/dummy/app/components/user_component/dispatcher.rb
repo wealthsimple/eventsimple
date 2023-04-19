@@ -1,5 +1,5 @@
 module UserComponent
-  class Dispatcher < Eventable::Dispatcher
+  class Dispatcher < Eventsimple::Dispatcher
     on Events::Created, sync: Reactors::Created::SyncReactor
     on Events::RescuedInvalidTransition, sync: Reactors::Created::SyncReactor
     on Events::RescuedInvalidTransitionWithReraise, sync: Reactors::Created::SyncReactor

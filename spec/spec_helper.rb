@@ -2,8 +2,8 @@
 
 require 'ws/gem_publisher/support/spec_helper'
 
-require 'eventable'
-require 'eventable/support/spec_helpers'
+require 'eventsimple'
+require 'eventsimple/support/spec_helpers'
 
 require 'retriable'
 require 'sidekiq/testing'

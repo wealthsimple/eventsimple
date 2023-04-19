@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in eventable.gemspec
+# Specify your gem's dependencies in eventsimple.gemspec
 gemspec
 
 source 'https://nexus.iad.w10external.com/repository/gems' do
