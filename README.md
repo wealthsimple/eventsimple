@@ -1,20 +1,20 @@
-# Eventable
-[![Github Actions Badge](https://github.com/wealthsimple/eventable/actions/workflows/main.yml/badge.svg)](https://github.com/wealthsimple/eventable/actions)
+# Eventsimple
+[![Github Actions Badge](https://github.com/wealthsimple/eventsimple/actions/workflows/main.yml/badge.svg)](https://github.com/wealthsimple/eventsimple/actions)
 
 ## What
-Eventable implements a simple deterministic event driven system using ActiveRecord and Sidekiq.
+Eventsimple implements a simple deterministic event driven system using ActiveRecord and Sidekiq.
 
-Use Eventable to:
+Use Eventsimple to:
 
 * Add Event Sourcing to your ActiveRecord models.
 * Implement Pub/Sub.
 * Implement a transactional outbox.
 * Store audit logs of changes to your ActiveRecord objects.
 
-Eventable uses standard Rails features like [Single Table Inheritance](https://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html) and [Optimistic Locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html) to implement a simple event driven system.
+Eventsimple uses standard Rails features like [Single Table Inheritance](https://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html) and [Optimistic Locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html) to implement a simple event driven system.
 Async workflows are handled using [Sidekiq](https://github.com/sidekiq/sidekiq).
 
-Typical events in Eventable are ActiveRecord models using STI and look like this:
+Typical events in Eventsimple are ActiveRecord models using STI and look like this:
 
 ```ruby
  <UserComponent::Events::Created
@@ -43,20 +43,20 @@ Typical events in Eventable are ActiveRecord models using STI and look like this
 Add the following line to your Gemfile:
 
 ```
-gem 'eventable'
+gem 'eventsimple'
 ```
 Then run `bundle install`
 
-The eventable UI allows you to view and navigate event history. Add the following line to your routes.rb to use it:
+The eventsimple UI allows you to view and navigate event history. Add the following line to your routes.rb to use it:
 
 ```
-mount Eventable::Engine => '/eventable'
+mount Eventsimple::Engine => '/eventsimple'
 ```
 
-Generate a migration and add `Eventable` to an existing ActiveRecord model.
+Generate a migration and add `Eventsimple` to an existing ActiveRecord model.
 
 ```ruby
-bundle exec rails generate eventable:event User
+bundle exec rails generate eventsimple:event User
 ```
 
 This will result in the following changes:
@@ -64,12 +64,12 @@ This will result in the following changes:
 ```ruby
 # ActiveRecord Classes
 class User < ApplicationRecord
-  extend Eventable::Entity
+  extend Eventsimple::Entity
   event_driven_by UserEvent, aggregate_id: :id
 end
 
 class UserEvent < ApplicationRecord
-  extend Eventable::Event
+  extend Eventsimple::Event
   drives_events_for User, events_namespace: 'UserComponent::Events', aggregate_id: :id
 end
 # Change aggregate_id to the column that represents the unique primary key for your model.
@@ -91,9 +91,9 @@ end
 add_column :users, :lock_version, :integer
 ```
 
-Adding lock_version to the model enables [optimistic locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html) and protects against concurrent updates to stale versions of the model. Eventable will automatically retry on concurrency failures.
+Adding lock_version to the model enables [optimistic locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html) and protects against concurrent updates to stale versions of the model. Eventsimple will automatically retry on concurrency failures.
 
-`events_namespace` is an optional argument pointing to the directory where your events classes are defined. If you do not specify this argument, Eventable will store the full namespace of the event classes in the STI type column.
+`events_namespace` is an optional argument pointing to the directory where your events classes are defined. If you do not specify this argument, Eventsimple will store the full namespace of the event classes in the STI type column.
 
 ### Event Table definition
 
@@ -113,10 +113,10 @@ An example event:
 module UserComponent
   module Events
     class Created < UserEvent
-      # Optional: Rails by default will use JSON serialization for the data attribute. Use Eventable::DataType to serialize/deserialize the data attribute using the Message subclass below which uses dry-struct.
-      attribute :data, Eventable::DataType.new(self)
+      # Optional: Rails by default will use JSON serialization for the data attribute. Use Eventsimple::DataType to serialize/deserialize the data attribute using the Message subclass below which uses dry-struct.
+      attribute :data, Eventsimple::DataType.new(self)
 
-      class Message < Eventable::Message
+      class Message < Eventsimple::Message
         attribute :canonical_id, DryTypes::Strict::String
         attribute :email, DryTypes::Strict::String
       end
@@ -125,7 +125,7 @@ module UserComponent
       validates_with UserForm
 
       # Optional: Implement state machine checks to determine if the event is allowed to be written.
-      # Will raise Eventable::InvalidTransition on failure.
+      # Will raise Eventsimple::InvalidTransition on failure.
       def can_apply?(user)
         user.new_record?
       end
@@ -161,10 +161,10 @@ end
 ```
 
 ### Using Dry::Struct
-  The Eventable::Message class is a subclass of Dry::Struct. Some common options you can use are:
+  The Eventsimple::Message class is a subclass of Dry::Struct. Some common options you can use are:
 
 ```ruby
-class Message < Eventable::Message
+class Message < Eventsimple::Message
   # attribute key is required and can not be nil
   attribute :canonical_id, DryTypes::Strict::String
 
@@ -175,7 +175,7 @@ class Message < Eventable::Message
   attribute? :optional_key, DryTypes::Strict::String.optional
 
   # use default value if attribute key is missing or if value is nil
-  # Note this is not the typical behaviour for dry-struct and is a customization in the Eventable::Message class.
+  # Note this is not the typical behaviour for dry-struct and is a customization in the Eventsimple::Message class.
   attribute :default_key, DryTypes::Strict::String.default('default')
 end
 ```
@@ -192,7 +192,7 @@ They should **only** contain business logic that make additional database writes
 This is because executing writes to other data stores, e.g API call or writes to kafka/sqs, will result in the transaction being non-deterministic.
 
 #### Async Reactors
-Async reactors are executed via Sidekiq. Eventable implements checks to enforce reliable eventually consistent behaviour.
+Async reactors are executed via Sidekiq. Eventsimple implements checks to enforce reliable eventually consistent behaviour.
 
 Use Async reactors to kick off async workflows or writes to external data sources as a side effect of model updates.
 
@@ -200,14 +200,14 @@ Reactor example:
 
 ```ruby
 # Register your dispatch class in an initializer.
-Eventable.configure do |config|
+Eventsimple.configure do |config|
   config.dispatchers = %w[
     UserComponent::Dispatcher
   ]
 end
 
 # Register reactors in the dispatcher class.
-class UserComponent::Dispatcher < Eventable::EventDispatcher
+class UserComponent::Dispatcher < Eventsimple::EventDispatcher
   # one to one
   on UserComponent::Events::Created,
     async:  UserComponent::Reactors::Created::SendNotification
@@ -244,7 +244,7 @@ end
 For many use cases, async reactors are sufficient to handle workflows like making an API call or publishing to a message broker.
 However since reactors use Sidekiq, order is not guaranteed.
 
-Eventable provides an outbox implementation with order and eventual consistency guarantees.
+Eventsimple provides an outbox implementation with order and eventual consistency guarantees.
 
 **Caveat**: The current implementation leverages a single advisory lock to guarantee write order. This will significantly impact write throughput on the model. On a standard Aurora instance for example, write throughput is limited to ~300 events per second.
 
@@ -256,7 +256,7 @@ https://github.com/pawelpacana/account-basics
 Generate migration to setup the outbox cursor table. This table is used to track cursor positions.
 
 ```ruby
-  bundle exec rails g eventable:outbox:install
+  bundle exec rails g eventsimple:outbox:install
 ```
 
 Create a consummer and processor class for the outbox.
@@ -265,11 +265,11 @@ Note: The presence of the consumer class moves all writes to the respective even
 Only a single outbox consumer per events table is supported. **DO NOT** create multiple consumers for the same events table.
 
 ```ruby
-require 'eventable/outbox/consumer'
+require 'eventsimple/outbox/consumer'
 
 module UserComponent
   class Consumer
-    extend Eventable::Outbox::Consumer
+    extend Eventsimple::Outbox::Consumer
 
     consumes_event UserEvent
     processor EventProcessor
@@ -432,7 +432,7 @@ end
 New attributes should always be added as being either optional or required with a default value.
 
 ```ruby
-class UserComponent::Events::Created < Eventable::Message
+class UserComponent::Events::Created < Eventsimple::Message
   attribute :new_attribute_1, DryTypes::Strict::String.default('default')
   attribute? :new_attribute_2, DryTypes::Strict::String.optional
 end
