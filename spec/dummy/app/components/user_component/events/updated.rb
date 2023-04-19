@@ -3,9 +3,9 @@
 module UserComponent
   module Events
     class Updated < UserEvent
-      attribute :data, Eventable::DataType.new(self)
+      attribute :data, Eventsimple::DataType.new(self)
 
-      class Message < Eventable::Message
+      class Message < Eventsimple::Message
         attribute :email, DryTypes::Strict::String.optional
       end
 

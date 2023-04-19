@@ -7,9 +7,9 @@ module UserComponent
         raise error
       end
 
-      attribute :data, Eventable::DataType.new(self)
+      attribute :data, Eventsimple::DataType.new(self)
 
-      class Message < Eventable::Message
+      class Message < Eventsimple::Message
         attribute :canonical_id, DryTypes::Strict::String
       end
 
