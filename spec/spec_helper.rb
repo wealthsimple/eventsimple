@@ -5,7 +5,7 @@ ENV['RAILS_ENV'] ||= 'test'
 require 'pry'
 require 'bundler/setup'
 require 'ws/gem_publisher/support/spec_helper'
-# require 'eventable'
+require 'eventable'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
