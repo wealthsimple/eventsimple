@@ -387,7 +387,7 @@ class User
 end
 ```
 
-However, conditional validations tend to become more complex over time. An alternative approach be to validate at the point _when_ a handle is being updated.
+However, conditional validations tend to become more complex over time. An alternative approach can be to validate at the point _when_ a handle is being updated.
 
 Consider extending the model with a mixin, to apply the validation only when the email is actually being set.
 
@@ -411,7 +411,7 @@ module UpdateEmailForm
   end
 end
 
-user = User.find_by(canonical_id: 'user-123')
+user = User.find_by(canonical_id: 'user-123').extend(UpdateEmailForm)
 
 UserComponent::Events::EmailUpdated.create(user: user, data: { email: 'email' })
 ```
