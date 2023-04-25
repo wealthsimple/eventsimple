@@ -134,13 +134,16 @@ module Eventsimple
         klass_name = "Deleted__#{type_name.demodulize}"
         return const_get(klass_name) if const_defined?(klass_name)
 
-        klass = Class.new(self) { def apply_timestamps(_aggregate); end }
+        # NOTE: this should still update the timestamps for the model to prevent
+        #       projection drift (since the original projection will
+        #       have the timestamps applied for the deleted event).
+        klass = Class.new(self)
 
         const_set(klass_name, klass)
       end
 
       # We want to automatically retry writes on concurrency failures. However events with sync
-      # reactors may have multiple nested events that are writen within the same transaction.
+      # reactors may have multiple nested events that are written within the same transaction.
       # We can only catch and retry writes when they the outermost event encapsulating the whole
       # transaction.
       def create(*args, &block)

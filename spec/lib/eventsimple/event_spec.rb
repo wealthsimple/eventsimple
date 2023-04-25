@@ -50,7 +50,9 @@ RSpec.describe Eventsimple::Event do
 
         event = UserEvent.last
         expect(event).to be_a(UserEvent::Deleted__NonExistentEvent)
-        expect(event.created_at).not_to eq(user.reproject.updated_at)
+
+        # timestamps should still be updated for deleted events.
+        expect(event.created_at).to eq(user.reproject.updated_at)
       end
     end
   end
