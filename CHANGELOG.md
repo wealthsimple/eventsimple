@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.9.0 - 2023-04-25
+  - update timestamp of projection on deleted events. We originally had deleted
+    events act as a `noop` but when checking `model.project_matches_events?` it would fail
+    since the original projection would have included the timestamp update.
+
+    We don't want to require a projection of every instance of a model when deleting an event so
+    we now update the timestamps on deleted event projections.
 ## 0.8.0 - 2023-04-18
   - Rename gem to Eventsimple
 
