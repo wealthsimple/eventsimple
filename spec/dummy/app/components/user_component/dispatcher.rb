@@ -5,5 +5,6 @@ module UserComponent
     on Events::RescuedInvalidTransitionWithReraise, sync: Reactors::Created::SyncReactor
 
     on Events::Created, async: Reactors::Created::AsyncReactor
+    on Events::Broken, async: Reactors::Created::BrokenAsyncReactor
   end
 end
