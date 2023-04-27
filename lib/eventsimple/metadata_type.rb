@@ -12,17 +12,17 @@ module Eventsimple
         decoded = ActiveSupport::JSON.decode(value)
         return decoded if decoded.empty?
 
-        Metadata.new(decoded)
+        Eventsimple.configuration.metadata_klass.new(decoded)
       when Hash
-        Metadata.new(value)
-      when Metadata
+        Eventsimple.configuration.metadata_klass.new(value)
+      when Eventsimple.configuration.metadata_klass
         value
       end
     end
 
     def serialize(value)
       case value
-      when Hash, Metadata
+      when Hash, Eventsimple.configuration.metadata_klass
         ActiveSupport::JSON.encode(value)
       else
         super
@@ -32,7 +32,7 @@ module Eventsimple
     def deserialize(value)
       decoded = ActiveSupport::JSON.decode(value)
 
-      Metadata.new(decoded)
+      Eventsimple.configuration.metadata_klass.new(decoded)
     end
   end
 end
