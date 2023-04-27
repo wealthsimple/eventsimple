@@ -10,7 +10,7 @@ module UserComponent
           raise 'Oh noes'
         end
 
-        def self.retries_exhausted(msg, err)
+        def self.retries_exhausted(_msg, _err)
           puts 'time for a nap'
         end
       end

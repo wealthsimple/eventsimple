@@ -41,22 +41,22 @@ RSpec.describe Eventsimple::ReactorWorker do
   end
 
   context 'sidekiq_retries_exhausted' do
+    subject(:exhaust_retries) do
+      described_class.new.sidekiq_retries_exhausted_block.call(msg, ex)
+    end
+
     let(:ex) { StandardError.new('expected error') }
     let(:msg) {
       {
         'queue' => 'mock_queue',
         'class' => 'mock_name',
         'args' => [event_global_id, reactor_class_name],
-        'error_message' => 'An error occured'
+        'error_message' => 'An error occured',
       }
     }
 
-    subject(:exhaust_retries) do
-      described_class.new.sidekiq_retries_exhausted_block.call(msg, ex)
-    end
-
     before do
-      allow(Rails.logger).to receive(:error);
+      allow(Rails.logger).to receive(:error)
     end
 
     context 'reactor has a retries exhausted handler' do
