@@ -31,7 +31,7 @@ module Eventsimple
     end
 
     def metadata_klass
-      @metadata_klass.constantize
+      @klass ||= @metadata_klass.constantize # rubocop:disable Naming/MemoizedInstanceVariableName
     end
   end
 end
