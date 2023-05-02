@@ -8,12 +8,11 @@ module Eventsimple
     attr_accessor :ui_visible_models
 
     def initialize
-      @max_concurrency_retries = 2
       @dispatchers = []
-
-      # internal use only
-      @ui_visible_models = []
+      @max_concurrency_retries = 2
       @metadata_klass = 'Eventsimple::Metadata'
+
+      @ui_visible_models = [] # internal use only
     end
 
     def max_concurrency_retries=(value)
