@@ -31,4 +31,15 @@ RSpec.describe Eventsimple::Configuration do
       expect { config.dispatchers = 'Eventsimple::EventDispatcher' }.to raise_error(ArgumentError)
     end
   end
+
+  describe '#metadata_klass' do
+    it 'defaults to Eventsimple::Metadata' do
+      expect(config.metadata_klass).to eq(Eventsimple::Metadata)
+    end
+
+    it "raises when class name cannot be constantized" do
+      config.metadata_klass = "Eventsimple::OtherClass"
+      expect { config.metadata_klass }.to raise_error(NameError)
+    end
+  end
 end
