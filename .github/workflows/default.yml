@@ -1,0 +1,59 @@
+---
+name: Default
+on:
+  - push
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Fetch main branch
+        run: git fetch origin main
+      - uses: r7kamura/rubocop-problem-matchers-action@v1
+      - name: Lint
+        run: |
+          bundle exec rubocop
+          bundle exec bundle-audit update
+          bundle exec bundle-audit check
+      - name: Run database container
+        run: |
+          docker run \
+            --detach \
+            --name eventsimple_postgresql \
+            -e POSTGRES_HOST_AUTH_METHOD=trust \
+            -p 5432:5432 \
+            --health-cmd pg_isready \
+            --health-interval 10s \
+            --health-timeout 5s \
+            --health-retries 5 \
+            postgres:15-alpine \
+            postgres -c 'max_connections=300'
+      - name: Setup databases
+        run: bundle exec rake db:setup
+      - name: Run rspec
+        run: bundle exec rspec
+      - name: Release the gem
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          mkdir -p ~/.gem
+          cat << EOF > ~/.gem/credentials
+          ---
+          :github: Bearer ${GITHUB_TOKEN}
+          :rubygems_api_key: ${RUBYGEMS_API_KEY}
+          EOF
+          chmod 0600 ~/.gem/credentials
+          git config user.email "noreply@wealthsimple.com"
+          git config user.name "Wolfbot"
+          bundle exec rake release
+        env:
+          RUBYGEMS_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
