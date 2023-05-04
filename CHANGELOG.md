@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - added support for adding a hook when async reactors run out of retries
 
 ## 1.0.0 - 2023-05-03
+### Changed
 - Release under MIT license
 
 ## 0.9.1 - 2023-04-29
