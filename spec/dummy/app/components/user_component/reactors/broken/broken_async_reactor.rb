@@ -1,7 +1,9 @@
 module UserComponent
   module Reactors
-    module Created
+    module Broken
       class BrokenAsyncReactor
+        include Eventsimple::Reactor
+
         def initialize(event)
           @event = event
         end

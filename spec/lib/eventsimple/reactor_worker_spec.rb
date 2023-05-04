@@ -60,7 +60,7 @@ RSpec.describe Eventsimple::ReactorWorker do
     end
 
     context 'reactor has a retries exhausted handler' do
-      let(:reactor_class) { UserComponent::Reactors::Created::BrokenAsyncReactor }
+      let(:reactor_class) { UserComponent::Reactors::Broken::BrokenAsyncReactor }
 
       before do
         allow(reactor_class).to receive(:retries_exhausted)

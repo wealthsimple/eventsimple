@@ -24,6 +24,7 @@ require 'eventsimple/invalid_transition'
 
 require 'eventsimple/entity'
 require 'eventsimple/event'
+require 'eventsimple/reactor'
 
 require 'eventsimple/generators/install_generator'
 require 'eventsimple/generators/outbox/install_generator'
