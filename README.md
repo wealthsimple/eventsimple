@@ -1,5 +1,5 @@
 # Eventsimple
-[![Github Actions Badge](https://github.com/wealthsimple/eventsimple/actions/workflows/main.yml/badge.svg)](https://github.com/wealthsimple/eventsimple/actions)
+[![Github Actions](https://github.com/wealthsimple/eventsimple/actions/workflows/default.yml/badge.svg)](https://github.com/wealthsimple/eventsimple/actions/workflows/default.yml) [![Gem Version](https://badge.fury.io/rb/eventsimple.svg?v=1)](https://rubygems.org/gems/eventsimple)
 
 ## What
 Eventsimple implements a simple deterministic event driven system using ActiveRecord and Sidekiq.

@@ -10,7 +10,6 @@ load 'rails/tasks/statistics.rake'
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 require "rubocop/rake_task"
-require 'ws/gem_publisher/tasks'
 
 RSpec::Core::RakeTask.new(:spec)
 RuboCop::RakeTask.new
