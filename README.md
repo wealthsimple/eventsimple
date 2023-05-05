@@ -196,7 +196,34 @@ Async reactors are executed via Sidekiq. Eventsimple implements checks to enforc
 
 Use Async reactors to kick off async workflows or writes to external data sources as a side effect of model updates.
 
-Reactor example:
+#### Async Reactor Retries Exhausted
+
+After retrying so many times, Sidekiq will call the `sidekiq_retries_exhausted` hook on the Job. The hook receives the queued job hash as an argument and is called right before Sidekiq moves the job to the Dead set.
+
+You can act on this hook in our reactors by including the `EventSimple::Reactor` module and overloading the `retries_exhausted` class method.
+
+The method signature is exactly the same as `sidekiq_retries_exhausted` 
+
+```ruby
+class MyReactor
+  include Eventsimple::Reactor
+
+  def initialize(event)
+    @event = event
+  end
+  
+  def call
+    #do stuff
+  end
+  
+  def self.retries_exhausted(msg, err)
+    # msg - the event msg this reactor was attempting to react to.
+    # err - the error that was raised
+  end
+end
+```
+
+#### Reactor example:
 
 ```ruby
 # Register your dispatch class in an initializer.
@@ -238,6 +265,9 @@ module UserComponent::Reactors::Created
   end
 end
 ```
+
+
+
 
 ## Configuring an outbox consumer
 
