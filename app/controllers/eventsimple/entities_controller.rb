@@ -6,7 +6,7 @@ module Eventsimple
       @model_class = event_classes.find { |d| d.name == @model_name }
       @aggregate_id = params[:id]
       @event_id = params[:e] || -1
-      @tab_id = params[:t] == 'event' ? 'event' : 'entity'
+      @tab_id = (params[:t] == 'event') ? 'event' : 'entity'
 
       primary_key = @model_class.event_class._aggregate_id
       @entity = @model_class.find_by!(primary_key => @aggregate_id)

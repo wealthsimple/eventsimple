@@ -13,7 +13,7 @@ module Eventsimple
 
           Signal.trap('SIGINT') do
             self.stop_consumer = true
-            STDOUT.puts('SIGINT received, stopping consumer')
+            $stdout.puts('SIGINT received, stopping consumer')
           end
         end
       end
