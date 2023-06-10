@@ -3,6 +3,7 @@
 require "bundler/setup"
 
 APP_RAKEFILE = File.expand_path('spec/dummy/Rakefile', __dir__)
+Rake.load_rakefile 'spec/dummy/Rakefile'
 load 'rails/tasks/engine.rake'
 
 load 'rails/tasks/statistics.rake'

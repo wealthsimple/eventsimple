@@ -3,4 +3,5 @@ Eventsimple.configure do |config|
   config.dispatchers = %w[
     UserComponent::Dispatcher
   ]
+  config.active_job_parent_klass = 'ApplicationJob'
 end

@@ -2,8 +2,10 @@
 
 module Eventsimple
   class Configuration
-    attr_reader :max_concurrency_retries, :dispatchers
+    attr_reader :max_concurrency_retries
     attr_writer :metadata_klass
+    attr_writer :active_job_parent_klass
+    attr_accessor :retry_reactor_on_record_not_found
 
     attr_accessor :ui_visible_models
 
@@ -11,6 +13,8 @@ module Eventsimple
       @dispatchers = []
       @max_concurrency_retries = 2
       @metadata_klass = 'Eventsimple::Metadata'
+      @active_job_parent_klass = 'ActiveJob::Base'
+      @retry_reactor_on_record_not_found = false
 
       @ui_visible_models = [] # internal use only
     end
@@ -29,8 +33,19 @@ module Eventsimple
       @dispatchers = value
     end
 
-    def metadata_klass
-      @klass ||= @metadata_klass.constantize # rubocop:disable Naming/MemoizedInstanceVariableName
+    # rubocop:disable Naming/MemoizedInstanceVariableName
+
+    def dispatchers
+      @dispatchers_klass_consts ||= @dispatchers.map(&:constantize)
     end
+
+    def metadata_klass
+      @metadata_klass_const ||= @metadata_klass.constantize
+    end
+
+    def active_job_parent_klass
+      @active_job_parent_klass_const ||= @active_job_parent_klass.constantize
+    end
+    # rubocop:enable Naming/MemoizedInstanceVariableName
   end
 end

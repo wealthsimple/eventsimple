@@ -25,7 +25,7 @@ RSpec.describe Eventsimple::ReactorWorker do
   it 'runs the reactor' do
     perform
 
-    expect(reactor).to have_received(:call)
+    expect(reactor).to have_received(:call).with(event)
   end
 
   context 'when the event is not found' do
