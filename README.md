@@ -11,10 +11,10 @@ Use Eventsimple to:
 * Implement a transactional outbox.
 * Store audit logs of changes to your ActiveRecord objects.
 
-Eventsimple uses standard Rails features like [Single Table Inheritance](https://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html) and [Optimistic Locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html) to implement a simple event driven system.
+Eventsimple uses standard Rails features like [Single Table Inheritance](https://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html) and [Optimistic Locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html).
 Async workflows are handled using [ActiveJob](https://guides.rubyonrails.org/active_job_basics.html).
 
-Typical events in Eventsimple are ActiveRecord models using STI and look like this:
+Typical events in Eventsimple are ActiveRecord models that look like this:
 
 ```ruby
  <UserComponent::Events::Created
@@ -40,20 +40,19 @@ Typical events in Eventsimple are ActiveRecord models using STI and look like th
 
 ## Setup
 
-Add the following line to your Gemfile:
+Add the following line to your Gemfile and run `bundle install`:
 
 ```
 gem 'eventsimple'
 ```
-Then run `bundle install`
 
-The eventsimple UI allows you to view and navigate event history. Add the following line to your routes.rb to use it:
+The eventsimple UI allows you to view and navigate event history. Add the following line to your routes.rb:
 
 ```
 mount Eventsimple::Engine => '/eventsimple'
 ```
 
-Setup the initializer in `config/initializers/eventsimple.rb`:
+Setup an initializer in `config/initializers/eventsimple.rb`:
 
 ```ruby
   Eventsimple.configure do |config|
@@ -63,26 +62,27 @@ Setup the initializer in `config/initializers/eventsimple.rb`:
     # See the Reactors section below for more details.
     config.dispatchers = []
 
-    # Optional: Event writes use optimistic locking. Set the max number of times to retry
-    # on concurrency failures.
+    # Optional: Entity updates use optimistic locking to enforce sequential updates.
+    # Set the max number of times to retry on concurrency failures.
     # Defaults to 2
     config.max_concurrency_retries = 2
 
     # Optional: the metadata column is used to store optional metadata associated with the event.
-    # The default implemention enforces a typed constraint on the metadata column using dry-types.
+    # The default implemention enforces a typed constraint on the metadata column
     # with the following two properties: `actor_id` and `reason`
-    # Impement a custom metadata class to override this behaviour.
-    # Default to 'Eventsimple::Metadata'
+    # Use a custom metadata class to override this behaviour.
+    # Defaults to `Eventsimple::Metadata`
     config.metadata_klass = 'Eventsimple::Metadata'
 
-    # Optional: Reactors use ActiveJob. Set the parent class for async reactors.
+    # Optional: Reactors inherit from an ActiveJob base class.
+    # Set the parent class for reactors.
     # Defaults to ActiveJob::Base.
     config.active_job_parent_klass = 'ApplicationJob'
 
-    # Optional: When using an ActiveJob adapter that write to a different data store like redis,
-    # it is possible that the reactor is executed before the transaction persisting the event is committed.
+    # Optional: When using an ActiveJob adapter that writes to a different data store like redis,
+    # it is possible that the reactor is executed before the transaction persisting the event is committed. This can result in noisy errors when using processors like Sidekiq.
     # Enable this option to retry the reactor inline if the event is not found.
-    # Defaults to false
+    # Defaults to false.
     config.retry_reactor_on_record_not_found = true
   end
 ```
@@ -127,7 +127,7 @@ add_column :users, :lock_version, :integer
 
 Adding lock_version to the model enables [optimistic locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html) and protects against concurrent updates to stale versions of the model. Eventsimple will automatically retry on concurrency failures.
 
-`events_namespace` is an optional argument pointing to the directory where your events classes are defined. If you do not specify this argument, Eventsimple will store the full namespace of the event classes in the STI type column.
+`events_namespace` is an optional argument pointing to the directory where your events classes are defined. If you do not specify this argument, Eventsimple will store the full namespace of the event classes in the STI column.
 
 ### Event Table definition
 
