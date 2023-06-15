@@ -1,12 +1,9 @@
 module UserComponent
   module Reactors
     module Created
-      class AsyncReactor
-        def initialize(event)
-          @event = event
+      class AsyncReactor < Eventsimple::Reactor
+        def call(event)
         end
-
-        def call; end
       end
     end
   end

@@ -11,11 +11,9 @@ module Eventsimple
     end
 
     config.after_initialize do
-      dispatchers = Eventsimple.configuration.dispatchers.map(&:constantize)
+      require 'eventsimple/reactor'
 
-      unless dispatchers.all? { |dispatcher| dispatcher.superclass == Eventsimple::Dispatcher }
-        raise ArgumentError, 'dispatchers must inherit from Eventsimple::Dispatcher'
-      end
+      verify_dispatchers!
 
       retry_intervals = Array.new(Eventsimple.configuration.max_concurrency_retries) { 0 }
 
@@ -31,6 +29,14 @@ module Eventsimple
           intervals: retry_intervals,
           on: ActiveRecord::StaleObjectError,
         }
+      end
+    end
+
+    def verify_dispatchers!
+      unless Eventsimple.configuration.dispatchers.all? { |dispatcher|
+        dispatcher < Eventsimple::Dispatcher
+      }
+        raise ArgumentError, 'dispatchers must inherit from Eventsimple::Dispatcher'
       end
     end
   end

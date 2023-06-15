@@ -4,6 +4,7 @@ require "eventsimple/version"
 require "eventsimple/engine"
 
 require 'active_model'
+require 'active_job'
 require 'active_support'
 require 'dry-types'
 require 'dry-struct'
