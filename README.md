@@ -2,7 +2,7 @@
 [![Github Actions](https://github.com/wealthsimple/eventsimple/actions/workflows/default.yml/badge.svg)](https://github.com/wealthsimple/eventsimple/actions/workflows/default.yml) [![Gem Version](https://badge.fury.io/rb/eventsimple.svg?v=1)](https://rubygems.org/gems/eventsimple)
 
 ## What
-Eventsimple implements a simple deterministic event driven system using ActiveRecord and Sidekiq.
+Eventsimple implements a simple deterministic event driven system using ActiveRecord and ActiveJob.
 
 Use Eventsimple to:
 
@@ -11,10 +11,10 @@ Use Eventsimple to:
 * Implement a transactional outbox.
 * Store audit logs of changes to your ActiveRecord objects.
 
-Eventsimple uses standard Rails features like [Single Table Inheritance](https://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html) and [Optimistic Locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html) to implement a simple event driven system.
-Async workflows are handled using [Sidekiq](https://github.com/sidekiq/sidekiq).
+Eventsimple uses standard Rails features like [Single Table Inheritance](https://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html) and [Optimistic Locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html).
+Async workflows are handled using [ActiveJob](https://guides.rubyonrails.org/active_job_basics.html).
 
-Typical events in Eventsimple are ActiveRecord models using STI and look like this:
+Typical events in Eventsimple are ActiveRecord models that look like this:
 
 ```ruby
  <UserComponent::Events::Created
@@ -40,17 +40,51 @@ Typical events in Eventsimple are ActiveRecord models using STI and look like th
 
 ## Setup
 
-Add the following line to your Gemfile:
+Add the following line to your Gemfile and run `bundle install`:
 
 ```
 gem 'eventsimple'
 ```
-Then run `bundle install`
 
-The eventsimple UI allows you to view and navigate event history. Add the following line to your routes.rb to use it:
+The eventsimple UI allows you to view and navigate event history. Add the following line to your routes.rb:
 
 ```
 mount Eventsimple::Engine => '/eventsimple'
+```
+
+Setup an initializer in `config/initializers/eventsimple.rb`:
+
+```ruby
+  Eventsimple.configure do |config|
+    # Optional: Register your dispatch classes here.
+    # Dispatch classes are used to register reactors to events.
+    # Reactors are used to implement side effects.
+    # See the Reactors section below for more details.
+    config.dispatchers = []
+
+    # Optional: Entity updates use optimistic locking to enforce sequential updates.
+    # Set the max number of times to retry on concurrency failures.
+    # Defaults to 2
+    config.max_concurrency_retries = 2
+
+    # Optional: the metadata column is used to store optional metadata associated with the event.
+    # The default implemention enforces a typed constraint on the metadata column
+    # with the following two properties: `actor_id` and `reason`
+    # Use a custom metadata class to override this behaviour.
+    # Defaults to `Eventsimple::Metadata`
+    config.metadata_klass = 'Eventsimple::Metadata'
+
+    # Optional: Reactors inherit from an ActiveJob base class.
+    # Set the parent class for reactors.
+    # Defaults to ActiveJob::Base.
+    config.active_job_parent_klass = 'ApplicationJob'
+
+    # Optional: When using an ActiveJob adapter that writes to a different data store like redis,
+    # it is possible that the reactor is executed before the transaction persisting the event is committed. This can result in noisy errors when using processors like Sidekiq.
+    # Enable this option to retry the reactor inline if the event is not found.
+    # Defaults to false.
+    config.retry_reactor_on_record_not_found = true
+  end
 ```
 
 Generate a migration and add `Eventsimple` to an existing ActiveRecord model.
@@ -93,7 +127,7 @@ add_column :users, :lock_version, :integer
 
 Adding lock_version to the model enables [optimistic locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html) and protects against concurrent updates to stale versions of the model. Eventsimple will automatically retry on concurrency failures.
 
-`events_namespace` is an optional argument pointing to the directory where your events classes are defined. If you do not specify this argument, Eventsimple will store the full namespace of the event classes in the STI type column.
+`events_namespace` is an optional argument pointing to the directory where your events classes are defined. If you do not specify this argument, Eventsimple will store the full namespace of the event classes in the STI column.
 
 ### Event Table definition
 
@@ -192,14 +226,14 @@ They should **only** contain business logic that make additional database writes
 This is because executing writes to other data stores, e.g API call or writes to kafka/sqs, will result in the transaction being non-deterministic.
 
 #### Async Reactors
-Async reactors are executed via Sidekiq. Eventsimple implements checks to enforce reliable eventually consistent behaviour.
+Async reactors are executed via ActiveJob. Eventsimple implements checks to enforce reliable eventually consistent behaviour.
 
 Use Async reactors to kick off async workflows or writes to external data sources as a side effect of model updates.
 
 Reactor example:
 
 ```ruby
-# Register your dispatch class in an initializer.
+# Register your dispatch classes in config/initializers/eventsimple.rb.
 Eventsimple.configure do |config|
   config.dispatchers = %w[
     UserComponent::Dispatcher
@@ -224,15 +258,10 @@ end
 
 # Reactor classes accept the event as the only argument in the constructor
 # and must define a `call` method
-module UserComponent::Reactors::Created
+module UserComponent::Reactors::Created < Eventsimple::Reactor
   class SendNotification
-    def initialize(event)
-      @event = event
-      @user = event.aggregate
-    end
-    attr_reader :event, :user
-
-    def call
+    def call(event)
+      user = event.aggregate
       # do something
     end
   end
@@ -242,7 +271,7 @@ end
 ## Configuring an outbox consumer
 
 For many use cases, async reactors are sufficient to handle workflows like making an API call or publishing to a message broker.
-However since reactors use Sidekiq, order is not guaranteed.
+However since reactors use ActiveJob, order is not guaranteed.
 
 Eventsimple provides an outbox implementation with order and eventual consistency guarantees.
 

@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ['Zulfiqar Ali']
   spec.email = ['zulfiqar@wealthsimple.com']
 
-  spec.summary = 'Event driven toolkit using Rails and Sidekiq'
-  spec.description = 'Event driven architecture using Rails and Sidekiq'
+  spec.summary = 'Event sourcing toolkit using Rails and ActiveJob'
+  spec.description = 'Event sourcing toolkit using Rails and ActiveJob'
   spec.homepage = 'https://github.com/wealthsimple/eventsimple'
   spec.required_ruby_version = ">= 3.2.0"
 

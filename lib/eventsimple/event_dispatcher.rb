@@ -29,11 +29,11 @@ module Eventsimple
     def self.dispatch(event)
       reactors = rules.for(event)
       reactors.sync.each do |reactor|
-        reactor.new(event).call
+        reactor.perform_now(event)
         event.reload
       end
       reactors.async.each do |reactor|
-        ReactorWorker.perform_async(event.to_global_id.to_s, reactor.to_s)
+        reactor.perform_later(event)
       end
     end
 
