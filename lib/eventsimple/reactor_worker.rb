@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# legacy worker for backwards compatibility when upgrading from Eventsimple <= 1.0.0
 module Eventsimple
   class ReactorWorker
     include Sidekiq::Worker
@@ -12,7 +13,7 @@ module Eventsimple
       Rails.logger.error("Event #{event_global_id} not found for reactor: #{reactor_class}")
     else
       reactor = reactor_class.constantize
-      reactor.new(event).call
+      reactor.new.call(event)
     end
   end
 end

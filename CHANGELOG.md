@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.1.0 - 2023-06-11
+### Changed
+- Reactors now use ActiveJob instead of Sidekiq directly. This allows for more
+  flexibility in the future and allows for the use of other job backends.
+  The reactor class definition must now inherit from Eventsimple::Reactor and are no longer
+  instantiated with the event as an argument. Instead, the event is passed to the `call` method.
+  This change is backwards compatible with existing inflight reactor jobs.
+
 ## 1.0.0 - 2023-05-03
 ### Changed
 - Release under MIT license

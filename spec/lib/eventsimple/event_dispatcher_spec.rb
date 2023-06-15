@@ -1,6 +1,8 @@
 module Eventsimple
   RSpec.describe EventDispatcher do
-    describe '.dispatch' do
+    include ActiveJob::TestHelper
+
+    describe '.dispatch', type: :job do
       let(:event) do
         UserComponent::Events::Created.create(
           user: User.new,
@@ -13,36 +15,18 @@ module Eventsimple
         )
       end
 
-      let(:sync_reactor) {
-        instance_double(UserComponent::Reactors::Created::SyncReactor, call: true)
-      }
-      let(:async_reactor) {
-        instance_double(UserComponent::Reactors::Created::AsyncReactor, call: true)
-      }
-
-      before do
-        allow(UserComponent::Reactors::Created::SyncReactor).to receive(:new).
-          and_return(sync_reactor)
-        allow(UserComponent::Reactors::Created::AsyncReactor).to receive(:new).
-          and_return(async_reactor)
-      end
-
       it 'triggers sync reactors' do
+        allow(UserComponent::Reactors::Created::SyncReactor).to receive(:perform_now)
+
         described_class.dispatch(event)
 
-        expect(sync_reactor).to have_received(:call)
+        expect(UserComponent::Reactors::Created::SyncReactor).to have_received(:perform_now).with(event)
       end
 
       it 'enqueues async reactors' do
-        described_class.dispatch(event)
-
-        expect(ReactorWorker.jobs.size).to eq(1)
-        expect(ReactorWorker.jobs.first['args']).to eq(
-          [
-            event.to_global_id.to_s,
-            "UserComponent::Reactors::Created::AsyncReactor",
-          ],
-        )
+        expect { described_class.dispatch(event) }.to have_enqueued_job(
+          UserComponent::Reactors::Created::AsyncReactor,
+        ).with(event).at(:no_wait)
       end
     end
   end
