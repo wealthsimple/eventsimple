@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Eventsimple
-  class Reactor < Eventsimple.configuration.active_job_parent_klass
+  class Reactor < ActiveJob::Base # rubocop:disable Rails/ApplicationJob
     queue_as :eventsimple
 
     def perform(event)

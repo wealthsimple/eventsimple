@@ -20,6 +20,7 @@ require 'eventsimple/metadata_type'
 require 'eventsimple/metadata'
 require 'eventsimple/dispatcher'
 require 'eventsimple/event_dispatcher'
+require 'eventsimple/reactor'
 require 'eventsimple/reactor_worker'
 require 'eventsimple/invalid_transition'
 
