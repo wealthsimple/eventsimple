@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.1.1 - 2023-06-19
+### Changed
+- Remove active_job_parent_klass config introduced in 1.1.0. There isn't a usecase for it yet,
+  and it was causing loading issues.
+
 ## 1.1.0 - 2023-06-11
 ### Changed
 - Reactors now use ActiveJob instead of Sidekiq directly. This allows for more
