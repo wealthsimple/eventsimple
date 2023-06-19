@@ -74,11 +74,6 @@ Setup an initializer in `config/initializers/eventsimple.rb`:
     # Defaults to `Eventsimple::Metadata`
     config.metadata_klass = 'Eventsimple::Metadata'
 
-    # Optional: Reactors inherit from an ActiveJob base class.
-    # Set the parent class for reactors.
-    # Defaults to ActiveJob::Base.
-    config.active_job_parent_klass = 'ApplicationJob'
-
     # Optional: When using an ActiveJob adapter that writes to a different data store like redis,
     # it is possible that the reactor is executed before the transaction persisting the event is committed. This can result in noisy errors when using processors like Sidekiq.
     # Enable this option to retry the reactor inline if the event is not found.
