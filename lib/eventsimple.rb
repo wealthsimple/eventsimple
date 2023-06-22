@@ -13,6 +13,7 @@ require 'sidekiq'
 
 require 'dry_types'
 
+require 'eventsimple/active_job/arguments'
 require 'eventsimple/configuration'
 require 'eventsimple/message'
 require 'eventsimple/data_type'
