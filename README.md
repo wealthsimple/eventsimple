@@ -82,6 +82,19 @@ Setup an initializer in `config/initializers/eventsimple.rb`:
   end
 ```
 
+If using `Sidekiq` as a backend to `ActiveJob` for async reactors, please add this setting to
+`config/application.rb`:
+```ruby
+  config.active_job.queue_adapter = :sidekiq
+```
+The jobs are pushed into a queue named `eventsimple`, so please add it to your
+`sidekiq.yml` as follows:
+```yml
+:queues:
+  - [default, 10]
+  - [eventsimple, 10]
+```
+
 Generate a migration and add `Eventsimple` to an existing ActiveRecord model.
 
 ```ruby
