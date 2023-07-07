@@ -9,7 +9,6 @@ require 'active_support'
 require 'dry-types'
 require 'dry-struct'
 require 'retriable'
-require 'sidekiq'
 
 require 'dry_types'
 
@@ -22,7 +21,6 @@ require 'eventsimple/metadata'
 require 'eventsimple/dispatcher'
 require 'eventsimple/event_dispatcher'
 require 'eventsimple/reactor'
-require 'eventsimple/reactor_worker'
 require 'eventsimple/invalid_transition'
 
 require 'eventsimple/entity'
