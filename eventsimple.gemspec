@@ -28,7 +28,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'pg', '~> 1.4'
   spec.add_runtime_dependency 'rails', '~> 7.0'
   spec.add_runtime_dependency 'retriable', '~> 3.1'
-  spec.add_runtime_dependency 'sidekiq', '~> 7.0'
 
   spec.add_development_dependency 'bundle-audit'
   spec.add_development_dependency 'fuubar'
