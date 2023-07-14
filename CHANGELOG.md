@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.1.4 - 2023-07-14
+### Changed
+- Added SECURITY.md file to repo for reporting
+
 ## 1.1.3 - 2023-07-07
 ### Changed
 - Sidekiq is no longer a required dependency.
