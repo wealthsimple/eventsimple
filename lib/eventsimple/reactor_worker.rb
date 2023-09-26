@@ -6,8 +6,10 @@ module Eventsimple
     include Sidekiq::Worker
 
     def perform(event_global_id, reactor_class)
+      gid = GlobalID.parse(event_global_id)
+
       event = Retriable.with_context(:reactor) do
-        ApplicationRecord.uncached { GlobalID::Locator.locate event_global_id }
+        gid.model_class.uncached { GlobalID::Locator.locate event_global_id }
       end
     rescue ActiveRecord::RecordNotFound
       Rails.logger.error("Event #{event_global_id} not found for reactor: #{reactor_class}")
