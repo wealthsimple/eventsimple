@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.2.0 - 2023-09-26
+### Changed
+- Fix issue where the reactor worker might not work correctly for models not inheriting from ApplicationRecord.
+
 ## 1.1.3 - 2023-07-07
 ### Changed
 - Sidekiq is no longer a required dependency.
