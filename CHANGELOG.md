@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.2.1 - 2023-11-18
+### Changed
+- Allow timestamp data in events to override default timestamps update.
+- This allows us to create temporal events for example in the case of snapshots.
+
 ## 1.2.0 - 2023-09-26
 ### Changed
 - Fix issue where the reactor worker might not work correctly for models not inheriting from ApplicationRecord.

@@ -20,7 +20,6 @@ RSpec.configure do |config|
   ENV['RAILS_ROOT'] ||= "#{File.dirname(__FILE__)}../../../spec/dummy"
 
   require 'rspec/rails'
-  RSpec::Matchers.define_negated_matcher(:not_change, :change)
 
   ActiveRecord::Migration.maintain_test_schema!
 

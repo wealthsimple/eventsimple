@@ -19,7 +19,6 @@ module UserComponent
         user.canonical_id = data.canonical_id
         user.username = data.username
         user.email = data.email
-        user
       end
     end
   end
