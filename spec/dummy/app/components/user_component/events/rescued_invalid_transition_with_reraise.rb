@@ -21,7 +21,6 @@ module UserComponent
         user.canonical_id = data.canonical_id
         user.username = 'test'
         user.email = 'test@example.com'
-        user
       end
     end
   end

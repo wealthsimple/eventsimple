@@ -35,8 +35,8 @@ module Eventsimple
         assign_attributes(self.class.column_defaults.except(*ignore_props))
 
         event_history.each do |event|
-          event.apply(self)
           event.apply_timestamps(self)
+          event.apply(self)
         end
 
         self

@@ -12,8 +12,6 @@ module UserComponent
 
         user.created_at ||= created_at
         user.updated_at = created_at
-
-        user
       end
     end
   end

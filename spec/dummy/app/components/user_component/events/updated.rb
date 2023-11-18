@@ -15,7 +15,6 @@ module UserComponent
 
       def apply(user)
         user.email = data.email
-        user
       end
     end
   end
