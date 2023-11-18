@@ -45,3 +45,5 @@ RSpec.shared_examples 'an event in invalid state that is rescued' do
     end
   end
 end
+
+RSpec::Matchers.define_negated_matcher(:not_change, :change)

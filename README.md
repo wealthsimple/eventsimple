@@ -176,8 +176,6 @@ module UserComponent
       def apply(user)
         user.canonical_id = data.canonical_id
         user.email = data.email
-
-        user
       end
     end
   end

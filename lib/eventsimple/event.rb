@@ -86,8 +86,8 @@ module Eventsimple
 
       # Apply the transformation to the aggregate and save it.
       def apply_and_persist
-        apply(aggregate)
         apply_timestamps(aggregate)
+        apply(aggregate)
 
         # Persist!
         aggregate.save!
