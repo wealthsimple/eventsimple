@@ -14,13 +14,27 @@
     <% if @model_name %>
       <div class="col col-sm-7">
         <%= form_with url: model_entity_path(@model_name, ''), id: 'model-search' do |f| %>
-          <%= f.search_field :event_id, class: 'form-control', placeholder: 'Canonical identifier', value: @aggregate_id, required: true, aria: { label: 'Entity canonical identifier' }  %>
+          <%= f.search_field :event_id, class: 'form-control', placeholder: 'Go to event by identifier', value: @aggregate_id, aria: { label: 'Go to event by identifier' }  %>
         </div>
         <div class="col col-sm-2">
           <%= f.submit 'Search', class: 'btn btn-primary' %>
-        <% end %>
-      </div>
+        </div>
+      <% end %>     
     <% end %>
   </div>
+  <% if @model_name && !@aggregate_id %>
+    <%= form_with url: model_path(@model_name), method: :get, id: 'metadata-search' do |f| %>
+      <div class="row">
+        <% @metadata_attributes.each do |metadata_attribute| %>
+          <div class="form-group col-sm-4">
+            <%= f.search_field "metadata[#{metadata_attribute}]", class: 'form-control', placeholder: "Search by #{metadata_attribute}", value: @metadata[metadata_attribute], aria: { label: "Search by #{metadata_attribute}" }  %>
+          </div>
+        <% end %>
+        <div class="col col-sm-2">
+          <%= f.submit 'Search', class: 'btn btn-primary' %>
+        </div>
+        </div>
+    <% end %>
+  <% end %>
 </header>
 <!-- Header Search End -->
