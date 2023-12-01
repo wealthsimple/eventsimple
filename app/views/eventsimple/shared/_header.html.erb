@@ -22,12 +22,12 @@
       <% end %>     
     <% end %>
   </div>
-  <% if @model_name && !@aggregate_id %>
+  <% if @model_name && !@aggregate_id && @filters.any? %>
     <%= form_with url: model_path(@model_name), method: :get, id: 'metadata-search' do |f| %>
       <div class="row">
-        <% @metadata_attributes.each do |metadata_attribute| %>
+        <% @filters.each do |filter, value| %>
           <div class="form-group col-sm-4">
-            <%= f.search_field "metadata[#{metadata_attribute}]", class: 'form-control', placeholder: "Search by #{metadata_attribute}", value: @metadata[metadata_attribute], aria: { label: "Search by #{metadata_attribute}" }  %>
+            <%= f.search_field "filters[#{filter}]", class: 'form-control', placeholder: "Search by #{filter}", value: value, aria: { label: "Search by #{filter}" }  %>
           </div>
         <% end %>
         <div class="col col-sm-2">
