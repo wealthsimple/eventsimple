@@ -1,18 +1,8 @@
 <!-- Header Search Start -->
 <header class="container mb-4">
   <div class="row mb-3">
-    <div class="col col-sm-3">
-      <select id="form-search-model-name" class="form-select" aria-label="Model select" onchange="document.location.href=this.value" required>
-        <option value="">Choose event source model</option>
-        <% event_class_names.each do |klass| %>
-          <% is_active = klass === @model_name ? 'selected' : '' %>
-          <option value="<%= model_path(klass) %>" <%= is_active %>><%= klass %></option>
-        <% end %>
-      </select>
-    </div>
-
     <% if @model_name %>
-      <div class="col col-sm-7">
+      <div class="col col-sm-10">
         <%= form_with url: model_entity_path(@model_name, ''), id: 'model-search' do |f| %>
           <%= f.search_field :event_id, class: 'form-control', placeholder: 'Go to event by identifier', value: @aggregate_id, aria: { label: 'Go to event by identifier' }  %>
         </div>
