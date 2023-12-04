@@ -1,6 +1,6 @@
 <!-- Header Search Start -->
 <header class="container mb-4">
-  <div class="row">
+  <div class="row mb-3">
     <div class="col col-sm-3">
       <select id="form-search-model-name" class="form-select" aria-label="Model select" onchange="document.location.href=this.value" required>
         <option value="">Choose event source model</option>
@@ -22,18 +22,20 @@
       <% end %>     
     <% end %>
   </div>
-  <% if @model_name && !@aggregate_id && @filters.any? %>
-    <%= form_with url: model_path(@model_name), method: :get, id: 'metadata-search' do |f| %>
+  <% if @model_name && !@aggregate_id && @filters&.any? %>
+    <%= form_with scope: :filters, url: model_path(@model_name), method: :get, id: 'model-filter' do |f| %>
       <div class="row">
-        <% @filters.each do |filter, value| %>
-          <div class="form-group col-sm-4">
-            <%= f.search_field "filters[#{filter}]", class: 'form-control', placeholder: "Search by #{filter}", value: value, aria: { label: "Search by #{filter}" }  %>
-          </div>
-        <% end %>
-        <div class="col col-sm-2">
+        <label for="filters_keys[keys]" class="col-sm-2 col-form-label">Filter attribute</label>
+        <div class="form-group col-sm-3">
+          <%= select :filters_keys, :keys, @filters.keys, { selected: @filters.compact.keys&.first }, { class:"form-select", onchange: "document.getElementById('model-filter-value').name=`filters[${this.value}]`" } %>
+        </div>
+        <div class="form-group col-sm-5">
+          <%= f.search_field @filters.compact.keys&.first || @filters.keys.first, id: 'model-filter-value', value: @filters.compact.values&.first, class:"form-control", placeholder: "Filter value" %>
+        </div>
+        <div class="form-group col-sm-2">
           <%= f.submit 'Search', class: 'btn btn-primary' %>
         </div>
-        </div>
+      </div>
     <% end %>
   <% end %>
 </header>
