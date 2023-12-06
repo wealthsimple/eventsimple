@@ -9,6 +9,8 @@ RSpec.describe "Models", type: :request do
       expect(response.body).to include('Time')
       expect(response.body).to include('Identifier')
       expect(response.body).to include('Event')
+      expect(response.body).to include('Filter attribute')
+      expect(response.body).to include('username')
     end
   end
 end
