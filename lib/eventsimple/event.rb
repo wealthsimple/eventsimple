@@ -4,7 +4,7 @@ module Eventsimple
     include GlobalID::Identification
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    def drives_events_for(aggregate_klass, aggregate_id:, events_namespace: nil, filter_attributes: nil)
+    def drives_events_for(aggregate_klass, aggregate_id:, events_namespace: nil)
       class_attribute :_events_namespace
       self._events_namespace = events_namespace
 
@@ -19,9 +19,6 @@ module Eventsimple
 
       class_attribute :_on_invalid_transition
       self._on_invalid_transition = ->(error) { raise error }
-
-      class_attribute :_filter_attributes
-      self._filter_attributes = [:aggregate_id] | Array.wrap(filter_attributes)
 
       self.inheritance_column = :type
       self.store_full_sti_class = false
