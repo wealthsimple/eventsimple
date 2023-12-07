@@ -8,6 +8,10 @@ module Eventsimple
       @event_id = params[:e] || -1
       @tab_id = (params[:t] == 'event') ? 'event' : 'entity'
 
+      filter_columns = @model_class._filter_attributes
+      params_filters = params.permit(filters: {})[:filters] || {}
+      @filters = filter_columns.to_h { |column| [column, params_filters[column]] }
+
       primary_key = @model_class.event_class._aggregate_id
       @entity = @model_class.find_by!(primary_key => @aggregate_id)
       @entity_event_history = @entity.events.reverse

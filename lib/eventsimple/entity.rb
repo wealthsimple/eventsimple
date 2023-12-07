@@ -2,7 +2,7 @@ module Eventsimple
   module Entity
     DEFAULT_IGNORE_PROPS = %w[id lock_version].freeze
 
-    def event_driven_by(event_klass, aggregate_id:)
+    def event_driven_by(event_klass, aggregate_id:, filter_attributes: [])
       has_many :events, class_name: event_klass.name.to_s,
         foreign_key: :aggregate_id,
         primary_key: aggregate_id,
@@ -12,6 +12,9 @@ module Eventsimple
         validate: false
 
       class_attribute :ignored_for_projection, default: []
+
+      class_attribute :_filter_attributes
+      self._filter_attributes = [aggregate_id] | Array.wrap(filter_attributes)
 
       # disable automatic timestamp updates
       self.record_timestamps = false
