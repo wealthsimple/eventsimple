@@ -39,7 +39,7 @@ module Eventsimple
 
       return unless @latest_entities.all? { |entity| entity.aggregate_id == first_aggregate_id }
 
-      redirect_to model_entity_path(@model_name, first_aggregate_id)
+      redirect_to model_entity_path(@model_name, first_aggregate_id, filters: @filters)
     end
   end
 end

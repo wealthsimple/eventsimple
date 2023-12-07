@@ -1,6 +1,6 @@
 <!-- Header Search Start -->
-<header class="container mb-4">  
-  <% if @model_name && !@aggregate_id%>
+<header class="container mb-4">
+  <% if @model_name %>
     <%= form_with scope: :filters, url: model_path(@model_name), method: :get, id: 'model-filter' do |f| %>
       <div class="row">
         <label for="filters_keys[keys]" class="col-sm-2 col-form-label">Filter attribute</label>
