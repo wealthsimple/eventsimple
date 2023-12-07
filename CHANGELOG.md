@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.2.2 - 2023-11-29
+### Changed
+- Add support for filtering events by aggregate model attributes.
+
 ## 1.2.1 - 2023-11-18
 ### Changed
 - Allow timestamp data in events to override default timestamps update.
