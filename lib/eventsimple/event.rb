@@ -21,7 +21,7 @@ module Eventsimple
       self._on_invalid_transition = ->(error) { raise error }
 
       class_attribute :_filter_attributes
-      self._filter_attributes = Array.wrap(filter_attributes)
+      self._filter_attributes = [:aggregate_id] | Array.wrap(filter_attributes)
 
       self.inheritance_column = :type
       self.store_full_sti_class = false
