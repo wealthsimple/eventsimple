@@ -1,26 +1,20 @@
 <!-- Header Search Start -->
 <header class="container mb-4">
-  <div class="row">
-    <div class="col col-sm-3">
-      <select id="form-search-model-name" class="form-select" aria-label="Model select" onchange="document.location.href=this.value" required>
-        <option value="">Choose event source model</option>
-        <% event_class_names.each do |klass| %>
-          <% is_active = klass === @model_name ? 'selected' : '' %>
-          <option value="<%= model_path(klass) %>" <%= is_active %>><%= klass %></option>
-        <% end %>
-      </select>
-    </div>
-
-    <% if @model_name %>
-      <div class="col col-sm-7">
-        <%= form_with url: model_entity_path(@model_name, ''), id: 'model-search' do |f| %>
-          <%= f.search_field :event_id, class: 'form-control', placeholder: 'Canonical identifier', value: @aggregate_id, required: true, aria: { label: 'Entity canonical identifier' }  %>
+  <% if @model_name %>
+    <%= form_with scope: :filters, url: model_path(@model_name), method: :get, id: 'model-filter' do |f| %>
+      <div class="row">
+        <label for="filters_keys[keys]" class="col-sm-2 col-form-label">Filter attribute</label>
+        <div class="form-group col-sm-3">
+          <%= select :filters_keys, :keys, @filters.keys, { selected: @filters.compact.keys&.first }, { class:"form-select", onchange: "document.getElementById('model-filter-value').name=`filters[${this.value}]`" } %>
         </div>
-        <div class="col col-sm-2">
+        <div class="form-group col-sm-5">
+          <%= f.search_field @filters.compact.keys&.first || @filters.keys.first, id: 'model-filter-value', value: @filters.compact.values&.first, class:"form-control", placeholder: "Filter value" %>
+        </div>
+        <div class="form-group col-sm-2">
           <%= f.submit 'Search', class: 'btn btn-primary' %>
-        <% end %>
+        </div>
       </div>
     <% end %>
-  </div>
+  <% end %>
 </header>
 <!-- Header Search End -->

@@ -62,12 +62,6 @@
           query.set(param, value);
           link.attr("href",window.location.pathname + '?' + query.toString());
         });
-
-        $('#model-search').on('submit', (event) => {
-          event.preventDefault();
-          const form = $(event.currentTarget);
-          window.location = form.attr('action') + form.children('#event_id').val();
-        });
       });
     </script>
 
