@@ -61,7 +61,7 @@
                 <th scope="row" colspan="2">Data</th>
               </tr>
               <% if @selected_event.data.present? %>
-                <% @selected_event.data.attributes.each do |attr_name, attr_value| %>
+                <% @selected_event.data.to_hash.each do |attr_name, attr_value| %>
                 <tr>
                   <td>&nbsp;&nbsp;&nbsp;&nbsp;<%= attr_name %></td>
                   <td><code class="entity-property"><%= attr_value %></code></td>
@@ -72,7 +72,7 @@
               <tr>
                 <th scope="row" colspan="2">Metadata</th>
               </tr>
-              <% @selected_event.metadata.attributes.each do |attr_name, attr_value| %>
+              <% @selected_event.metadata.to_hash.each do |attr_name, attr_value| %>
                 <tr>
                   <td>&nbsp;&nbsp;&nbsp;&nbsp;<%= attr_name %></td>
                   <td><code class="entity-property">: <%= attr_value %></code></td>

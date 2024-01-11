@@ -104,7 +104,7 @@ module Eventsimple
       end
 
       def aggregate=(aggregate)
-        public_send("#{_aggregate_klass.model_name.element}=", aggregate)
+        public_send(:"#{_aggregate_klass.model_name.element}=", aggregate)
       end
     end
 

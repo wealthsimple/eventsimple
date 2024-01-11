@@ -12,8 +12,8 @@ RSpec.describe UserComponent::Events::OverrideTimestamp do
         user: user,
         data: {
           canonical_id: canonical_id,
-          created_at: Time.new(2023, 1, 1),
-          updated_at: Time.new(2023, 1, 1),
+          created_at: Time.zone.local(2023, 1, 1),
+          updated_at: Time.zone.local(2023, 1, 1),
         },
       )
     end

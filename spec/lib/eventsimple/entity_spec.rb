@@ -16,7 +16,7 @@ module Eventsimple
       it 'returns true if the entity matches its events' do
         expect(user.projection_matches_events?).to be true
 
-        user.update(username: 'changed', updated_at: 1.day.ago)
+        user.update!(username: 'changed', updated_at: 1.day.ago)
 
         expect(user.projection_matches_events?).to be false
       end
@@ -29,7 +29,7 @@ module Eventsimple
 
         original_user = User.find_by(id: user.id)
 
-        user.update(username: 'changed', updated_at: 1.day.ago)
+        user.update!(username: 'changed', updated_at: 1.day.ago)
 
         user.reproject
         expect(user.changes.keys).to eq(['username', 'updated_at'])
