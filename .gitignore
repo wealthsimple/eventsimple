@@ -5,6 +5,7 @@
 /doc/
 /log/*.log
 /pkg/
+/spec/examples.txt
 /spec/reports/
 /tmp/
 .idea

@@ -90,7 +90,9 @@ module Eventsimple
         apply(aggregate)
 
         # Persist!
+        aggregate.enable_writes!
         aggregate.save!
+        aggregate.readonly!
 
         self.aggregate = aggregate
       end

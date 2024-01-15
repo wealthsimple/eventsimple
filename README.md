@@ -342,6 +342,24 @@ Create a rake task to run the consumer
 ## Helper methods
 Some convenience methods are provided to help with common use cases.
 
+**`#enable_writes!`**
+Write access on entities is disabled by default outside of writes via events. Use this method to enable writes on an entity.
+
+```ruby
+  user = User.find_by(canonical_id: 'user-123')
+  user.enable_writes! do
+    user.reproject
+    user.save!
+  end
+```
+
+If you are using FactoryBot, you can add the following in your rails_helper.rb to enable writes on the entity:
+```ruby
+FactoryBot.define do
+  after(:build) { |model| model.enable_writes! if model.class.ancestors.include?(Eventsimple::Entity::InstanceMethods) }
+end
+``
+
 **`#reproject(at: nil)`**
 
 Reproject an entity from events (rebuilds in memory but does not persist the entity).

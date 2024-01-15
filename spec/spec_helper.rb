@@ -6,15 +6,26 @@ require 'eventsimple/support/spec_helpers'
 require 'retriable'
 
 RSpec.configure do |config|
-  # Enable flags like --only-failures and --next-failure
-  config.example_status_persistence_file_path = ".rspec_status"
+  config.expect_with :rspec do |expectations|
+    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
+  end
 
-  # Disable RSpec exposing methods globally on `Module` and `main`
+  config.mock_with :rspec do |mocks|
+    mocks.verify_partial_doubles = true
+  end
+
+  config.shared_context_metadata_behavior = :apply_to_host_groups
+  config.filter_run_when_matching :focus
+  config.example_status_persistence_file_path = "spec/examples.txt"
   config.disable_monkey_patching!
 
-  config.expect_with :rspec do |c|
-    c.syntax = :expect
+  if config.files_to_run.one?
+    config.default_formatter = "doc"
   end
+
+  config.order = :random
+
+  Kernel.srand config.seed
 
   require File.expand_path('../spec/dummy/config/environment.rb', __dir__)
   ENV['RAILS_ROOT'] ||= "#{File.dirname(__FILE__)}../../../spec/dummy"
@@ -33,4 +44,10 @@ RSpec.configure do |config|
       c.contexts[context][:base_interval] = 0
     end
   end
+
+  FactoryBot.define do
+    after(:build) { |model| model.enable_writes! if model.class.ancestors.include? Eventsimple::Entity::InstanceMethods }
+  end
+
+  config.include FactoryBot::Syntax::Methods
 end

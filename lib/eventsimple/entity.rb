@@ -11,6 +11,8 @@ module Eventsimple
         autosave: false,
         validate: false
 
+      after_initialize :readonly!
+
       class_attribute :ignored_for_projection, default: []
 
       class_attribute :_filter_attributes
@@ -30,6 +32,15 @@ module Eventsimple
         reprojected = self.class.find(id).reproject
 
         attributes == reprojected.attributes
+      end
+
+      def enable_writes!(&block)
+        @readonly = false
+
+        if block
+          yield
+          @readonly = true
+        end
       end
 
       def reproject(at: nil)

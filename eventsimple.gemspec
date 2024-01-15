@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'retriable', '~> 3.1'
 
   spec.add_development_dependency 'bundle-audit'
+  spec.add_development_dependency 'factory_bot_rails'
   spec.add_development_dependency 'fuubar'
   spec.add_development_dependency 'git'
   spec.add_development_dependency 'guard-rspec'
