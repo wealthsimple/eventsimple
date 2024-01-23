@@ -18,6 +18,7 @@ RSpec.describe Eventsimple::Event do
       it 'retries and successfully writes the event' do
         stale_user = User.find_by(canonical_id: user_canonical_id)
 
+        user.enable_writes!
         user.touch
 
         event = UserComponent::Events::Deleted.create!(user: stale_user)
@@ -29,6 +30,7 @@ RSpec.describe Eventsimple::Event do
         it 'raised stale object error with details' do
           stale_user = User.find_by(canonical_id: user_canonical_id)
 
+          user.enable_writes!
           user.touch
 
           expect {

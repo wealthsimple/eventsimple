@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.3.0 - 2024-01-14
+### Changed
+- Prevent manual write access to the entity table by default. This is to prevent
+  accidental writes to the entity table. Use entity.enable_writes! to enable writes.
+
 ## 1.2.3 - 2024-01-11
 ### Changed
 - Fix rendering of deleted events

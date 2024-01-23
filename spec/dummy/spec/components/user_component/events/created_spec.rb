@@ -33,15 +33,7 @@ RSpec.describe UserComponent::Events::Created do
     end
 
     context 'when can_apply? check fails' do
-      let(:user) {
-        User.create(
-          canonical_id: canonical_id,
-          username: 'test-user',
-          email: 'test@example.com',
-          created_at: Time.current,
-          updated_at: Time.current,
-        )
-      }
+      let(:user) { create(:user, canonical_id: canonical_id) }
 
       it_behaves_like 'an event in invalid state'
     end

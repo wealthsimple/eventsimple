@@ -13,10 +13,12 @@ module Eventsimple
     end
 
     describe '#projection_matches_events?' do
-      it 'returns true if the entity matches its events' do
+      it 'returns false if the entity no longer matches state from events' do
         expect(user.projection_matches_events?).to be true
 
-        user.update!(username: 'changed', updated_at: 1.day.ago)
+        user.enable_writes! do
+          user.update!(username: 'changed', updated_at: 1.day.ago)
+        end
 
         expect(user.projection_matches_events?).to be false
       end
@@ -29,17 +31,38 @@ module Eventsimple
 
         original_user = User.find_by(id: user.id)
 
-        user.update!(username: 'changed', updated_at: 1.day.ago)
+        user.enable_writes! do
+          user.update!(username: 'changed', updated_at: 1.day.ago)
 
-        user.reproject
-        expect(user.changes.keys).to eq(['username', 'updated_at'])
-        user.save!
+          user.reproject
+          expect(user.changes.keys).to eq(['username', 'updated_at'])
+          user.save!
+        end
 
         expect(
           original_user.attributes.except(*Entity::DEFAULT_IGNORE_PROPS),
         ).to eq(
           user.attributes.except(*Entity::DEFAULT_IGNORE_PROPS),
         )
+      end
+    end
+
+    describe '#enable_writes!' do
+      it 'allows writes to the entity' do
+        expect(user.readonly?).to be true
+
+        user.enable_writes!
+        expect(user.readonly?).to be false
+      end
+
+      context 'when enabled with a block' do
+        it 'disables writes after the block' do
+          user.enable_writes! do
+            expect(user.readonly?).to be false
+          end
+
+          expect(user.readonly?).to be true
+        end
       end
     end
   end
