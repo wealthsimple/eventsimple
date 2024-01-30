@@ -358,7 +358,7 @@ If you are using FactoryBot, you can add the following in your rails_helper.rb t
 FactoryBot.define do
   after(:build) { |model| model.enable_writes! if model.class.ancestors.include?(Eventsimple::Entity::InstanceMethods) }
 end
-``
+```
 
 **`#reproject(at: nil)`**
 
