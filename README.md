@@ -130,7 +130,7 @@ create_table :user_events do |t|
   t.index :idempotency_key, unique: true
 end
 
-add_column :users, :lock_version, :integer
+add_column :users, :lock_version, :integer, default: 0, null: false
 ```
 
 Adding lock_version to the model enables [optimistic locking](https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html) and protects against concurrent updates to stale versions of the model. Eventsimple will automatically retry on concurrency failures.
