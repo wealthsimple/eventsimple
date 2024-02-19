@@ -56,12 +56,28 @@ module Eventsimple
       end
 
       context 'when enabled with a block' do
-        it 'disables writes after the block' do
-          user.enable_writes! do
+        context 'when the entity was readonly before' do
+          it 'restores readonly status after the block' do
+            user.readonly!
+
+            user.enable_writes! do
+              expect(user.readonly?).to be false
+            end
+
+            expect(user.readonly?).to be true
+          end
+        end
+
+        context 'when the entity was not readonly before' do
+          it 'restores readonly status after the block' do
+            user.enable_writes!
+
+            user.enable_writes! do
+              expect(user.readonly?).to be false
+            end
+
             expect(user.readonly?).to be false
           end
-
-          expect(user.readonly?).to be true
         end
       end
     end
