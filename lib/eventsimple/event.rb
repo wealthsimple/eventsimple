@@ -23,6 +23,9 @@ module Eventsimple
       self.inheritance_column = :type
       self.store_full_sti_class = false
 
+      # disable automatic timestamp updates
+      self.record_timestamps = false
+
       attribute :metadata, MetadataType.new
       attr_writer :skip_dispatcher
       attr_writer :skip_apply_check
@@ -39,7 +42,8 @@ module Eventsimple
 
       before_validation :extend_validation
       after_validation :perform_transition_checks
-      before_create :apply_and_persist
+      before_create :apply_aggregate_id
+      after_create :persist_aggregate
       after_create :dispatch
 
       include InstanceMethods
@@ -84,15 +88,21 @@ module Eventsimple
         self.aggregate = aggregate.extend(validate_form) if validate_form
       end
 
+      # The aggregate canonical identifier might be set via an initial event so we need to
+      # apply the event to the aggregate and set the aggregate_id.
+      def apply_aggregate_id
+        apply(aggregate)
+
+        self.aggregate = aggregate
+        aggregate.restore_attributes
+      end
+
       # Apply the transformation to the aggregate and save it.
-      def apply_and_persist
+      def persist_aggregate
         apply_timestamps(aggregate)
         apply(aggregate)
 
-        # Persist!
         aggregate.save!
-
-        self.aggregate = aggregate
       end
 
       def dispatch

@@ -7,7 +7,8 @@ class CreateUserEvents < ActiveRecord::Migration[7.0]
       t.json :data, null: false, default: {}
       t.json :metadata, null: false, default: {}
 
-      t.timestamps
+      t.datetime :created_at, null: false, default: -> { 'CURRENT_TIMESTAMP' }
+      t.datetime :updated_at, null: false, default: -> { 'CURRENT_TIMESTAMP' }
 
       t.index :idempotency_key, unique: true
 

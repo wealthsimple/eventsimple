@@ -10,12 +10,13 @@ class Create<%= model_name.camelize %>Events < ActiveRecord::Migration[7.0]
       t.json :data, null: false, default: {}
       t.json :metadata, null: false, default: {}
 
-      t.timestamps
+      t.datetime :created_at, null: false, default: -> { 'CURRENT_TIMESTAMP' }
+      t.datetime, updated_at, null: false, default: -> { 'CURRENT_TIMESTAMP' }
 
       t.index :idempotency_key, unique: true
     end
 
     # Enables optimistic locking on the evented table
-    add_column :<%= model_name.underscore.pluralize %>, :lock_version, :integer
+    add_column :<%= model_name.underscore.pluralize %>, :lock_version, :integer, default: 0, null: false
   end
 end
