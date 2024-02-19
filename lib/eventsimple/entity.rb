@@ -35,11 +35,12 @@ module Eventsimple
       end
 
       def enable_writes!(&block)
+        was_readonly = @readonly
         @readonly = false
 
         if block
           yield
-          @readonly = true
+          @readonly = true if was_readonly
         end
       end
 

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.3.1 - 2024-01-19
+### Changed
+- Restore readonly status to the original status after enable_writes! block.
+
 ## 1.3.0 - 2024-01-14
 ### Changed
 - Prevent manual write access to the entity table by default. This is to prevent
