@@ -12,9 +12,19 @@ RSpec.describe Eventsimple::Metadata do
     expect(result.actor_id).to eq('id')
   end
 
+  it 'supports an actor_id as nil' do
+    result = described_class.new(actor_id: nil)
+    expect(result.actor_id).to eq(nil)
+  end
+
   it 'supports a reason as a string' do
     result = described_class.new(reason: 'the reason')
     expect(result.reason).to eq('the reason')
+  end
+
+  it 'supports a reason as nil' do
+    result = described_class.new(reason: nil)
+    expect(result.reason).to eq(nil)
   end
 
   it 'raises error on unexpected keys' do

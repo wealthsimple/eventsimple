@@ -5,7 +5,7 @@ module Eventsimple
   class Metadata < Eventsimple::Message
     schema schema.strict
 
-    attribute? :actor_id, DryTypes::Strict::String
-    attribute? :reason, DryTypes::Strict::String
+    attribute? :actor_id, DryTypes::Strict::String.optional
+    attribute? :reason, DryTypes::Strict::String.optional
   end
 end
