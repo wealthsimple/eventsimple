@@ -13,6 +13,7 @@ class Create<%= model_name.camelize %>Events < ActiveRecord::Migration[7.0]
       t.timestamps
 
       t.index :idempotency_key, unique: true
+      t.index :created_at
     end
 
     # Enables optimistic locking on the evented table

@@ -30,6 +30,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_19_175459) do
     t.datetime "updated_at", null: false
     t.integer "eventide_position_id"
     t.index ["aggregate_id"], name: "index_user_events_on_aggregate_id"
+    t.index ["created_at"], name: "index_user_events_on_created_at"
     t.index ["eventide_position_id"], name: "index_user_events_on_eventide_position_id", unique: true
     t.index ["idempotency_key"], name: "index_user_events_on_idempotency_key", unique: true
   end

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.5.2 - 2024-05-22
+### Changed
+- Add created_at index in events migration generation
+
 ## 1.5.1 - 2024-05-13
 ### Changed
 - Fix bug where outbox concurrency was not being configured correctly.
