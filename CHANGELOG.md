@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.4.0 - 2024-03-01
+### Changed
+- Improved InvalidTransition error to include the aggreate_id of the transition that failed
+
 ## 1.3.2 - 2024-03-01
 ### Changed
 - Updated dependencies to fix a security vulnerability

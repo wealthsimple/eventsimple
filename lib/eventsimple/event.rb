@@ -73,7 +73,7 @@ module Eventsimple
         return if can_apply?(aggregate)
 
         _on_invalid_transition.call(
-          Eventsimple::InvalidTransition.new(self.class),
+          Eventsimple::InvalidTransition.new(self.class, aggregate_id),
         )
 
         raise ActiveRecord::Rollback
