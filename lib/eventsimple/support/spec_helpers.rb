@@ -22,6 +22,16 @@ RSpec.shared_examples 'an event in invalid state' do
       event.class, :count
     )
   end
+
+  it 'raises an event with the correct error message' do
+    allow(Eventsimple::InvalidTransition).to receive(:new).and_call_original
+
+    expect { event.save }.to raise_error do |e|
+      # make a string assertion with match instead of anything
+      # use regex pattern
+      expect(e.message).to match(/Invalid State Transition for .* on aggregate_id: #{event.aggregate_id}/)
+    end
+  end
 end
 
 RSpec.shared_examples 'an event in invalid state that is rescued' do
