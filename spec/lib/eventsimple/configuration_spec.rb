@@ -54,8 +54,8 @@ RSpec.describe Eventsimple::Configuration do
     end
 
     it "sets to expected name when changed" do
-      config.parent_record_klass = "Common::AccountServiceApplicationRecord"
-      expect(config.parent_record_klass).to eq(Common::AccountServiceApplicationRecord)
+      config.parent_record_klass = "Common::SecondaryApplicationRecord"
+      expect(config.parent_record_klass).to eq(Common::SecondaryApplicationRecord)
     end
   end
 end
