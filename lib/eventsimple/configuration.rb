@@ -4,6 +4,7 @@ module Eventsimple
   class Configuration
     attr_reader :max_concurrency_retries
     attr_writer :metadata_klass
+    attr_writer :parent_record_klass
     attr_accessor :retry_reactor_on_record_not_found
 
     attr_accessor :ui_visible_models
@@ -12,6 +13,7 @@ module Eventsimple
       @dispatchers = []
       @max_concurrency_retries = 2
       @metadata_klass = 'Eventsimple::Metadata'
+      @parent_record_klass = 'ApplicationRecord'
       @retry_reactor_on_record_not_found = false
 
       @ui_visible_models = [] # internal use only
@@ -38,6 +40,10 @@ module Eventsimple
 
     def metadata_klass
       @metadata_klass_const ||= @metadata_klass.constantize
+    end
+
+    def parent_record_klass
+      @parent_record_const ||= @parent_record_klass.constantize
     end
     # rubocop:enable Naming/MemoizedInstanceVariableName
   end

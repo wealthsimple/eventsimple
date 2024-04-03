@@ -42,4 +42,20 @@ RSpec.describe Eventsimple::Configuration do
       expect { config.metadata_klass }.to raise_error(NameError)
     end
   end
+
+  describe '#parent_record_klass' do
+    it 'defaults to ApplicationRecord' do
+      expect(config.parent_record_klass).to eq(ApplicationRecord)
+    end
+
+    it "raises when class name cannot be constantized" do
+      config.parent_record_klass = "Eventsimple::OtherClass"
+      expect { config.parent_record_klass }.to raise_error(NameError)
+    end
+
+    it "sets to expected name when changed" do
+      config.parent_record_klass = "Common::SecondaryApplicationRecord"
+      expect(config.parent_record_klass).to eq(Common::SecondaryApplicationRecord)
+    end
+  end
 end

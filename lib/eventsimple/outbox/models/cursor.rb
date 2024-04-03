@@ -2,7 +2,7 @@
 
 module Eventsimple
   module Outbox
-    class Cursor < ApplicationRecord
+    class Cursor < Eventsimple.configuration.parent_record_klass
       self.table_name = 'eventsimple_outbox_cursors'
 
       def self.fetch(event_klass, group_number)
