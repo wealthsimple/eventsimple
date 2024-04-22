@@ -1,9 +1,15 @@
 # frozen_string_literal: true
 
+ENV['RAILS_ENV'] ||= 'test'
+
+require File.expand_path('../spec/dummy/config/environment.rb', __dir__)
+ENV['RAILS_ROOT'] ||= "#{File.dirname(__FILE__)}../../../spec/dummy"
+
+require 'pry'
 require 'eventsimple'
 require 'eventsimple/support/spec_helpers'
-
 require 'retriable'
+require 'rspec/rails'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -18,6 +24,7 @@ RSpec.configure do |config|
   config.filter_run_when_matching :focus
   config.example_status_persistence_file_path = "spec/examples.txt"
   config.disable_monkey_patching!
+  config.use_transactional_fixtures = true
 
   if config.files_to_run.one?
     config.default_formatter = "doc"
@@ -26,11 +33,6 @@ RSpec.configure do |config|
   config.order = :random
 
   Kernel.srand config.seed
-
-  require File.expand_path('../spec/dummy/config/environment.rb', __dir__)
-  ENV['RAILS_ROOT'] ||= "#{File.dirname(__FILE__)}../../../spec/dummy"
-
-  require 'rspec/rails'
 
   ActiveRecord::Migration.maintain_test_schema!
 

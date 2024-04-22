@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.4.0 - 2024-04-02
+### Changed
+- Production ready release of the outbox consumer
+- Multiple consumers on an event stream are supported
+- The outbox processor is instantiated once and takes the event as an argument.
+- Added proper SIGTERM event handling and fixed shutdown behaviour.
+
 ## 1.3.3 - 2024-04-02
 ### Changed
 - add `parent_record` configuration so it can be easily overwritten

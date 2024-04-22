@@ -14,8 +14,8 @@ module Eventsimple
       class_attribute :_aggregate_id
       self._aggregate_id = aggregate_id
 
-      class_attribute :_outbox_mode
-      class_attribute :_outbox_concurrency
+      class_attribute :_outbox_enabled
+      class_attribute :_consumer_group_size
 
       class_attribute :_on_invalid_transition
       self._on_invalid_transition = ->(error) { raise error }
@@ -161,7 +161,7 @@ module Eventsimple
       end
 
       def with_locks(&block)
-        if _outbox_mode
+        if _outbox_enabled
           base_class.with_advisory_lock(base_class.name, { transaction: true }, &block)
         else
           yield

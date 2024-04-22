@@ -5,19 +5,19 @@ module Eventsimple
     class Cursor < Eventsimple.configuration.parent_record_klass
       self.table_name = 'eventsimple_outbox_cursors'
 
-      def self.fetch(event_klass, group_number)
-        existing = find_by(event_klass: event_klass.to_s, group_number: group_number)
+      def self.fetch(identifier, group_number: 0)
+        existing = find_by(identifier: identifier.to_s, group_number: group_number)
         existing ? existing.cursor : 0
       end
 
-      def self.set(event_klass, group_number, cursor)
+      def self.set(identifier, cursor, group_number: 0)
         upsert(
           {
-            event_klass: event_klass.to_s,
+            identifier: identifier.to_s,
             group_number: group_number,
             cursor: cursor,
           },
-          unique_by: [:event_klass, :group_number],
+          unique_by: [:identifier, :group_number],
         )
       end
     end
