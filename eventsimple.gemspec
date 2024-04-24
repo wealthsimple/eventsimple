@@ -28,9 +28,9 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'pg', '~> 1.4'
   spec.add_runtime_dependency 'rails', '~> 7.0'
   spec.add_runtime_dependency 'retriable', '~> 3.1'
+  spec.add_runtime_dependency 'with_advisory_lock', '>= 5.1'
 
   spec.add_development_dependency 'bundle-audit'
-  spec.add_development_dependency 'factory_bot_rails'
   spec.add_development_dependency 'fuubar'
   spec.add_development_dependency 'git'
   spec.add_development_dependency 'guard-rspec'

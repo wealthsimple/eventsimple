@@ -10,9 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2022_09_17_150839) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_19_175459) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "eventsimple_outbox_cursors", force: :cascade do |t|
+    t.string "identifier", null: false
+    t.integer "group_number", null: false
+    t.bigint "cursor", null: false
+    t.index ["identifier", "group_number"], name: "idx_on_identifier_group_number_1aba2c6d46", unique: true
+  end
 
   create_table "user_events", force: :cascade do |t|
     t.string "aggregate_id", null: false

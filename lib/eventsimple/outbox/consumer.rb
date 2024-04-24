@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'with_advisory_lock'
 require 'eventsimple/outbox/models/cursor'
 
 module Eventsimple
@@ -9,39 +10,55 @@ module Eventsimple
         klass.class_exec do
           class_attribute :_event_klass
           class_attribute :_processor_klass
+          class_attribute :_processor
           class_attribute :stop_consumer, default: false
-
-          Signal.trap('SIGINT') do
-            self.stop_consumer = true
-            $stdout.puts('SIGINT received, stopping consumer')
-          end
+          class_attribute :_identifier, default: name.to_s
         end
       end
 
-      def consumes_event(event_klass, concurrency: 1)
-        event_klass._outbox_mode = true
-        event_klass._outbox_concurrency = concurrency
+      def identifier(name = nil)
+        self._identifier = name
+      end
+
+      def consumes_event(event_klass, group_size: 1)
+        event_klass._outbox_enabled = true
+        event_klass._consumer_group_size = group_size
 
         self._event_klass = event_klass
       end
 
       def processor(processor_klass)
         self._processor_klass = processor_klass
+        self._processor = processor_klass.new
       end
 
-      def start # rubocop:disable Metrics/AbcSize
-        cursor = Outbox::Cursor.fetch(_event_klass, 0)
+      def start(group_number: 0) # rubocop:disable Metrics/AbcSize
+        Signal.trap('INT') do
+          self.stop_consumer = true
+          $stdout.puts('INT received, stopping consumer')
+        end
+        Signal.trap('TERM') do
+          self.stop_consumer = true
+          $stdout.puts('TERM received, stopping consumer')
+        end
+
+        run_consumer(group_number: group_number)
+      end
+
+      def run_consumer(group_number:)
+        cursor = Outbox::Cursor.fetch(_identifier, group_number: group_number)
 
         until stop_consumer
           _event_klass.unscoped.in_batches(start: cursor + 1, load: true).each do |batch|
             batch.each do |event|
-              _processor_klass.new(event).call
+              _processor.call(event)
 
+              cursor = event.id
               break if stop_consumer
             end
 
-            cursor = batch.last.id
-            Outbox::Cursor.set(_event_klass, 0, cursor)
+            Outbox::Cursor.set(_identifier, cursor, group_number: group_number)
+            break if stop_consumer
           end
 
           sleep(1)

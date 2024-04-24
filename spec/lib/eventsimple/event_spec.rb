@@ -15,6 +15,10 @@ RSpec.describe Eventsimple::Event do
     end
 
     context 'when entity is stale' do
+      # disable transactional tests so we can test the retry logic
+      def self.uses_transaction?(_method) = true
+      after { UserEvent.delete_all }
+
       it 'retries and successfully writes the event' do
         stale_user = User.find_by(canonical_id: user_canonical_id)
 
@@ -48,7 +52,7 @@ RSpec.describe Eventsimple::Event do
 
     context 'when an event class no longer exists' do
       it 'uses a no-op deleted class' do
-        UserEvent.insert({ type: 'NonExistentEvent', aggregate_id: user_canonical_id })
+        UserEvent.create!(type: 'NonExistentEvent', aggregate_id: user_canonical_id)
 
         event = UserEvent.last
         expect(event).to be_a(UserEvent::Deleted__NonExistentEvent)
