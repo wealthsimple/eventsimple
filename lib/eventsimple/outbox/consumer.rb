@@ -12,11 +12,11 @@ module Eventsimple
           class_attribute :_processor_klass
           class_attribute :_processor
           class_attribute :stop_consumer, default: false
-          class_attribute :_identifier, default: name.to_s
+          class_attribute :_identifier
         end
       end
 
-      def identifier(name = nil)
+      def identifier(name)
         self._identifier = name
       end
 
@@ -46,6 +46,12 @@ module Eventsimple
       end
 
       def run_consumer(group_number:)
+        raise 'Eventsimple: No event class defined' unless _event_klass
+        raise 'Eventsimple: No processor defined' unless _processor
+        raise 'Eventsimple: No identifier defined' unless _identifier
+
+        Rails.logger.info("Starting consumer for #{_identifier}, processing #{_event_klass} events with group number #{group_number}")
+
         cursor = Outbox::Cursor.fetch(_identifier, group_number: group_number)
 
         until stop_consumer
