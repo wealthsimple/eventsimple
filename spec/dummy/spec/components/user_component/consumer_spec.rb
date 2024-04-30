@@ -23,6 +23,26 @@ RSpec.describe UserComponent::Consumer do
     expect(described_class._processor_klass).to eq(UserComponent::EventProcessor)
   end
 
+  context 'with invalid configuration' do
+    it 'raises an error when no event class is defined' do
+      described_class._event_klass = nil
+      expect { run_consumer }.to raise_error(RuntimeError, 'Eventsimple: No event class defined')
+      described_class._event_klass = UserEvent
+    end
+
+    it 'raises an error when no processor is defined' do
+      described_class._processor = nil
+      expect { run_consumer }.to raise_error(RuntimeError, 'Eventsimple: No processor defined')
+      described_class._processor = UserComponent::EventProcessor.new
+    end
+
+    it 'raises an error when no identifier is defined' do
+      described_class._identifier = nil
+      expect { run_consumer }.to raise_error(RuntimeError, 'Eventsimple: No identifier defined')
+      described_class._identifier = 'UserComponent::Consumer'
+    end
+  end
+
   describe '.run_consumer' do
     it 'records the last processed event position' do
       event = create(:user_event)

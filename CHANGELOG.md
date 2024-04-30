@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.4.2 - 2024-04-30
+### Changed
+- Raise error on missing consumer config
+
 ## 1.4.1 - 2024-04-28
 ### Fixed
 - Fix Sidebar scroll
