@@ -55,6 +55,7 @@ module Eventsimple
       end
 
       # Return a ReactorSet containing all Reactors matching an Event
+      # Reactors will be in the order in which they were registered
       def for(event)
         reactors = ReactorSet.new
 
@@ -77,16 +78,18 @@ module Eventsimple
       attr_reader :sync, :async
 
       def initialize
-        @sync = Set.new
-        @async = Set.new
+        @sync = []
+        @async = []
       end
 
       def add_sync(reactors)
-        @sync += reactors
+        new_reactors = reactors - @sync
+        @sync += new_reactors
       end
 
       def add_async(reactors)
-        @async += reactors
+        new_reactors = reactors - @async
+        @async += new_reactors
       end
     end
   end
