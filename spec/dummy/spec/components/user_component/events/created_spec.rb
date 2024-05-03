@@ -21,7 +21,7 @@ RSpec.describe UserComponent::Events::Created do
     it_behaves_like 'an event which synchronously dispatches',
       UserComponent::Reactors::Created::SyncReactor
 
-    it_behaves_like 'an event which synchronously dispatches all',
+    it_behaves_like 'an event which synchronously dispatches in order',
       [
         UserComponent::Reactors::Created::SyncReactor,
         UserComponent::Reactors::Created::SyncReactor2,

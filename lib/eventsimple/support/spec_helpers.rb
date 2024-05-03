@@ -8,7 +8,7 @@ RSpec.shared_examples 'an event which synchronously dispatches' do |dispatcher_k
   end
 end
 
-RSpec.shared_examples 'an event which synchronously dispatches all' do |dispatcher_klasses|
+RSpec.shared_examples 'an event which synchronously dispatches in order' do |dispatcher_klasses|
   specify do
     reactors = Eventsimple::EventDispatcher.rules.for(described_class.new)
 
@@ -21,14 +21,6 @@ RSpec.shared_examples 'an event which asynchronously dispatches' do |dispatcher_
     reactors = Eventsimple::EventDispatcher.rules.for(described_class.new)
 
     expect(reactors.async).to include(dispatcher_klass)
-  end
-end
-
-RSpec.shared_examples 'an event which asynchronously dispatches all' do |dispatcher_klasses|
-  specify do
-    reactors = Eventsimple::EventDispatcher.rules.for(described_class.new)
-
-    expect(reactors.async).to eq dispatcher_klass
   end
 end
 

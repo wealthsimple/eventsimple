@@ -2,19 +2,19 @@ module Eventsimple
   RSpec.describe EventDispatcher do
     include ActiveJob::TestHelper
 
-    let(:event) do
-      UserComponent::Events::Created.create(
-        user: User.new,
-        data: {
-          canonical_id: SecureRandom.uuid,
-          username: 'test',
-          email: 'test@example.com',
-        },
-        skip_dispatcher: true,
-      )
-    end
-
     describe '.dispatch', type: :job do
+      let(:event) do
+        UserComponent::Events::Created.create(
+          user: User.new,
+          data: {
+            canonical_id: SecureRandom.uuid,
+            username: 'test',
+            email: 'test@example.com',
+          },
+          skip_dispatcher: true,
+        )
+      end
+
       it 'triggers sync reactors' do
         allow(UserComponent::Reactors::Created::SyncReactor).to receive(:perform_now)
 
@@ -37,7 +37,7 @@ module Eventsimple
             UserComponent::Reactors::Created::SyncReactor,
             UserComponent::Reactors::Created::SyncReactor2,
           ]
-          expect(described_class.rules.for(event).sync).to eq expected_reactors
+          expect(described_class.rules.for(UserComponent::Events::Created.new).sync).to eq expected_reactors
         end
 
         it 'returns the async reactors in the order in which they were registered' do
@@ -45,7 +45,7 @@ module Eventsimple
             UserComponent::Reactors::Created::AsyncReactor2,
             UserComponent::Reactors::Created::AsyncReactor,
           ]
-          expect(described_class.rules.for(event).async).to eq expected_reactors
+          expect(described_class.rules.for(UserComponent::Events::Created.new).async).to eq expected_reactors
         end
       end
     end
