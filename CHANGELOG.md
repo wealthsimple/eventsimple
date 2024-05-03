@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.4.3 - 2024-05-03
+### Changed
+- The order of execution for synchronous reactors is now guaranteed to be the order in which they were registered
+- Added a shared `'an event which synchronously dispatches in order'` to test order in which synchronous reactors are executed
+
 ## 1.4.2 - 2024-04-30
 ### Changed
 - Raise error on missing consumer config
