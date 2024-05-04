@@ -1,5 +1,5 @@
 RSpec.describe UserComponent::Consumer do
-  subject(:run_consumer) { described_class.run_consumer(group_number: 0) }
+  subject(:run_consumer) { described_class.run_consumer }
 
   before do
     allow(described_class).to receive(:sleep) do
@@ -47,14 +47,14 @@ RSpec.describe UserComponent::Consumer do
     it 'records the last processed event position' do
       event = create(:user_event)
 
-      cursor = Eventsimple::Outbox::Cursor.fetch('UserComponent::Consumer', group_number: 0)
+      cursor = Eventsimple::Outbox::Cursor.fetch('UserComponent::Consumer')
       expect(cursor).to be(0)
 
       expect(described_class._processor).to receive(:call).once
 
       run_consumer
 
-      cursor = Eventsimple::Outbox::Cursor.fetch('UserComponent::Consumer', group_number: 0)
+      cursor = Eventsimple::Outbox::Cursor.fetch('UserComponent::Consumer')
       expect(cursor).to eq(event.id)
     end
 

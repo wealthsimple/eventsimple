@@ -15,7 +15,6 @@ module Eventsimple
       self._aggregate_id = aggregate_id
 
       class_attribute :_outbox_enabled
-      class_attribute :_consumer_group_size
 
       class_attribute :_on_invalid_transition
       self._on_invalid_transition = ->(error) { raise error }
