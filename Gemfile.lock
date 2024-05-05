@@ -1,7 +1,8 @@
 PATH
   remote: .
   specs:
-    eventsimple (1.4.3)
+    eventsimple (1.5.0)
+      concurrent-ruby (>= 1.2.3)
       dry-struct (~> 1.6)
       dry-types (~> 1.7)
       pg (~> 1.4)

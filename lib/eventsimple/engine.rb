@@ -12,6 +12,7 @@ module Eventsimple
 
     config.after_initialize do
       require 'eventsimple/reactor'
+      require 'eventsimple/outbox/models/cursor'
 
       verify_dispatchers!
 

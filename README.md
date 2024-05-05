@@ -276,9 +276,9 @@ end
 
 ## Configuring an outbox consumer
 
-For many use cases, async reactors are sufficient to handle workflows like making an API call or publishing to a message broker. However as reactors use ActiveJob, order is not guaranteed. For use cases requiring order, eventsimple provides an ordered outbox implementation.
+For many use cases, async reactors are sufficient to handle workflows like making an API call or publishing to a message broker. However as reactors use ActiveJob, order is not guaranteed. For use cases requiring order, eventsimple provides an simple ordered outbox implementation.
 
-**Caveat**: The current implementation leverages a single advisory lock to guarantee write order. This will impact write throughput on the model. On a db.rg6.large Aurora instance for example, write throughput is limited to ~300 events per second.
+The current implementation leverages a single advisory lock to guarantee write order. This will impact write throughput on the model. On a db.rg6.large Aurora instance for example, write throughput to the table is ~300 events per second.
 
 For an explaination of why an advisory lock is required:
 https://github.com/pawelpacana/account-basics
@@ -292,7 +292,6 @@ Generate migration to setup the outbox cursor table. This table is used to track
 ```
 
 Create a consummer and processor class for the outbox.
-Note: The presence of the consumer class moves all writes to the respective events table to be written using an advisory lock.
 
 ```ruby
 require 'eventsimple/outbox/consumer'
@@ -304,6 +303,7 @@ module UserComponent
     identitfier 'UserComponent::Consumer'
     consumes_event UserEvent
     processor EventProcessor
+    concurrency 5 # default is 5
   end
 end
 ```

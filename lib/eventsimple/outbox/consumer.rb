@@ -6,13 +6,17 @@ require 'eventsimple/outbox/models/cursor'
 module Eventsimple
   module Outbox
     module Consumer
+      class ExitError < StandardError; end
+
       def self.extended(klass)
         klass.class_exec do
           class_attribute :_event_klass
-          class_attribute :_processor_klass
-          class_attribute :_processor
-          class_attribute :stop_consumer, default: false
           class_attribute :_identifier
+          class_attribute :_processor_klass
+          class_attribute :_processor_pool
+          class_attribute :_concurrency, default: 5
+          class_attribute :_batch_size, default: 1000
+          class_attribute :stop_consumer, default: false
         end
       end
 
@@ -28,7 +32,11 @@ module Eventsimple
 
       def processor(processor_klass)
         self._processor_klass = processor_klass
-        self._processor = processor_klass.new
+        self._processor_pool = _concurrency.times.map { processor_klass.new }
+      end
+
+      def concurrency(concurrency)
+        self._concurrency = concurrency
       end
 
       def start # rubocop:disable Metrics/AbcSize
@@ -46,28 +54,37 @@ module Eventsimple
 
       def run_consumer
         raise 'Eventsimple: No event class defined' unless _event_klass
-        raise 'Eventsimple: No processor defined' unless _processor
+        raise 'Eventsimple: No processor defined' unless _processor_klass
         raise 'Eventsimple: No identifier defined' unless _identifier
+        raise 'Eventsimple: No concurrency defined' unless _concurrency.is_a?(Integer)
 
-        Rails.logger.info("Starting consumer for #{_identifier}, processing #{_event_klass} events")
+        $stdout.puts("Starting consumer for #{_identifier}")
 
         cursor = Outbox::Cursor.fetch(_identifier)
 
         until stop_consumer
-          _event_klass.unscoped.in_batches(start: cursor + 1, load: true).each do |batch|
-            batch.each do |event|
-              _processor.call(event)
+          _event_klass.unscoped.in_batches(start: cursor + 1, load: true, of: _batch_size).each do |batch|
+            grouped_events = batch.group_by { |event| event.aggregate_id.unpack1('L') % _concurrency }
 
-              cursor = event.id
-              break if stop_consumer
-            end
+            promises = grouped_events.map { |index, events|
+              Concurrent::Promises.future {
+                events.each do |event|
+                  _processor_pool[index].call(event)
+                  raise ExitError if stop_consumer
+                end
+              }
+            }
 
+            Concurrent::Promises.zip(*promises).value!
+
+            cursor = batch.last.id
             Outbox::Cursor.set(_identifier, cursor)
-            break if stop_consumer
           end
 
           sleep(1)
         end
+      rescue ExitError
+        $stdout.puts("Stopping consumer for #{_identifier}")
       end
     end
   end

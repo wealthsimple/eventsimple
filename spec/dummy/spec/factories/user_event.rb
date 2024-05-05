@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :user_event do
     user
-    type { 'UserComponent::Events::Created' }
+    type { 'Created' }
     data {
       {
         canonical_id: SecureRandom.uuid,
