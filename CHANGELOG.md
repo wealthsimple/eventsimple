@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.4.3 - 2024-05-06
 ### Changed
-- The order of execution for synchronous reactors is now guaranteed to be the order in which they were registered
-- Added a shared `'an event which synchronously dispatches in order'` to test order in which synchronous reactors are executed
+- The order of execution for synchronous reactors is now guaranteed to be the order in which they were registered.
+- The shared examples for reactors `'an event which (a)synchronously dispatches'` now accept 1 or multiple arguments. The synchronous version checks that reactors are given in the order in which they are registered.
 
 ## 1.4.2 - 2024-04-30
 ### Changed
