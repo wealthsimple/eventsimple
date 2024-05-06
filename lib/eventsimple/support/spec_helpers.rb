@@ -4,7 +4,6 @@ RSpec.shared_examples 'an event which synchronously dispatches' do |*dispatcher_
   specify do
     reactors = Eventsimple::EventDispatcher.rules.for(described_class.new)
 
-    expect(reactors.sync).to include(*dispatcher_klasses)
     expect(reactors.sync & dispatcher_klasses).to eq(dispatcher_klasses)
   end
 end
