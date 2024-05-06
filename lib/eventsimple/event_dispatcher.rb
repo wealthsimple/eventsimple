@@ -83,13 +83,11 @@ module Eventsimple
       end
 
       def add_sync(reactors)
-        new_reactors = reactors - @sync
-        @sync += new_reactors
+        @sync |= reactors
       end
 
       def add_async(reactors)
-        new_reactors = reactors - @async
-        @async += new_reactors
+        @async |= reactors
       end
     end
   end
