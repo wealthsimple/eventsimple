@@ -21,6 +21,10 @@ RSpec.describe UserComponent::Events::Created do
     it_behaves_like 'an event which synchronously dispatches',
       UserComponent::Reactors::Created::SyncReactor
 
+    it_behaves_like 'an event which synchronously dispatches',
+      UserComponent::Reactors::Created::SyncReactor,
+      UserComponent::Reactors::Created::SyncReactor2
+
     it 'updates the user properties' do
       create_event
 

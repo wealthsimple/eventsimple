@@ -29,5 +29,25 @@ module Eventsimple
         ).with(event).at(:no_wait)
       end
     end
+
+    describe '.rules' do
+      describe '#for' do
+        it 'returns the sync reactors in the order in which they were registered' do
+          expected_reactors = [
+            UserComponent::Reactors::Created::SyncReactor,
+            UserComponent::Reactors::Created::SyncReactor2,
+          ]
+          expect(described_class.rules.for(UserComponent::Events::Created.new).sync).to eq expected_reactors
+        end
+
+        it 'returns the async reactors in the order in which they were registered' do
+          expected_reactors = [
+            UserComponent::Reactors::Created::AsyncReactor2,
+            UserComponent::Reactors::Created::AsyncReactor,
+          ]
+          expect(described_class.rules.for(UserComponent::Events::Created.new).async).to eq expected_reactors
+        end
+      end
+    end
   end
 end

@@ -1,18 +1,20 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'an event which synchronously dispatches' do |dispatcher_klass|
+RSpec.shared_examples 'an event which synchronously dispatches' do |*dispatcher_klasses|
   specify do
     reactors = Eventsimple::EventDispatcher.rules.for(described_class.new)
 
-    expect(reactors.sync).to include(dispatcher_klass)
+    # Order is important here since the synchronous reactors are executed sequentially
+    expect(reactors.sync & dispatcher_klasses).to eq(dispatcher_klasses)
   end
 end
 
-RSpec.shared_examples 'an event which asynchronously dispatches' do |dispatcher_klass|
+RSpec.shared_examples 'an event which asynchronously dispatches' do |*dispatcher_klasses|
   specify do
     reactors = Eventsimple::EventDispatcher.rules.for(described_class.new)
 
-    expect(reactors.async).to include(dispatcher_klass)
+    # Order is _not_ important here since async reactors have no order guarantee
+    expect(reactors.async).to include(*dispatcher_klasses)
   end
 end
 
