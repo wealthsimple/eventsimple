@@ -4,6 +4,7 @@ RSpec.shared_examples 'an event which synchronously dispatches' do |*dispatcher_
   specify do
     reactors = Eventsimple::EventDispatcher.rules.for(described_class.new)
 
+    # Order is important here since the synchronous reactors are executed sequentially
     expect(reactors.sync & dispatcher_klasses).to eq(dispatcher_klasses)
   end
 end
@@ -12,6 +13,7 @@ RSpec.shared_examples 'an event which asynchronously dispatches' do |*dispatcher
   specify do
     reactors = Eventsimple::EventDispatcher.rules.for(described_class.new)
 
+    # Order is _not_ important here since async reactors have no order guarantee
     expect(reactors.async).to include(*dispatcher_klasses)
   end
 end
