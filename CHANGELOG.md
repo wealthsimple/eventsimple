@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.5.0 - 2024-05-07
+### Changed
+- The outbox consumer processes event batches concurrently
+- Removes unused group_number/group_size config
+
 ## 1.4.3 - 2024-05-06
 ### Changed
 - The order of execution for synchronous reactors is now guaranteed to be the order in which they were registered.
