@@ -302,8 +302,7 @@ module UserComponent
 
     identitfier 'UserComponent::Consumer'
     consumes_event UserEvent
-    processor EventProcessor
-    concurrency 5 # default is 5
+    processor EventProcessor, concurrency: 5
   end
 end
 ```

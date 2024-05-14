@@ -30,13 +30,10 @@ module Eventsimple
         self._event_klass = event_klass
       end
 
-      def processor(processor_klass)
+      def processor(processor_klass, concurrency: 5)
+        self._concurrency = concurrency
         self._processor_klass = processor_klass
         self._processor_pool = _concurrency.times.map { processor_klass.new }
-      end
-
-      def concurrency(concurrency)
-        self._concurrency = concurrency
       end
 
       def start # rubocop:disable Metrics/AbcSize

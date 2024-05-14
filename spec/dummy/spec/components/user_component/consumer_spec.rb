@@ -62,6 +62,7 @@ RSpec.describe UserComponent::Consumer do
 
       run_consumer
 
+      expect(described_class._processor_pool.size).to eq(5)
       expect(described_class._processor_pool[0]).to have_received(:call).once
       expect(described_class._processor_pool[1]).to have_received(:call).once
       expect(described_class._processor_pool[2]).to have_received(:call).once
