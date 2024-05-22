@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    eventsimple (1.5.0)
+    eventsimple (1.5.1)
       concurrent-ruby (>= 1.2.3)
       dry-struct (~> 1.6)
       dry-types (~> 1.7)
@@ -184,7 +184,7 @@ GEM
     minitest (5.22.2)
     mutex_m (0.2.0)
     nenv (0.3.0)
-    net-imap (0.4.10)
+    net-imap (0.4.11)
       date
       net-protocol
     net-pop (0.1.2)
