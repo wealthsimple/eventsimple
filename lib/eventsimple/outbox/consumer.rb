@@ -25,8 +25,6 @@ module Eventsimple
       end
 
       def consumes_event(event_klass)
-        event_klass._outbox_enabled = true
-
         self._event_klass = event_klass
       end
 

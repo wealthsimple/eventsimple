@@ -14,8 +14,6 @@ module Eventsimple
       class_attribute :_aggregate_id
       self._aggregate_id = aggregate_id
 
-      class_attribute :_outbox_enabled
-
       class_attribute :_on_invalid_transition
       self._on_invalid_transition = ->(error) { raise error }
 
@@ -148,23 +146,11 @@ module Eventsimple
       # We can only catch and retry writes when they the outermost event encapsulating the whole
       # transaction.
       def create(*args, &block)
-        with_locks do
-          with_retries(args) { super }
-        end
+        with_retries(args) { super }
       end
 
       def create!(*args, &block)
-        with_locks do
-          with_retries(args) { super }
-        end
-      end
-
-      def with_locks(&block)
-        if _outbox_enabled
-          base_class.with_advisory_lock(base_class.name, { transaction: true }, &block)
-        else
-          yield
-        end
+        with_retries(args) { super }
       end
 
       def with_retries(args, &block) # rubocop:disable Metrics/AbcSize
