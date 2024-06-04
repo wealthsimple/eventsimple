@@ -12,6 +12,13 @@ require 'retriable'
 require 'rspec/rails'
 
 RSpec.configure do |config|
+
+  # Enable Packwerk factories
+  config.before do
+    allow(Germinator::Environment).to receive(:enabled?).and_return(true)
+    Germinator.init
+  end
+
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
