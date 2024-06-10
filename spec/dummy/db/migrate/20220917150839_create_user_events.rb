@@ -10,6 +10,7 @@ class CreateUserEvents < ActiveRecord::Migration[7.0]
       t.timestamps
 
       t.index :idempotency_key, unique: true
+      t.index :created_at
 
       # temporary to enable backfill
       t.integer :eventide_position_id
