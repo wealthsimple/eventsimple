@@ -40,7 +40,7 @@ RSpec.describe 'a published gem' do # rubocop:disable RSpec/DescribeClass
   end
 
   def not_gemfile?(diff)
-    ['Gemfile', 'Gemfile.lock'].exclude?(diff.path)
+    !['Gemfile', 'Gemfile.lock'].include?(diff.path)
   end
 
   def not_docs?(diff)
