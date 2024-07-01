@@ -58,7 +58,7 @@ module Eventsimple
         cursor = Outbox::Cursor.fetch(_identifier)
 
         until stop_consumer
-          _event_klass.unscoped.in_batches(start: cursor + 1, load: true, of: _batch_size).each do |batch|
+          _event_klass.unscoped.where('transaction_id::xid8 < pg_snapshot_xmin(pg_current_snapshot())').in_batches(start: cursor + 1, load: true, of: _batch_size).each do |batch|
             grouped_events = batch.group_by { |event| event.aggregate_id.unpack1('L') % _concurrency }
 
             promises = grouped_events.map { |index, events|

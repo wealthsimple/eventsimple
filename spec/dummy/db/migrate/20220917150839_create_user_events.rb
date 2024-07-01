@@ -2,6 +2,7 @@ class CreateUserEvents < ActiveRecord::Migration[7.0]
   def change
     create_table :user_events do |t|
       t.string :aggregate_id, null: false, index: true
+      # t.column :transaction_id, :xid8, null: true
       t.string :idempotency_key, null: true
       t.string :type, null: false
       t.json :data, null: false, default: {}

@@ -5,6 +5,7 @@ class Create<%= model_name.camelize %>Events < ActiveRecord::Migration[7.0]
     create_table :<%= model_name.underscore %>_events do |t|
       # Change this to string if your aggregates primary key is a string type
       t.bigint :aggregate_id, null: false, index: true
+      t.column, :transaction_id, :xid8
       t.string :idempotency_key, null: true
       t.string :type, null: false
       t.json :data, null: false, default: {}

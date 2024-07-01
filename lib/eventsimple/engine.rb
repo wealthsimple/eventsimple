@@ -4,6 +4,15 @@ module Eventsimple
   class Engine < ::Rails::Engine
     isolate_namespace Eventsimple
 
+    module PostgresXid8Extension
+      def load_additional_types(oids=nil)
+        type_map.alias_type 'xid8', 'string'
+        super
+      end
+    end
+
+
+
     config.generators do |g|
       g.test_framework :rspec
       g.helper false
@@ -13,6 +22,8 @@ module Eventsimple
     config.after_initialize do
       require 'eventsimple/reactor'
       require 'eventsimple/outbox/models/cursor'
+
+      # ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.prepend PostgresXid8Extension
 
       verify_dispatchers!
 

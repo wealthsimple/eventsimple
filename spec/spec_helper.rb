@@ -53,3 +53,5 @@ RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
 end
+
+ALTER  TABLE user_events ADD COLUMN   transaction_id    xid8 default
