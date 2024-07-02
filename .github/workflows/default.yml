@@ -11,7 +11,7 @@ concurrency:
 jobs:
   build_and_publish:
     name: Build and Publish
-    uses: wealthsimple/public-github-workflows/.github/workflows/ruby-gem-build.yaml@rubygem-postgres-support
+    uses: wealthsimple/public-github-workflows/.github/workflows/ruby-gem-build.yaml@main
     with:
       postgres_image: 'postgres:14-alpine'
     secrets: inherit
