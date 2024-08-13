@@ -128,6 +128,7 @@ create_table :user_events do |t|
   t.timestamps
 
   t.index :idempotency_key, unique: true
+  t.index :created_at
 end
 
 add_column :users, :lock_version, :integer
