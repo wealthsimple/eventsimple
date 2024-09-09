@@ -56,6 +56,12 @@ module Eventsimple
       end
 
       context 'when enabled with a block' do
+        it 'passes self into the block' do
+          user.enable_writes! do |entity|
+            expect(entity).to eq(user)
+          end
+        end
+
         context 'when the entity was readonly before' do
           it 'restores readonly status after the block' do
             user.readonly!
