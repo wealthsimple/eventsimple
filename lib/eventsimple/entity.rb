@@ -39,7 +39,7 @@ module Eventsimple
         @readonly = false
 
         if block
-          yield
+          yield self
           @readonly = true if was_readonly
         end
       end
