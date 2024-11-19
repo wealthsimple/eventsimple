@@ -12,6 +12,45 @@ module Eventsimple
       )
     end
 
+    describe '.event_driven_by' do
+      context 'when aggregate_id value mismatch between entity and event' do
+        let(:user_class) do
+          Class.new(ApplicationRecord) do
+            extend Eventsimple::Entity
+
+            event_driven_by UserEvent, aggregate_id: :id
+          end
+        end
+
+        it 'raises argument error' do
+          expect { user_class }.to(raise_error(ArgumentError, 'aggregate_id mismatch event:canonical_id entity:id'))
+        end
+      end
+
+      context 'when aggregate_id column type mismatch between entity and event' do
+        let(:user_class) do
+          Class.new(ApplicationRecord) do
+            def self.name
+              'User'
+            end
+
+            def self.column_for_attribute(column_name)
+              return Struct.new(:type).new(:int) if column_name == :canonical_id
+              super
+            end
+
+            extend Eventsimple::Entity
+
+            event_driven_by UserEvent, aggregate_id: :canonical_id
+          end
+        end
+
+        it 'raises argument error' do
+          expect { user_class }.to(raise_error(ArgumentError, 'column type mismatch - event:string entity:int'))
+        end
+      end
+    end
+
     describe '#projection_matches_events?' do
       it 'returns false if the entity no longer matches state from events' do
         expect(user.projection_matches_events?).to be true

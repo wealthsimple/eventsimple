@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.5.5 - 2024-12-23
+### Changed
+- Validate value and type of `aggregate_id` between Event and Entity
+
 ## 1.5.4 - 2024-12-05
 ### Changed
 - Rails 8.0 is supported

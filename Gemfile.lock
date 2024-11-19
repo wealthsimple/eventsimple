@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    eventsimple (1.5.4)
+    eventsimple (1.5.5)
       concurrent-ruby (>= 1.2.3)
       dry-struct (~> 1.6)
       dry-types (~> 1.7)
@@ -185,7 +185,7 @@ GEM
     mini_mime (1.1.5)
     minitest (5.25.4)
     nenv (0.3.0)
-    net-imap (0.5.1)
+    net-imap (0.5.4)
       date
       net-protocol
     net-pop (0.1.2)
@@ -336,7 +336,7 @@ GEM
       rubocop-rails (~> 2.26.0)
     stringio (3.1.2)
     thor (1.3.2)
-    timeout (0.4.2)
+    timeout (0.4.3)
     treetop (1.6.12)
       polyglot (~> 0.3)
     tzinfo (2.0.6)

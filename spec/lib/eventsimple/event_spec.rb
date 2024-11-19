@@ -62,4 +62,43 @@ RSpec.describe Eventsimple::Event do
       end
     end
   end
+
+  describe '.event_driven_by' do
+    context 'when aggregate_id mismatch between entity and event' do
+      let(:event_class) do
+        Class.new(ApplicationRecord) do
+          extend Eventsimple::Event
+
+          drives_events_for User, aggregate_id: :id, events_namespace: 'UserComponent::Events'
+        end
+      end
+
+      it 'raises argument error' do
+        expect { event_class }.to(raise_error(ArgumentError, 'aggregate_id mismatch event:id entity:canonical_id'))
+      end
+    end
+
+    context 'when aggregate_id column type mismatch between entity and event' do
+      let(:event_class) do
+        Class.new(ApplicationRecord) do
+          def self.name
+            'UserEvent'
+          end
+
+          def self.column_for_attribute(column_name)
+            return Struct.new(:type).new(:int) if column_name == :aggregate_id
+            super
+          end
+
+          extend Eventsimple::Event
+
+          drives_events_for User, aggregate_id: :canonical_id, events_namespace: 'UserComponent::Events'
+        end
+      end
+
+      it 'raises argument error' do
+        expect { event_class }.to(raise_error(ArgumentError, 'column type mismatch - event:string entity:int'))
+      end
+    end
+  end
 end
