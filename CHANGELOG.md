@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.5.4 - 2024-09-09
+### Changed
+- Validate value and type of `aggregate_id` between Event and Entity
+
 ## 1.5.3 - 2024-09-09
 ### Changed
 - Pass self to `enable_writes!` block

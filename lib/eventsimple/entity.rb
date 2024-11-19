@@ -3,6 +3,17 @@ module Eventsimple
     DEFAULT_IGNORE_PROPS = %w[id lock_version].freeze
 
     def event_driven_by(event_klass, aggregate_id:, filter_attributes: [])
+      if defined?(event_klass._aggregate_id)
+        raise ArgumentError, "aggregate_id mismatch event:#{event_klass._aggregate_id} entity:#{aggregate_id}" if aggregate_id != event_klass._aggregate_id
+
+        if attribute_names && event_klass.attribute_names.present?
+          aggregate_column_type_in_event = event_klass.column_for_attribute(:aggregate_id).type
+          aggregate_column_type_in_entity = column_for_attribute(aggregate_id).type
+
+          raise ArgumentError, "column type mismatch - event:#{aggregate_column_type_in_event} entity:#{aggregate_column_type_in_entity}" if aggregate_column_type_in_event != aggregate_column_type_in_entity
+        end
+      end
+
       has_many :events, class_name: event_klass.name.to_s,
         foreign_key: :aggregate_id,
         primary_key: aggregate_id,
@@ -17,6 +28,9 @@ module Eventsimple
 
       class_attribute :_filter_attributes
       self._filter_attributes = [aggregate_id] | Array.wrap(filter_attributes)
+
+      class_attribute :_aggregate_id
+      self._aggregate_id = aggregate_id
 
       # disable automatic timestamp updates
       self.record_timestamps = false
