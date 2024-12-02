@@ -12,6 +12,7 @@
 
 ActiveRecord::Schema[7.1].define(version: 2024_04_19_175459) do
   # These are extensions that must be enabled in order to support this database
+  # TESTTTT
   enable_extension "plpgsql"
 
   create_table "eventsimple_outbox_cursors", force: :cascade do |t|
