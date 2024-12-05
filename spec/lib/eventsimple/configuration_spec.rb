@@ -25,6 +25,7 @@ RSpec.describe Eventsimple::Configuration do
 
     it 'can be set to an array of strings' do
       config.dispatchers = ['UserComponent::Dispatcher']
+      expect(config.dispatchers).to eq([UserComponent::Dispatcher])
     end
 
     it 'raises an error when set to a non-array' do

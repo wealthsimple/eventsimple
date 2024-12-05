@@ -159,20 +159,20 @@ module Eventsimple
         end
       end
 
-      def with_locks(&block)
+      def with_locks(&)
         if _outbox_enabled
-          base_class.with_advisory_lock(base_class.name, { transaction: true }, &block)
+          base_class.with_advisory_lock(base_class.name, { transaction: true }, &)
         else
           yield
         end
       end
 
-      def with_retries(args, &block) # rubocop:disable Metrics/AbcSize
+      def with_retries(args, &) # rubocop:disable Metrics/AbcSize
         entity = args[0][_aggregate_klass.model_name.element.to_sym]
 
         # Only implement retries when the event is not already inside a transaction.
         if entity&.persisted? && !existing_transaction_in_progress?
-          Retriable.with_context(:optimistic_locking, on_retry: proc { entity.reload }, &block)
+          Retriable.with_context(:optimistic_locking, on_retry: proc { entity.reload }, &)
         else
           yield
         end
