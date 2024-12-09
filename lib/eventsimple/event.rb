@@ -19,7 +19,7 @@ module Eventsimple
       class_attribute :_on_invalid_transition
       self._on_invalid_transition = ->(error) { raise error }
 
-      self.inheritance_column = :type
+      self.inheritance_column = 'type'
       self.store_full_sti_class = false
 
       attribute :metadata, MetadataType.new
