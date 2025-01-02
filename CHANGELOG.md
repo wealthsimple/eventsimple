@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.5.6 - 2025-01-02
+### Changed
+- inheritance column setter needs to be a string
+
 ## 1.5.5 - 2024-12-23
 ### Changed
 - Validate value and type of `aggregate_id` between Event and Entity
