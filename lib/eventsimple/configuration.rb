@@ -8,6 +8,7 @@ module Eventsimple
     attr_accessor :retry_reactor_on_record_not_found
 
     attr_accessor :ui_visible_models
+    attr_reader :queue_priorities
 
     def initialize
       @dispatchers = []
@@ -17,6 +18,11 @@ module Eventsimple
       @retry_reactor_on_record_not_found = false
 
       @ui_visible_models = [] # internal use only
+      @queue_priorities = {
+        high: :eventsimple_high,
+        default: :eventsimple,
+        low: :eventsimple_low,
+      }
     end
 
     def max_concurrency_retries=(value)
@@ -46,5 +52,12 @@ module Eventsimple
       @parent_record_const ||= @parent_record_klass.constantize
     end
     # rubocop:enable Naming/MemoizedInstanceVariableName
+
+    def queue_priorities=(priorities)
+      raise ArgumentError, 'queue_priorities must be a hash' unless priorities.is_a?(Hash)
+      raise ArgumentError, 'queue_priorities must include :default priority' unless priorities.key?(:default)
+
+      @queue_priorities = priorities
+    end
   end
 end

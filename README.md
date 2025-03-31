@@ -79,6 +79,15 @@ Setup an initializer in `config/initializers/eventsimple.rb`:
     # Enable this option to retry the reactor inline if the event is not found.
     # Defaults to false.
     config.retry_reactor_on_record_not_found = true
+
+    # Optional: Configure queue priorities for reactors.
+    # Each reactor can be assigned a priority which maps to a specific queue.
+    # Defaults to { high: :eventsimple_high, default: :eventsimple, low: :eventsimple_low }
+    config.queue_priorities = {
+      high: :eventsimple_high,
+      default: :eventsimple,
+      low: :eventsimple_low
+    }
   end
 ```
 
@@ -87,12 +96,13 @@ If using `Sidekiq` as a backend to `ActiveJob` for async reactors, please add th
 ```ruby
   config.active_job.queue_adapter = :sidekiq
 ```
-The jobs are pushed into a queue named `eventsimple`, so please add it to your
-`sidekiq.yml` as follows:
+The jobs are pushed into queues based on priority. Add them to your `sidekiq.yml` as follows:
 ```yml
 :queues:
   - [default, 10]
-  - [eventsimple, 10]
+  - [eventsimple_high, 30]
+  - [eventsimple, 20]
+  - [eventsimple_low, 10]
 ```
 
 Generate a migration and add `Eventsimple` to an existing ActiveRecord model.
