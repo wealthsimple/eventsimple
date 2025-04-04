@@ -67,6 +67,10 @@ RSpec.describe Eventsimple::Event do
     context 'when aggregate_id mismatch between entity and event' do
       let(:event_class) do
         Class.new(ApplicationRecord) do
+          def self.name
+            'UserEvent'
+          end
+
           extend Eventsimple::Event
 
           drives_events_for User, aggregate_id: :id, events_namespace: 'UserComponent::Events'
