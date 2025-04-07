@@ -3,16 +3,16 @@ module Eventsimple
     DEFAULT_IGNORE_PROPS = %w[id lock_version].freeze
 
     def event_driven_by(event_klass, aggregate_id:, filter_attributes: [])
-      if defined?(event_klass._aggregate_id)
-        raise ArgumentError, "aggregate_id mismatch event:#{event_klass._aggregate_id} entity:#{aggregate_id}" if aggregate_id != event_klass._aggregate_id
+      begin
+        if defined?(event_klass._aggregate_id) && event_klass.table_exists? && table_exists?
+          raise ArgumentError, "aggregate_id mismatch event:#{event_klass._aggregate_id} entity:#{aggregate_id}" if aggregate_id != event_klass._aggregate_id
 
-        begin
           aggregate_column_type_in_event = event_klass.column_for_attribute(:aggregate_id).type
           aggregate_column_type_in_entity = column_for_attribute(aggregate_id).type
 
           raise ArgumentError, "column type mismatch - event:#{aggregate_column_type_in_event} entity:#{aggregate_column_type_in_entity}" if aggregate_column_type_in_event != aggregate_column_type_in_entity
-        rescue ActiveRecord::NoDatabaseError
         end
+      rescue ActiveRecord::NoDatabaseError
       end
 
       has_many :events, class_name: event_klass.name.to_s,
