@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.5.7 - 2025-04-04
+### Changed
+- Initializiation error on db:schema:load is fixed
+
 ## 1.5.6 - 2025-01-02
 ### Changed
 - inheritance column setter needs to be a string

@@ -16,6 +16,10 @@ module Eventsimple
       context 'when aggregate_id value mismatch between entity and event' do
         let(:user_class) do
           Class.new(ApplicationRecord) do
+            def self.name
+              'User'
+            end
+
             extend Eventsimple::Entity
 
             event_driven_by UserEvent, aggregate_id: :id

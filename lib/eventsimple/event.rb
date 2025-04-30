@@ -5,16 +5,17 @@ module Eventsimple
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def drives_events_for(aggregate_klass, aggregate_id:, events_namespace: nil)
-      if defined?(aggregate_klass._aggregate_id)
-        raise ArgumentError, "aggregate_id mismatch event:#{aggregate_id} entity:#{aggregate_klass._aggregate_id}" if aggregate_id != aggregate_klass._aggregate_id
+      begin
+        if defined?(aggregate_klass._aggregate_id) && aggregate_klass.table_exists? && table_exists?
+          raise ArgumentError, "aggregate_id mismatch event:#{aggregate_id} entity:#{aggregate_klass._aggregate_id}" if aggregate_id != aggregate_klass._aggregate_id
 
-        begin
           aggregate_column_type_in_event = aggregate_klass.column_for_attribute(aggregate_klass._aggregate_id).type unless aggregate_klass.attribute_names.blank?
           aggregate_column_type_in_entity = column_for_attribute(:aggregate_id).type unless aggregate_klass.attribute_names.blank?
 
           raise ArgumentError, "column type mismatch - event:#{aggregate_column_type_in_event} entity:#{aggregate_column_type_in_entity}" if aggregate_column_type_in_event != aggregate_column_type_in_entity
-        rescue ActiveRecord::NoDatabaseError
+
         end
+      rescue ActiveRecord::NoDatabaseError
       end
 
       class_attribute :_events_namespace
