@@ -281,9 +281,6 @@ For many use cases, async reactors are sufficient to handle workflows like makin
 
 The current implementation leverages a single advisory lock to guarantee write order. This will impact write throughput on the model. On a db.rg6.large Aurora instance for example, write throughput to the table is ~300 events per second.
 
-For an explaination of why an advisory lock is required:
-https://github.com/pawelpacana/account-basics
-
 ### Setup an ordered outbox
 
 Generate migration to setup the outbox cursor table. This table is used to track cursor positions.
