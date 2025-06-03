@@ -21,8 +21,10 @@ module Eventsimple
 
       return model_event_class unless @filters.any?
 
-      aggregate_class_symbol = model_event_class._aggregate_klass.model_name.element.to_sym
-      model_event_class = model_event_class.joins(aggregate_class_symbol)
+      unscoped_aggregate_class = model_event_class._aggregate_klass.unscoped
+
+      aggregate_class_symbol = unscoped_aggregate_class.model_name.element.to_sym
+      model_event_class = model_event_class.joins(aggregate_class_symbol).merge(unscoped_aggregate_class)
       @filters.each do |key, value|
         next if value.blank?
         key = model_event_class._aggregate_id if key == :aggregate_id

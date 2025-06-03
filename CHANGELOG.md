@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.5.8 - 2025-06-03
+### Changed
+- Use `model.unscoped` in Eventsimple UI to show soft-deleted records.
+
 ## 1.5.7 - 2025-04-04
 ### Changed
 - Initializiation error on db:schema:load is fixed
