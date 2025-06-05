@@ -21,10 +21,20 @@ module Eventsimple
 
       return model_event_class unless @filters.any?
 
-      unscoped_aggregate_class = model_event_class._aggregate_klass.unscoped
+      aggregate_table_name = model_event_class._aggregate_klass.table_name
+      aggregate_id_column = model_event_class._aggregate_id
 
-      aggregate_class_symbol = unscoped_aggregate_class.model_name.element.to_sym
-      model_event_class = model_event_class.joins(aggregate_class_symbol).merge(unscoped_aggregate_class)
+      connection = model_event_class.connection
+      quoted_aggregate_table = connection.quote_table_name(aggregate_table_name)
+      quoted_aggregate_column = connection.quote_column_name(aggregate_id_column)
+      quoted_event_table = connection.quote_table_name(model_event_class.table_name)
+      quoted_event_aggregate_column = connection.quote_column_name('aggregate_id')
+
+      model_event_class = model_event_class.joins(
+        "INNER JOIN #{quoted_aggregate_table} ON #{quoted_aggregate_table}.#{quoted_aggregate_column} = #{quoted_event_table}.#{quoted_event_aggregate_column}",
+      )
+
+      aggregate_class_symbol = model_event_class._aggregate_klass.model_name.element.to_sym
       @filters.each do |key, value|
         next if value.blank?
         key = model_event_class._aggregate_id if key == :aggregate_id
