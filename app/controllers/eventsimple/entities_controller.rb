@@ -13,7 +13,7 @@ module Eventsimple
       @filters = filter_columns.to_h { |column| [column, params_filters[column]] }
 
       primary_key = @model_class.event_class._aggregate_id
-      @entity = @model_class.find_by!(primary_key => @aggregate_id)
+      @entity = @model_class.unscoped.find_by!(primary_key => @aggregate_id)
       @entity_event_history = @entity.events.reverse
 
       @selected_event = @entity_event_history.find { |e|
