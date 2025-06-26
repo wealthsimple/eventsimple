@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 RSpec.describe UserComponent::Consumer do
   subject(:run_consumer) { described_class.run_consumer }
 
   before do
+    allow($stdout).to receive(:puts)
     allow(described_class).to receive(:sleep) do
       described_class.stop_consumer = true
     end
@@ -21,7 +24,7 @@ RSpec.describe UserComponent::Consumer do
   let!(:event3) { create(:user_event, user: create(:user, canonical_id: '9abde676-8a1e-473d-a095-9651ac177b37')) }
   let!(:event4) { create(:user_event, user: create(:user, canonical_id: '65b0303a-5239-4212-9127-a9dc01658e38')) }
   let!(:event5) { create(:user_event, user: create(:user, canonical_id: 'f77a5726-f10e-45c6-92a1-62073f1720d1')) }
-  let!(:event5_2) { create(:user_event, user: create(:user, canonical_id: '5cd4914b-e03c-4c20-aaf0-a2b9769fd514')) }
+  let!(:event6) { create(:user_event, user: create(:user, canonical_id: '5cd4914b-e03c-4c20-aaf0-a2b9769fd514')) }
 
   it 'has an identifier' do
     expect(described_class._identifier).to eq('UserComponent::Consumer')
@@ -70,7 +73,7 @@ RSpec.describe UserComponent::Consumer do
       expect(described_class._processor_pool[4]).to have_received(:call).twice
 
       cursor = Eventsimple::Outbox::Cursor.fetch('UserComponent::Consumer')
-      expect(cursor).to eq(event5_2.id)
+      expect(cursor).to eq(event6.id)
     end
 
     it 'updates the cursor position after each batch' do
@@ -79,7 +82,7 @@ RSpec.describe UserComponent::Consumer do
 
       expect(Eventsimple::Outbox::Cursor).to receive(:set).with('UserComponent::Consumer', event2.id)
       expect(Eventsimple::Outbox::Cursor).to receive(:set).with('UserComponent::Consumer', event4.id)
-      expect(Eventsimple::Outbox::Cursor).to receive(:set).with('UserComponent::Consumer', event5_2.id) do
+      expect(Eventsimple::Outbox::Cursor).to receive(:set).with('UserComponent::Consumer', event6.id) do
         described_class.stop_consumer = true
       end
 
@@ -91,9 +94,9 @@ RSpec.describe UserComponent::Consumer do
     context 'when consumer is stopped while inside batch' do
       it 'does not change cursor position' do
         allow(described_class._processor_pool[4]).to receive(:call) do |e|
-          expect(e.id).to be_in([event5.id, event5_2.id])
+          expect(e.id).to be_in([event5.id, event6.id])
 
-          described_class.stop_consumer = true if e.id == event5_2.id
+          described_class.stop_consumer = true if e.id == event6.id
         end
 
         run_consumer
@@ -105,9 +108,9 @@ RSpec.describe UserComponent::Consumer do
     context 'when any processor raises an exception' do
       it 'does not change cursor position' do
         allow(described_class._processor_pool[4]).to receive(:call) do |e|
-          expect(e.id).to be_in([event5.id, event5_2.id])
+          expect(e.id).to be_in([event5.id, event6.id])
 
-          raise 'unknown_error' if e.id == event5_2.id
+          raise 'unknown_error' if e.id == event6.id
         end
 
         expect { run_consumer }.to raise_error(RuntimeError, 'unknown_error')
@@ -130,7 +133,7 @@ RSpec.describe UserComponent::Consumer do
         expect(described_class._processor_pool[3]).to have_received(:call).once
         expect(described_class._processor_pool[4]).to have_received(:call).twice
 
-        expect(Eventsimple::Outbox::Cursor.fetch('UserComponent::Consumer')).to eq(event5_2.id)
+        expect(Eventsimple::Outbox::Cursor.fetch('UserComponent::Consumer')).to eq(event6.id)
       end
     end
   end

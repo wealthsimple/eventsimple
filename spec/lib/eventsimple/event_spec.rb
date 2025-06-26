@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Eventsimple::Event do
   describe 'event retries' do
     let(:user_canonical_id) { SecureRandom.uuid }
@@ -91,6 +93,7 @@ RSpec.describe Eventsimple::Event do
 
           def self.column_for_attribute(column_name)
             return Struct.new(:type).new(:int) if column_name == :aggregate_id
+
             super
           end
 

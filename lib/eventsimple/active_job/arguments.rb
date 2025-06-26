@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'active_job/arguments'
 
 module ActiveJob
   module Arguments
-    extend self
+    extend self # rubocop:disable Style/ModuleFunction
 
     def deserialize_global_id(hash)
       gid = GlobalID.parse(hash[GLOBALID_KEY])

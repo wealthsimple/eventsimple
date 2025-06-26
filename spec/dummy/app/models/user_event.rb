@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserEvent < ApplicationRecord
   extend Eventsimple::Event
 

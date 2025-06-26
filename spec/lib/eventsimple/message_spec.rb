@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 RSpec.describe Eventsimple::Message do
   before do
     mock_message = Class.new(described_class) do
-      attribute :name, DryTypes::Strict::String.default('leo'.freeze)
+      attribute :name, DryTypes::Strict::String.default('leo')
     end
     stub_const('MockMessage', mock_message)
   end

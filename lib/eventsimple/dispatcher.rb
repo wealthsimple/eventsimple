@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Eventsimple
   class Dispatcher
     def self.on(*events, sync: [], async: [])

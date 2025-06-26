@@ -4,7 +4,7 @@ module Eventsimple
   class Reactor < ActiveJob::Base # rubocop:disable Rails/ApplicationJob
     queue_as :eventsimple
 
-    discard_on ActiveJob::DeserializationError do |job, error|
+    discard_on ActiveJob::DeserializationError do |job, _error|
       Rails.logger.warn("Event #{job.arguments.first} not found for reactor: #{self.class}")
     end
 

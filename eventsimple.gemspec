@@ -23,13 +23,13 @@ Gem::Specification.new do |spec|
   end
   spec.require_paths = ['lib']
 
+  spec.add_runtime_dependency 'concurrent-ruby', '>= 1.2.3'
   spec.add_runtime_dependency 'dry-struct', '~> 1.6'
   spec.add_runtime_dependency 'dry-types', '~> 1.7'
   spec.add_runtime_dependency 'pg', '~> 1.4'
   spec.add_runtime_dependency 'rails', '>= 7.0', '< 9.0'
   spec.add_runtime_dependency 'retriable', '~> 3.1'
   spec.add_runtime_dependency 'with_advisory_lock', '>= 5.1'
-  spec.add_runtime_dependency 'concurrent-ruby', '>= 1.2.3'
 
   spec.add_development_dependency 'bundle-audit'
   spec.add_development_dependency 'fuubar'
@@ -39,5 +39,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'puma'
   spec.add_development_dependency 'rspec-rails'
-  spec.add_development_dependency 'ws-style'
+  spec.add_development_dependency 'rubocop'
+  spec.add_development_dependency 'rubocop-factory_bot'
+  spec.add_development_dependency 'rubocop-performance'
+  spec.add_development_dependency 'rubocop-rails'
+  spec.add_development_dependency 'rubocop-rspec'
+  spec.add_development_dependency 'rubocop-rspec_rails'
 end

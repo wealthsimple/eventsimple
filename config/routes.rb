@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Eventsimple::Engine.routes.draw do
   root to: 'home#index'
 

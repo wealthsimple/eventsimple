@@ -1,21 +1,23 @@
+# frozen_string_literal: true
+
 module Eventsimple
   module Event
     require 'globalid'
     include GlobalID::Identification
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def drives_events_for(aggregate_klass, aggregate_id:, events_namespace: nil)
       begin
         if defined?(aggregate_klass._aggregate_id) && aggregate_klass.table_exists? && table_exists?
           raise ArgumentError, "aggregate_id mismatch event:#{aggregate_id} entity:#{aggregate_klass._aggregate_id}" if aggregate_id != aggregate_klass._aggregate_id
 
-          aggregate_column_type_in_event = aggregate_klass.column_for_attribute(aggregate_klass._aggregate_id).type unless aggregate_klass.attribute_names.blank?
-          aggregate_column_type_in_entity = column_for_attribute(:aggregate_id).type unless aggregate_klass.attribute_names.blank?
+          aggregate_column_type_in_event = aggregate_klass.column_for_attribute(aggregate_klass._aggregate_id).type if aggregate_klass.attribute_names.present?
+          aggregate_column_type_in_entity = column_for_attribute(:aggregate_id).type if aggregate_klass.attribute_names.present?
 
           raise ArgumentError, "column type mismatch - event:#{aggregate_column_type_in_event} entity:#{aggregate_column_type_in_entity}" if aggregate_column_type_in_event != aggregate_column_type_in_entity
 
         end
       rescue ActiveRecord::NoDatabaseError
+        # skip checks if the database is not yet created
       end
 
       class_attribute :_events_namespace
@@ -57,7 +59,6 @@ module Eventsimple
       include InstanceMethods
       extend ClassMethods
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     module InstanceMethods
       def skip_dispatcher
@@ -180,7 +181,7 @@ module Eventsimple
         end
       end
 
-      def with_retries(args, &) # rubocop:disable Metrics/AbcSize
+      def with_retries(args, &)
         entity = args[0][_aggregate_klass.model_name.element.to_sym]
 
         # Only implement retries when the event is not already inside a transaction.

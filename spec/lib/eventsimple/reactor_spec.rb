@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Eventsimple::Reactor do
   include ActiveJob::TestHelper
   include RSpec::Rails::TaggedLoggingAdapter

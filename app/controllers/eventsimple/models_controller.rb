@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Eventsimple
   class ModelsController < ApplicationController
     def show
@@ -17,7 +19,7 @@ module Eventsimple
       filter_columns = model_class._filter_attributes
 
       params_filters = params.permit(filters: {})[:filters] || {}
-      @filters = filter_columns.to_h { |column| [column, params_filters[column]] }
+      @filters = filter_columns.index_with { |column| params_filters[column] }
 
       return model_event_class unless @filters.any?
 
@@ -25,6 +27,7 @@ module Eventsimple
       model_event_class = model_event_class.joins(aggregate_class_symbol)
       @filters.each do |key, value|
         next if value.blank?
+
         key = model_event_class._aggregate_id if key == :aggregate_id
         model_event_class = model_event_class.where({ aggregate_class_symbol => { key => value } })
       end
