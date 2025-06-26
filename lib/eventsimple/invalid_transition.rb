@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Eventsimple
   class InvalidTransition < StandardError
     attr_reader :klass

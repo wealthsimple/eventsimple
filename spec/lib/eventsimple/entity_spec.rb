@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Eventsimple
   RSpec.describe Entity do
     let(:user) { User.new }
@@ -40,6 +42,7 @@ module Eventsimple
 
             def self.column_for_attribute(column_name)
               return Struct.new(:type).new(:int) if column_name == :canonical_id
+
               super
             end
 
@@ -78,7 +81,7 @@ module Eventsimple
           user.update!(username: 'changed', updated_at: 1.day.ago)
 
           user.reproject
-          expect(user.changes.keys).to eq(['username', 'updated_at'])
+          expect(user.changes.keys).to eq(%w[username updated_at])
           user.save!
         end
 

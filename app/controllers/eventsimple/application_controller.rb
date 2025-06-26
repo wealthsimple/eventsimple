@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Eventsimple
   class ApplicationController < ActionController::Base
     helper_method :event_class_names

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Eventsimple
   RSpec.describe EventDispatcher do
     include ActiveJob::TestHelper

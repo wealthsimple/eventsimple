@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Eventsimple::Metadata do
   it 'inherits from Message' do
     expect(described_class).to be < Eventsimple::Message

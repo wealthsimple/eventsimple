@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Models", type: :request do
   describe "GET /eventsimple/models/:id" do
     it "returns http success" do

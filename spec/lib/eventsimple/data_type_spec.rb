@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Eventsimple::DataType do
   subject { described_class.new(event_klass) }
 

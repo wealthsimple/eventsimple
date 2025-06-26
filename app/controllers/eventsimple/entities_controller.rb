@@ -1,16 +1,17 @@
+# frozen_string_literal: true
+
 module Eventsimple
   class EntitiesController < ApplicationController
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
     def show
       @model_name = params[:model_name]
       @model_class = event_classes.find { |d| d.name == @model_name }
       @aggregate_id = params[:id]
       @event_id = params[:e] || -1
-      @tab_id = (params[:t] == 'event') ? 'event' : 'entity'
+      @tab_id = params[:t] == 'event' ? 'event' : 'entity'
 
       filter_columns = @model_class._filter_attributes
       params_filters = params.permit(filters: {})[:filters] || {}
-      @filters = filter_columns.to_h { |column| [column, params_filters[column]] }
+      @filters = filter_columns.index_with { |column| params_filters[column] }
 
       primary_key = @model_class.event_class._aggregate_id
       @entity = @model_class.find_by!(primary_key => @aggregate_id)
@@ -28,7 +29,6 @@ module Eventsimple
       @error_message = e.message
       render html: '', layout: true
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
     private
 

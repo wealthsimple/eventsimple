@@ -3,11 +3,8 @@
 module Eventsimple
   class Configuration
     attr_reader :max_concurrency_retries
-    attr_writer :metadata_klass
-    attr_writer :parent_record_klass
-    attr_accessor :retry_reactor_on_record_not_found
-
-    attr_accessor :ui_visible_models
+    attr_writer :metadata_klass, :parent_record_klass
+    attr_accessor :retry_reactor_on_record_not_found, :ui_visible_models
 
     def initialize
       @dispatchers = []

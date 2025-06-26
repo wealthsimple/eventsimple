@@ -33,10 +33,10 @@ module Eventsimple
       def processor(processor_klass, concurrency: 5)
         self._concurrency = concurrency
         self._processor_klass = processor_klass
-        self._processor_pool = _concurrency.times.map { processor_klass.new }
+        self._processor_pool = Array.new(_concurrency) { processor_klass.new }
       end
 
-      def start # rubocop:disable Metrics/AbcSize
+      def start
         Signal.trap('INT') do
           self.stop_consumer = true
           $stdout.puts('INT received, stopping consumer')

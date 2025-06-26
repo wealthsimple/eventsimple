@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Eventsimple
   module Entity
     DEFAULT_IGNORE_PROPS = %w[id lock_version].freeze
@@ -13,6 +15,7 @@ module Eventsimple
           raise ArgumentError, "column type mismatch - event:#{aggregate_column_type_in_event} entity:#{aggregate_column_type_in_entity}" if aggregate_column_type_in_event != aggregate_column_type_in_entity
         end
       rescue ActiveRecord::NoDatabaseError
+        # skip checks if the database is not yet created
       end
 
       has_many :events, class_name: event_klass.name.to_s,
@@ -53,10 +56,10 @@ module Eventsimple
         was_readonly = @readonly
         @readonly = false
 
-        if block
-          yield self
-          @readonly = true if was_readonly
-        end
+        return unless block
+
+        yield self
+        @readonly = was_readonly
       end
 
       def reproject(at: nil)
