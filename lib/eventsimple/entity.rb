@@ -6,6 +6,10 @@ module Eventsimple
 
     def event_driven_by(event_klass, aggregate_id:, filter_attributes: [])
       begin
+        if table_exists? && !column_names.include?(locking_column)
+          raise ArgumentError, "A #{locking_column} column is required to enable optimistic locking"
+        end
+
         if defined?(event_klass._aggregate_id) && event_klass.table_exists? && table_exists?
           raise ArgumentError, "aggregate_id mismatch event:#{event_klass._aggregate_id} entity:#{aggregate_id}" if aggregate_id != event_klass._aggregate_id
 
