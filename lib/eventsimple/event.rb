@@ -136,7 +136,7 @@ module Eventsimple
       # Events for an entity are expected to be namespaced under _events_namespace.
       def find_sti_class(type_name)
         if _events_namespace.blank?
-          super(type_name)
+          super
         else
           super("#{_events_namespace}::#{type_name}")
         end

@@ -6,9 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.7.0 - 2025-06-27
+### Changed
+- Verify optimistic locking column exists
+
 ## 1.6.0 - 2025-06-27
 ### Changed
-- remove ws-style as we no longer publish it to rubygems
+- Remove ws-style as we no longer publish it to rubygems
 
 ## 1.5.7 - 2025-04-04
 ### Changed

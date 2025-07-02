@@ -15,6 +15,25 @@ module Eventsimple
     end
 
     describe '.event_driven_by' do
+      context 'when optimistic locking column is missing' do
+        let(:user_class) do
+          Class.new(ApplicationRecord) do
+            def self.name
+              'User'
+            end
+
+            self.locking_column = :missing_column
+
+            extend Eventsimple::Entity
+            event_driven_by UserEvent, aggregate_id: :id
+          end
+        end
+
+        it 'raises argument error' do
+          expect { user_class }.to(raise_error(ArgumentError, "A missing_column column is required to enable optimistic locking"))
+        end
+      end
+
       context 'when aggregate_id value mismatch between entity and event' do
         let(:user_class) do
           Class.new(ApplicationRecord) do
