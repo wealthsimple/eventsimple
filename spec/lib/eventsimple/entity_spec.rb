@@ -8,7 +8,7 @@ module Eventsimple
         user: user,
         data: {
           canonical_id: SecureRandom.uuid,
-          username: 'test',
+          username: 'test', # gitleaks:allow
           email: 'test@example.com',
         },
       )
@@ -82,7 +82,7 @@ module Eventsimple
         expect(user.projection_matches_events?).to be true
 
         user.enable_writes! do
-          user.update!(username: 'changed', updated_at: 1.day.ago)
+          user.update!(username: 'changed', updated_at: 1.day.ago) # gitleaks:allow
         end
 
         expect(user.projection_matches_events?).to be false
@@ -97,7 +97,7 @@ module Eventsimple
         original_user = User.find_by(id: user.id)
 
         user.enable_writes! do
-          user.update!(username: 'changed', updated_at: 1.day.ago)
+          user.update!(username: 'changed', updated_at: 1.day.ago) # gitleaks:allow
 
           user.reproject
           expect(user.changes.keys).to eq(%w[username updated_at])
