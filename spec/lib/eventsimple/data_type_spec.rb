@@ -5,7 +5,7 @@ RSpec.describe Eventsimple::DataType do
 
   let(:event_klass) { UserComponent::Events::Created }
 
-  let(:event_data_raw) { { canonical_id: 'user-123', username: 'test', email: 'test@example.com' } }
+  let(:event_data_raw) { { canonical_id: 'user-123', username: 'test', email: 'test@example.com' } } #gitleaks:allow
 
   describe '#cast_value' do
     context 'with value as string' do

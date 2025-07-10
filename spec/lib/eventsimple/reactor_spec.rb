@@ -15,7 +15,7 @@ RSpec.describe Eventsimple::Reactor do
         user: User.new,
         data: {
           canonical_id: SecureRandom.uuid,
-          username: 'test',
+          username: 'test', #gitleaks:allow
           email: 'test@example.com',
         },
       )
@@ -38,7 +38,7 @@ RSpec.describe Eventsimple::Reactor do
         user: User.new,
         data: {
           canonical_id: SecureRandom.uuid,
-          username: 'test',
+          username: 'test', #gitleaks:allow
           email: 'test@example.com',
         },
       )

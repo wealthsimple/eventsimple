@@ -10,7 +10,7 @@ module Eventsimple
           user: User.new,
           data: {
             canonical_id: SecureRandom.uuid,
-            username: 'test',
+            username: 'test', #gitleaks:allows
             email: 'test@example.com',
           },
           skip_dispatcher: true,

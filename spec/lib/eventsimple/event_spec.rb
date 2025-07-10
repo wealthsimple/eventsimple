@@ -10,7 +10,7 @@ RSpec.describe Eventsimple::Event do
         user: user,
         data: {
           canonical_id: user_canonical_id,
-          username: 'test',
+          username: 'test', #gitleaks:allow
           email: 'test@example.com',
         },
       )
