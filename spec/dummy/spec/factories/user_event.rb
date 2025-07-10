@@ -7,7 +7,7 @@ FactoryBot.define do
     data {
       {
         canonical_id: SecureRandom.uuid,
-        username: 'test-user', #gitleaks:allow
+        username: 'test-user', # gitleaks:allow
         email: 'test@example.com',
       }
     }

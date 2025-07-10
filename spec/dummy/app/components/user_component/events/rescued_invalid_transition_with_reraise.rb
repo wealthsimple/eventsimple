@@ -19,7 +19,7 @@ module UserComponent
 
       def apply(user)
         user.canonical_id = data.canonical_id
-        user.username = 'test' #gitleaks:allow
+        user.username = 'test' # gitleaks:allow
         user.email = 'test@example.com'
       end
     end

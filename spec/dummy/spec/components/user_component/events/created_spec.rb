@@ -12,7 +12,7 @@ RSpec.describe UserComponent::Events::Created do
         user: user,
         data: {
           canonical_id: canonical_id,
-          username: 'test-user', #gitleaks:allow
+          username: 'test-user', # gitleaks:allow
           email: 'test@example.com',
         },
       )
